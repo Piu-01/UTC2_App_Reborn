@@ -54,12 +54,12 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(new Intent(this, MainActivity.class));
                             finish();
                         } else {
-                            Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Login Failed.Sai email hoặc mật khẩu!!", Toast.LENGTH_SHORT).show();
                         }
                     });
         });
 
-        // ✅ SKIP LOGIN
+        //  SKIP LOGIN
         skipBtn.setOnClickListener(v -> {
 
             auth.signInWithEmailAndPassword(
