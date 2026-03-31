@@ -9,7 +9,7 @@
 
         <!-- LOGIN SCREEN -->
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.login.LoginActivity"
             android:exported="true">
 
             <intent-filter>
@@ -21,7 +21,7 @@
 
         <!-- MAIN APP -->
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="false"/>
 
     </application>

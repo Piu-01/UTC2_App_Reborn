@@ -1,4 +1,4 @@
-package com.utc2.appreborn;
+package com.utc2.appreborn.ui.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.utc2.appreborn.ui.main.MainActivity;
+import com.utc2.appreborn.R;
 
 public class LoginActivity extends AppCompatActivity {
 
