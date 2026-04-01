@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,16 +20,30 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseAuth auth;
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+       /* if(FirebaseAuth.getInstance().getCurrentUser() != null){
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        }*/
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
         loginBtn = findViewById(R.id.loginBtn);
         skipBtn = findViewById(R.id.skipBtn);
-
+        TextView txtForgot;
         auth = FirebaseAuth.getInstance();
+
+        //FORGOT PASS TEXT
+        txtForgot = findViewById(R.id.txtForgot);
+
+        txtForgot.setOnClickListener(v -> {
+            startActivity(new Intent(
+                    LoginActivity.this,
+                    ForgotPasswordActivity.class
+            ));
+        });
 
         // LOGIN BUTTON
         loginBtn.setOnClickListener(v -> {
