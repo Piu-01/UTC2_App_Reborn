@@ -18,8 +18,7 @@
 
         </activity>
 
-
-        <!-- FORGOT -->
+        <!-- FORGOT PASSWORD -->
         <activity
             android:name=".ui.login.ForgotPasswordActivity"
             android:exported="false"/>
@@ -27,6 +26,11 @@
         <!-- MAIN -->
         <activity
             android:name=".ui.main.MainActivity"
+            android:exported="false"/>
+
+        <!-- ✅ PROFILE (THÊM DÒNG NÀY) -->
+        <activity
+            android:name=".ui.profile.ProfileActivity"
             android:exported="false"/>
 
     </application>
