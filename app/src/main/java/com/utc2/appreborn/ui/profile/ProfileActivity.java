@@ -17,29 +17,39 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView tvName, tvEmail, tvClass,
             tvPhone, tvDOB, tvMSSV, tvAddress;
 
-    private Button btnProgram, btnLogout;
+    private Button btnProgram, btnLogout, btnSupport;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // ✅ kiểm tra login trước
+        if (!checkLogin()) return;
+
         setContentView(R.layout.activity_profile);
 
-        checkLogin();
         initView();
         loadProfile();
         setupButton();
     }
 
-    private void checkLogin() {
+    // ================= LOGIN CHECK =================
+    private boolean checkLogin() {
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user == null) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
+            return false;
         }
+
+        return true;
     }
 
+    // ================= INIT VIEW =================
     private void initView() {
+
         tvName = findViewById(R.id.tvName);
         tvEmail = findViewById(R.id.tvEmail);
         tvClass = findViewById(R.id.tvClass);
@@ -50,8 +60,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         btnProgram = findViewById(R.id.btnProgram);
         btnLogout = findViewById(R.id.btnLogout);
+
+        btnSupport = findViewById(R.id.btnSupport);
     }
 
+    // ================= LOAD DATA =================
     private void loadProfile() {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -60,45 +73,66 @@ public class ProfileActivity extends AppCompatActivity {
                 ? user.getEmail()
                 : getString(R.string.default_email);
 
-        tvName.setText(getString(R.string.label_name,
+        tvName.setText(getString(
+                R.string.label_name,
                 getString(R.string.default_name)));
 
-        tvEmail.setText(getString(R.string.label_email, email));
+        tvEmail.setText(getString(
+                R.string.label_email,
+                email));
 
-        tvClass.setText(getString(R.string.label_class,
+        tvClass.setText(getString(
+                R.string.label_class,
                 getString(R.string.default_class)));
 
-        tvPhone.setText(getString(R.string.label_phone,
+        tvPhone.setText(getString(
+                R.string.label_phone,
                 getString(R.string.default_phone)));
 
-        tvDOB.setText(getString(R.string.label_dob,
+        tvDOB.setText(getString(
+                R.string.label_dob,
                 getString(R.string.default_dob)));
 
-        tvMSSV.setText(getString(R.string.label_mssv,
+        tvMSSV.setText(getString(
+                R.string.label_mssv,
                 getString(R.string.default_mssv)));
 
-        tvAddress.setText(getString(R.string.label_address,
+        tvAddress.setText(getString(
+                R.string.label_address,
                 getString(R.string.default_address)));
     }
 
+    // ================= BUTTON =================
     private void setupButton() {
 
-        btnProgram.setOnClickListener(v -> {
-            startActivity(new Intent(
-                    ProfileActivity.this,
-                    TrainingProgramActivity.class));
-        });
+        //  chương trình đào tạo
+        btnProgram.setOnClickListener(v ->
+                startActivity(new Intent(
+                        ProfileActivity.this,
+                        TrainingProgramActivity.class)));
 
+        //  hỗ trợ
+        if (btnSupport != null) {
+            btnSupport.setOnClickListener(v ->
+                    startActivity(new Intent(
+                            ProfileActivity.this,
+                            SupportActivity.class)));
+        }
+
+        // 👉 logout
         btnLogout.setOnClickListener(v -> {
+
             FirebaseAuth.getInstance().signOut();
 
             Intent intent =
-                    new Intent(ProfileActivity.this, LoginActivity.class);
+                    new Intent(ProfileActivity.this,
+                            LoginActivity.class);
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
             startActivity(intent);
+            finish();
         });
     }
 }

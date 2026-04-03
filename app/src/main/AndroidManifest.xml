@@ -33,9 +33,14 @@
             android:name=".ui.profile.ProfileActivity"
             android:exported="false"/>
 
-        <!-- Chương trình đào tạo-->
+        <!-- Chương trình đào tạo -->
         <activity
             android:name=".ui.profile.TrainingProgramActivity"
+            android:exported="false"/>
+
+        <!--  SUPPORT  -->
+        <activity
+            android:name=".ui.profile.SupportActivity"
             android:exported="false"/>
 
     </application>

@@ -1,131 +1,118 @@
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="24dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_horizontal">
+    android:layout_height="match_parent">
 
-    <!-- Avatar -->
-    <ImageView
-        android:id="@+id/imgAvatar"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:src="@drawable/ic_user"
-        android:scaleType="centerCrop"
-        android:layout_marginBottom="20dp"/>
-
-    <!-- Họ tên -->
-    <TextView
-        android:id="@+id/tvName"
-        android:textSize="15sp"
-        android:text="@string/default_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#CCCCCC"
-        android:layout_marginVertical="8dp"/>
-
-    <!-- Email -->
-    <TextView
-        android:id="@+id/tvEmail"
-        android:textSize="15sp"
-        android:text="@string/default_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#CCCCCC"
-        android:layout_marginVertical="8dp"/>
-
-    <!-- MSSV -->
-    <TextView
-        android:id="@+id/tvMSSV"
-        android:textSize="15sp"
-        android:text="@string/default_mssv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#CCCCCC"
-        android:layout_marginVertical="8dp"/>
-
-    <!-- Lớp -->
-    <TextView
-        android:id="@+id/tvClass"
-        android:textSize="15sp"
-        android:text="@string/default_class"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <!-- Nút chương trình đào tạo -->
-    <Button
-        android:id="@+id/btnProgram"
-        android:text="@string/training_program"
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="24dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"/>
+        android:gravity="center_horizontal">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#CCCCCC"
-        android:layout_marginVertical="8dp"/>
+        <!-- AVATAR -->
+        <ImageView
+            android:id="@+id/imgAvatar"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_user"
+            android:padding="10dp"
+            android:layout_marginBottom="20dp"
+            android:contentDescription="avatar"/>
 
-    <!-- SĐT -->
-    <TextView
-        android:id="@+id/tvPhone"
-        android:textSize="15sp"
-        android:text="@string/default_phone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <!-- NAME -->
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/default_name"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#CCCCCC"
-        android:layout_marginVertical="8dp"/>
+        <View style="@style/Divider"/>
 
-    <!-- Ngày sinh -->
-    <TextView
-        android:id="@+id/tvDOB"
-        android:textSize="15sp"
-        android:text="@string/default_dob"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <!-- EMAIL -->
+        <TextView
+            android:id="@+id/tvEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/default_email"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#CCCCCC"
-        android:layout_marginVertical="8dp"/>
+        <View style="@style/Divider"/>
 
-    <!-- Địa chỉ -->
-    <TextView
-        android:id="@+id/tvAddress"
-        android:textSize="15sp"
-        android:text="@string/default_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <!-- MSSV -->
+        <TextView
+            android:id="@+id/tvMSSV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/default_mssv"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#CCCCCC"
-        android:layout_marginVertical="16dp"/>
+        <View style="@style/Divider"/>
 
-    <!-- Đăng xuất -->
-    <Button
-        android:id="@+id/btnLogout"
-        android:text="@string/logout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <!-- CLASS -->
+        <TextView
+            android:id="@+id/tvClass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/default_class"/>
 
-</LinearLayout>
+        <!-- PROGRAM -->
+        <Button
+            android:id="@+id/btnProgram"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/training_program"
+            android:layout_marginTop="10dp"/>
+
+
+        <View style="@style/Divider"/>
+
+        <!-- PHONE -->
+        <TextView
+            android:id="@+id/tvPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/default_phone"/>
+
+        <View style="@style/Divider"/>
+
+        <!-- DOB -->
+        <TextView
+            android:id="@+id/tvDOB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/default_dob"/>
+
+        <View style="@style/Divider"/>
+
+        <!-- ADDRESS -->
+        <TextView
+            android:id="@+id/tvAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/default_address"/>
+
+        <View style="@style/DividerLarge"/>
+
+        <!-- LOGOUT -->
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/logout"/>
+
+        <View style="@style/DividerLarge"/>
+
+        <!-- SUPPORT -->
+        <Button
+            android:id="@+id/btnSupport"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Liên hệ hỗ trợ"
+            android:layout_marginTop="8dp"/>
+
+    </LinearLayout>
+
+</ScrollView>
