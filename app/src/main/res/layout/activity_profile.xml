@@ -6,51 +6,126 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal">
 
+    <!-- Avatar -->
     <ImageView
         android:id="@+id/imgAvatar"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:src="@drawable/ic_user"
         android:scaleType="centerCrop"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="20dp"/>
 
+    <!-- Họ tên -->
     <TextView
         android:id="@+id/tvName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="18sp"
-        android:layout_marginBottom="8dp"/>
+        android:textSize="15sp"
+        android:text="@string/default_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_marginVertical="8dp"/>
+
+    <!-- Email -->
     <TextView
         android:id="@+id/tvEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="18sp"
-        android:layout_marginBottom="8dp"/>
+        android:textSize="15sp"
+        android:text="@string/default_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_marginVertical="8dp"/>
+
+    <!-- MSSV -->
+    <TextView
+        android:id="@+id/tvMSSV"
+        android:textSize="15sp"
+        android:text="@string/default_mssv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_marginVertical="8dp"/>
+
+    <!-- Lớp -->
     <TextView
         android:id="@+id/tvClass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="18sp"
-        android:layout_marginBottom="8dp"/>
+        android:textSize="15sp"
+        android:text="@string/default_class"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
+    <!-- Nút chương trình đào tạo -->
+    <Button
+        android:id="@+id/btnProgram"
+        android:text="@string/training_program"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_marginVertical="8dp"/>
+
+    <!-- SĐT -->
     <TextView
         android:id="@+id/tvPhone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="18sp"
-        android:layout_marginBottom="8dp"/>
+        android:textSize="15sp"
+        android:text="@string/default_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_marginVertical="8dp"/>
+
+    <!-- Ngày sinh -->
     <TextView
         android:id="@+id/tvDOB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="18sp"/>
+        android:textSize="15sp"
+        android:text="@string/default_dob"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_marginVertical="8dp"/>
+
+    <!-- Địa chỉ -->
+    <TextView
+        android:id="@+id/tvAddress"
+        android:textSize="15sp"
+        android:text="@string/default_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_marginVertical="16dp"/>
+
+    <!-- Đăng xuất -->
+    <Button
+        android:id="@+id/btnLogout"
+        android:text="@string/logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

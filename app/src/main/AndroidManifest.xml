@@ -28,9 +28,14 @@
             android:name=".ui.main.MainActivity"
             android:exported="false"/>
 
-        <!-- ✅ PROFILE (THÊM DÒNG NÀY) -->
+        <!-- PROFILE -->
         <activity
             android:name=".ui.profile.ProfileActivity"
+            android:exported="false"/>
+
+        <!-- Chương trình đào tạo-->
+        <activity
+            android:name=".ui.profile.TrainingProgramActivity"
             android:exported="false"/>
 
     </application>

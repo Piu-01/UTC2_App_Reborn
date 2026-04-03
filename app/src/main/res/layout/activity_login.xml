@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     android:padding="24dp">
 
+
     <EditText
         android:id="@+id/email"
         android:layout_width="0dp"

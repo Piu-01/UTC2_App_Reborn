@@ -27,4 +27,19 @@
     <string name="label_class">Lớp: %1$s</string>
     <string name="label_phone">SĐT: %1$s</string>
     <string name="label_dob">Ngày sinh: %1$s</string>
+
+    <string name="default_mssv">2251050001</string>
+    <string name="default_address">TP. Hồ Chí Minh</string>
+
+    <string name="label_mssv">MSSV: %1$s</string>
+    <string name="label_address">Địa chỉ: %1$s</string>
+
+    <string name="training_program">Chương trình đào tạo</string>
+    <string name="logout">Đăng xuất</string>
+    <!-- Subject -->
+    <string name="subject_code">Mã môn</string>
+    <string name="subject_name">Tên môn</string>
+    <string name="subject_credit">Tín chỉ</string>
+    <string name="subject_score">Điểm</string>
+    <string name="back_profile">Quay về Profile</string>
 </resources>
