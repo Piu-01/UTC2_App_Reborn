@@ -3,6 +3,7 @@ package com.utc2.appreborn.ui.profile;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,8 +12,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.utc2.appreborn.R;
 import com.utc2.appreborn.ui.login.LoginActivity;
+import com.utc2.appreborn.ui.main.MainActivity;
 
 public class ProfileActivity extends AppCompatActivity {
+
+    private ImageButton back;
 
     private TextView tvName, tvEmail, tvClass,
             tvPhone, tvDOB, tvMSSV, tvAddress;
@@ -23,7 +27,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // ✅ kiểm tra login trước
+        // ✅ check login trước
         if (!checkLogin()) return;
 
         setContentView(R.layout.activity_profile);
@@ -31,12 +35,14 @@ public class ProfileActivity extends AppCompatActivity {
         initView();
         loadProfile();
         setupButton();
+        setupBackButton();
     }
 
     // ================= LOGIN CHECK =================
     private boolean checkLogin() {
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user =
+                FirebaseAuth.getInstance().getCurrentUser();
 
         if (user == null) {
             startActivity(new Intent(this, LoginActivity.class));
@@ -50,6 +56,8 @@ public class ProfileActivity extends AppCompatActivity {
     // ================= INIT VIEW =================
     private void initView() {
 
+        back = findViewById(R.id.btnBack);
+
         tvName = findViewById(R.id.tvName);
         tvEmail = findViewById(R.id.tvEmail);
         tvClass = findViewById(R.id.tvClass);
@@ -60,14 +68,14 @@ public class ProfileActivity extends AppCompatActivity {
 
         btnProgram = findViewById(R.id.btnProgram);
         btnLogout = findViewById(R.id.btnLogout);
-
         btnSupport = findViewById(R.id.btnSupport);
     }
 
     // ================= LOAD DATA =================
     private void loadProfile() {
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user =
+                FirebaseAuth.getInstance().getCurrentUser();
 
         String email = (user != null && user.getEmail() != null)
                 ? user.getEmail()
@@ -105,21 +113,16 @@ public class ProfileActivity extends AppCompatActivity {
     // ================= BUTTON =================
     private void setupButton() {
 
-        //  chương trình đào tạo
         btnProgram.setOnClickListener(v ->
                 startActivity(new Intent(
                         ProfileActivity.this,
                         TrainingProgramActivity.class)));
 
-        //  hỗ trợ
-        if (btnSupport != null) {
-            btnSupport.setOnClickListener(v ->
-                    startActivity(new Intent(
-                            ProfileActivity.this,
-                            SupportActivity.class)));
-        }
+        btnSupport.setOnClickListener(v ->
+                startActivity(new Intent(
+                        ProfileActivity.this,
+                        SupportActivity.class)));
 
-        // 👉 logout
         btnLogout.setOnClickListener(v -> {
 
             FirebaseAuth.getInstance().signOut();
@@ -132,6 +135,18 @@ public class ProfileActivity extends AppCompatActivity {
                     Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
             startActivity(intent);
+            finish();
+        });
+    }
+
+    // ================= BACK BUTTON =================
+    private void setupBackButton() {
+
+        back.setOnClickListener(v -> {
+            startActivity(new Intent(
+                    ProfileActivity.this,
+                    MainActivity.class
+            ));
             finish();
         });
     }

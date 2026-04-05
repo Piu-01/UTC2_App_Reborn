@@ -1,118 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:padding="24dp"
+
+    <!-- ================= CONTENT ================= -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal">
+        android:layout_height="match_parent">
 
-        <!-- AVATAR -->
-        <ImageView
-            android:id="@+id/imgAvatar"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:src="@drawable/ic_user"
-            android:padding="10dp"
-            android:layout_marginBottom="20dp"
-            android:contentDescription="avatar"/>
-
-        <!-- NAME -->
-        <TextView
-            android:id="@+id/tvName"
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="24dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/default_name"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:gravity="center_horizontal">
 
-        <View style="@style/Divider"/>
+            <!-- AVATAR -->
+            <ImageView
+                android:id="@+id/imgAvatar"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/ic_user"
+                android:padding="10dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="20dp"
+                android:contentDescription="avatar"/>
 
-        <!-- EMAIL -->
-        <TextView
-            android:id="@+id/tvEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/default_email"/>
+            <!-- NAME -->
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/default_name"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
 
-        <View style="@style/Divider"/>
+            <View style="@style/Divider"/>
 
-        <!-- MSSV -->
-        <TextView
-            android:id="@+id/tvMSSV"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/default_mssv"/>
+            <!-- EMAIL -->
+            <TextView
+                android:id="@+id/tvEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/default_email"/>
 
-        <View style="@style/Divider"/>
+            <View style="@style/Divider"/>
 
-        <!-- CLASS -->
-        <TextView
-            android:id="@+id/tvClass"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/default_class"/>
+            <!-- MSSV -->
+            <TextView
+                android:id="@+id/tvMSSV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/default_mssv"/>
 
-        <!-- PROGRAM -->
-        <Button
-            android:id="@+id/btnProgram"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="@string/training_program"
-            android:layout_marginTop="10dp"/>
+            <View style="@style/Divider"/>
+
+            <!-- CLASS -->
+            <TextView
+                android:id="@+id/tvClass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/default_class"/>
+
+            <!-- PROGRAM -->
+            <Button
+                android:id="@+id/btnProgram"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="@string/training_program"
+                android:layout_marginTop="10dp"/>
+
+            <View style="@style/Divider"/>
+
+            <!-- PHONE -->
+            <TextView
+                android:id="@+id/tvPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/default_phone"/>
+
+            <View style="@style/Divider"/>
+
+            <!-- DOB -->
+            <TextView
+                android:id="@+id/tvDOB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/default_dob"/>
+
+            <View style="@style/Divider"/>
+
+            <!-- ADDRESS -->
+            <TextView
+                android:id="@+id/tvAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/default_address"/>
+
+            <View style="@style/DividerLarge"/>
+
+            <!-- LOGOUT -->
+            <Button
+                android:id="@+id/btnLogout"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="@string/logout"/>
+
+            <View style="@style/DividerLarge"/>
+
+            <!-- SUPPORT -->
+            <Button
+                android:id="@+id/btnSupport"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Liên hệ hỗ trợ"
+                android:layout_marginTop="8dp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+    <!-- ================= BACK BUTTON ================= -->
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@android:drawable/ic_media_previous"
+        android:background="@android:color/transparent"
+        android:layout_gravity="top|start"
+        android:layout_margin="12dp"
+        android:contentDescription="Back"/>
 
 
-        <View style="@style/Divider"/>
-
-        <!-- PHONE -->
-        <TextView
-            android:id="@+id/tvPhone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/default_phone"/>
-
-        <View style="@style/Divider"/>
-
-        <!-- DOB -->
-        <TextView
-            android:id="@+id/tvDOB"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/default_dob"/>
-
-        <View style="@style/Divider"/>
-
-        <!-- ADDRESS -->
-        <TextView
-            android:id="@+id/tvAddress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/default_address"/>
-
-        <View style="@style/DividerLarge"/>
-
-        <!-- LOGOUT -->
-        <Button
-            android:id="@+id/btnLogout"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="@string/logout"/>
-
-        <View style="@style/DividerLarge"/>
-
-        <!-- SUPPORT -->
-        <Button
-            android:id="@+id/btnSupport"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="Liên hệ hỗ trợ"
-            android:layout_marginTop="8dp"/>
-
-    </LinearLayout>
-
-</ScrollView>
+</FrameLayout>
