@@ -2,18 +2,24 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F5F5">
+
+    <!--  LIQUID BAR (đặt trước) -->
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/bottom_bar_compose"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <!-- CONTENT AREA -->
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/bottom_bar_compose"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_bar_compose">
 
         <TextView
             android:layout_width="wrap_content"
@@ -23,7 +29,6 @@
             android:layout_marginTop="80dp"
             android:textSize="20sp"/>
 
-        <!-- ✅ NÚT MỞ PROFILE -->
         <Button
             android:id="@+id/btnProfile"
             android:layout_width="wrap_content"
@@ -31,13 +36,14 @@
             android:text="Mở Profile"
             android:layout_gravity="center"/>
 
-    </FrameLayout>
+        <Button
+            android:id="@+id/btnTuition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Học phí"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="200dp"/>
 
-    <!-- LIQUID BAR -->
-    <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/bottom_bar_compose"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        app:layout_constraintBottom_toBottomOf="parent" />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

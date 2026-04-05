@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <!-- HEADER -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:padding="12dp">
+
+        <!-- Nút quay về -->
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_media_previous"
+            android:padding="12dp"
+            android:contentDescription="Back"/>
+
+        <!-- Logo UTC2 -->
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/logo_utc2"
+            android:scaleType="fitCenter"/>
+    </RelativeLayout>
+
+    <!-- TITLE -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tuition"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="30dp"/>
+
+    <!-- CONTENT -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Xem học phí -->
+        <Button
+            android:id="@+id/btnViewTuition"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Xem học phí"
+            android:textSize="18sp"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Thanh toán -->
+        <Button
+            android:id="@+id/btnPayment"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Thanh toán học phí / Ký túc xá"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

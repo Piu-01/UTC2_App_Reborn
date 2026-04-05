@@ -1,116 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5">
 
-    <LinearLayout
+    <!-- HEADER -->
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="70dp"
+        android:background="#1F3A68"
+        android:padding="10dp">
 
-        <!-- NÚT QUAY VỀ -->
         <ImageButton
             android:id="@+id/btnBack"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@android:drawable/ic_media_previous"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/back"
-            android:padding="8dp"
-            android:layout_marginBottom="10dp"/>
+            android:contentDescription="@string/back"/>
+    </RelativeLayout>
 
-        <!-- LOGO -->
-        <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_gravity="center"
-            android:src="@drawable/logo_utc2"
-            android:contentDescription="@string/logo_desc"
-            android:layout_marginTop="10dp"/>
+    <!-- LOGO -->
 
-        <!-- TITLE -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/support_title"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_gravity="center"
-            android:layout_marginBottom="15dp"/>
+    <!-- SCROLL CONTENT -->
 
-        <!--Lưu ý-->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/support_tips"
-            android:textSize="18sp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="15dp"
-            android:textColor="@color/red"/>
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="147dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="-50dp"
+        android:contentDescription="@string/logo_desc"
+        android:src="@drawable/logo_utc2" />
 
-        <!-- HỌ TÊN -->
-        <EditText
-            android:id="@+id/edtName"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:hint="@string/support_name"
-            android:inputType="textPersonName"
-            android:autofillHints="name"
-            android:padding="12dp"
-            android:layout_marginBottom="8dp"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <!-- LỚP -->
-        <EditText
-            android:id="@+id/edtClass"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:hint="@string/support_class"
-            android:inputType="text"
-            android:autofillHints="username"
-            android:padding="12dp"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- SĐT -->
-        <EditText
-            android:id="@+id/edtPhone"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:hint="@string/support_phone"
-            android:inputType="phone"
-            android:autofillHints="phone"
-            android:padding="12dp"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- NỘI DUNG -->
-        <EditText
-            android:id="@+id/edtMessage"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:hint="@string/support_message"
-            android:gravity="top"
-            android:inputType="textMultiLine"
-            android:autofillHints="none"
-            android:padding="12dp"
-            android:layout_marginBottom="12dp"/>
-
-        <!-- GỬI -->
-        <Button
-            android:id="@+id/btnSend"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="@string/support_send"
-            android:layout_marginTop="12dp"/>
-
-        <!-- THÔNG TIN LIÊN HỆ -->
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/support_contact"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginTop="20dp"/>
+            android:orientation="vertical"
+            android:padding="16dp">
 
-    </LinearLayout>
-</ScrollView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/support_title"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#1F3A68"
+                android:layout_gravity="center"
+                android:layout_marginBottom="12dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/support_tips"
+                android:textColor="@color/red"
+                android:gravity="center"
+                android:layout_marginBottom="16dp"/>
+
+            <EditText
+                android:id="@+id/edtName"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="@string/support_name"/>
+
+            <EditText
+                android:id="@+id/edtClass"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="10dp"
+                android:hint="@string/support_class"/>
+
+            <EditText
+                android:id="@+id/edtPhone"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="10dp"
+                android:hint="@string/support_phone"/>
+
+            <EditText
+                android:id="@+id/edtMessage"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="10dp"
+                android:hint="@string/support_message"
+                android:gravity="top"/>
+
+            <Button
+                android:id="@+id/btnSend"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="@string/support_send"
+                android:layout_marginTop="16dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/support_contact"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginTop="24dp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

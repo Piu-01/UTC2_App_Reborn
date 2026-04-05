@@ -5,39 +5,56 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:background="#F5F5F5">
 
-    <!-- LOGO UTC2 -->
+    <!-- HEADER -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="#1F3A68"
+        android:padding="10dp">
+
+        <ImageButton
+            android:id="@+id/btnBackProfile"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_media_previous"
+            android:contentDescription="@string/back"/>
+
+    </RelativeLayout>
+
+    <!-- LOGO -->
     <ImageView
+        android:id="@+id/imgLogo"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_gravity="center"
+        android:layout_marginTop="-40dp"
         android:src="@drawable/logo_utc2"
-        android:contentDescription="UTC2 Logo"/>
+        android:contentDescription="@string/logo_desc"/>
 
     <!-- TITLE -->
     <TextView
+        android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/training_program"
-        android:textSize="20sp"
+        android:textSize="22sp"
         android:textStyle="bold"
+        android:textColor="#1F3A68"
         android:layout_gravity="center"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="8dp"/>
 
     <!-- LIST SUBJECT -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerSubject"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
-
-    <!-- NÚT QUAY VỀ -->
-    <Button
-        android:id="@+id/btnBackProfile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Quay về Profile"
-        android:layout_marginTop="8dp"/>
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="12dp"/>
 
 </LinearLayout>

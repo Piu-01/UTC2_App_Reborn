@@ -39,6 +39,7 @@
     <string name="training_program">Chương trình đào tạo</string>
     <string name="logout">Đăng xuất</string>
     <string name="back_profile">Quay về Profile</string>
+    <string name="tuition">Học Phí</string>
 
     <!-- SUBJECT -->
     <string name="subject_code">Mã môn</string>
@@ -54,6 +55,7 @@
     <string name="support_phone">Số điện thoại</string>
     <string name="support_message">Câu hỏi hoặc yêu cầu hỗ trợ</string>
     <string name="support_send">Gửi hỗ trợ</string>
+    <string name="support">Liên Hệ Hỗ Trợ</string>
 
     <string name="support_contact">
 PHÂN HIỆU TRƯỜNG ĐẠI HỌC GIAO THÔNG VẬN TẢI
@@ -63,4 +65,12 @@ TẠI TP. HỒ CHÍ MINH
     <string name="logo_desc">Logo UTC2</string>
     <string name="back">Quay về</string>
 
+    <!-- TUITION RESULT -->
+    <string name="home">Trang chủ</string>
+    <string name="tuition_result">Kết quả nộp tiền</string>
+
+    <string name="hp_hkii">HPCQ HKII 2025-2026</string>
+    <string name="pay_date">Ngày đóng: 19/03/2026</string>
+    <string name="pay_money">Số tiền: 10.509.368 VND</string>
+    <string name="pay_method">Hình thức: QR Code</string>
 </resources>
