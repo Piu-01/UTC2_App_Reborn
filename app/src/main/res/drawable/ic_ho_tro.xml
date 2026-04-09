@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="52dp"
+    android:height="52dp"
+    android:viewportWidth="52"
+    android:viewportHeight="52">
+
+    <!-- Left page -->
+    <path
+        android:fillColor="#4FC3F7"
+        android:pathData="M8,14 Q17,12 26,16 L26,42 Q17,38 8,40 Z" />
+
+    <!-- Right page -->
+    <path
+        android:fillColor="#0288D1"
+        android:pathData="M44,14 Q35,12 26,16 L26,42 Q35,38 44,40 Z" />
+
+    <!-- Book spine -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M26,16 L26,42" />
+
+    <!-- Lines on left page -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:alpha="0.7"
+        android:pathData="M12,22 Q19,21 24,23" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:alpha="0.7"
+        android:pathData="M12,27 Q19,26 24,28" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:alpha="0.7"
+        android:pathData="M12,32 Q19,31 24,33" />
+
+    <!-- Lines on right page -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:alpha="0.7"
+        android:pathData="M28,22 Q35,21 40,23" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:alpha="0.7"
+        android:pathData="M28,27 Q35,26 40,28" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:alpha="0.7"
+        android:pathData="M28,32 Q35,31 40,33" />
+
+    <!-- Bookmark ribbon (top right) -->
+    <path
+        android:fillColor="#FFD600"
+        android:pathData="M37,8 h6 v12 l-3,-3 l-3,3 Z" />
+</vector>

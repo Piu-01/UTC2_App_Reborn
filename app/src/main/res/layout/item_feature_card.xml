@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Feature card item.
+    Layout: icon (upper 60%) + label (lower 40%).
+    Background: rounded dark rectangle.
+    Size is determined by the 3-column GridLayoutManager.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_margin="6dp"
+    android:background="@drawable/bg_feature_card"
+    android:padding="10dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackgroundBorderless">
+
+    <!-- Feature icon — large, centred in the upper portion -->
+    <ImageView
+        android:id="@+id/iv_feature_icon"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_gravity="center_horizontal"
+        android:scaleType="fitCenter"
+        android:contentDescription="" />
+
+    <!-- Feature label — white, bold, centred at bottom -->
+    <TextView
+        android:id="@+id/tv_feature_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:lineSpacingMultiplier="1.1" />
+
+</LinearLayout>

@@ -3,4 +3,23 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
+    <!-- Home screen -->
+    <string name="greeting">Xin chào !</string>
+    <string name="default_username">Sinh viên</string>
+    <string name="section_features">Tính năng mở rộng:</string>
+    <string name="section_news">Thông báo mới nhất:</string>
+
+    <!-- Feature labels -->
+    <string name="feature_hoc_phi">Học phí</string>
+    <string name="feature_dich_vu_cong">Dịch vụ công</string>
+    <string name="feature_danh_gia">Đánh giá</string>
+    <string name="feature_ki_tuc_xa">Kí túc xá</string>
+    <string name="feature_ho_tro">Hỗ trợ 24/7</string>
+    <string name="feature_danh_muc_khac">Danh mục khác</string>
+
+    <!-- Accessibility / content descriptions -->
+    <string name="cd_campus_header">Ảnh khuôn viên trường</string>
+    <string name="cd_avatar">Ảnh đại diện</string>
+    <string name="cd_add">Thêm</string>
+    <string name="cd_campus_banner">Banner khuôn viên</string>
 </resources>

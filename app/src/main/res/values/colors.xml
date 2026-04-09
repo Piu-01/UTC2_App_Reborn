@@ -2,5 +2,15 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!--  Brand accent — lime/yellow-green used in bottom nav bar  -->
+    <color name="nav_bar_bg">#C6F135</color>
     <color name="nav_item_color">#FF4081</color>
+    <!--  Text  -->
+    <color name="text_primary">#1A1A1A</color>
+    <color name="text_secondary">#757575</color>
+    <!--  UI elements  -->
+    <color name="divider">#E0E0E0</color>
+    <color name="card_bg">#F2F2F2</color>
+    <!--  Feature card dark background  -->
+    <color name="feature_card_bg">#1A1A1A</color>
 </resources>

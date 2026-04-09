@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Home screen layout — mirrors the Frame 44 design:
+    1. Header image + user greeting overlay
+    2. "Tính năng mở rộng" 3×2 feature grid
+    3. Campus banner image
+    4. "Thông báo mới nhất" news feed
+-->
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- ════════════════════════════════════════
+             SECTION 1 — Header (campus photo + user info)
+             ════════════════════════════════════════ -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:paddingTop="28dp">
+
+        <!-- Campus hero image  ← replace src with your actual photo drawable -->
+            <ImageView
+                android:id="@+id/iv_header"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/pg_header_campus"
+                android:contentDescription="@string/cd_campus_header" />
+
+            <!-- Dark gradient overlay (bottom → transparent) -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_header_gradient" />
+
+            <!-- User info — bottom left corner -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|start"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="26dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+                <!-- Avatar circle -->
+                <FrameLayout
+                    android:id="@+id/iv_avatar"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_avatar_placeholder"
+                        android:contentDescription="@string/cd_avatar" />
+                </FrameLayout>
+
+                <!-- Greeting text -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/greeting"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:alpha="0.85" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/tv_username"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/default_username"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            android:textSize="15sp" />
+
+                        <!-- Add / plus button -->
+                        <ImageView
+                            android:id="@+id/iv_add_btn"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/ic_add_circle"
+                            android:tint="#FFFFFF"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:contentDescription="@string/cd_add" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- ════════════════════════════════════════
+             SECTION 2 — Feature Grid (3 × 2)
+             ════════════════════════════════════════ -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/section_features"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="10dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_features"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never" />
+
+        <!-- ════════════════════════════════════════
+             SECTION 3 — Campus Banner
+             ════════════════════════════════════════ -->
+        <ImageView
+            android:id="@+id/iv_campus_banner"
+            android:layout_width="match_parent"
+            android:layout_height="260dp"
+            android:layout_marginTop="28dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_campus_banner"
+            android:contentDescription="@string/cd_campus_banner" />
+
+        <!-- ════════════════════════════════════════
+             SECTION 4 — News Feed
+             ════════════════════════════════════════ -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/section_news"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="10dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_news"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="24dp"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
