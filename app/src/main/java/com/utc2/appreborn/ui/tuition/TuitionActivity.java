@@ -2,43 +2,52 @@ package com.utc2.appreborn.ui.tuition;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.ImageButton;
-
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.cardview.widget.CardView;
 import com.utc2.appreborn.R;
-import com.utc2.appreborn.ui.main.MainActivity;
 
 public class TuitionActivity extends AppCompatActivity {
 
-    ImageButton btnBack;
-    Button btnViewTuition, btnPayment;
+    private CardView cardTuitionSubject, cardDormitory, cardInvoice;
+    private ImageButton btnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tuition);
 
+        initViews();
+        setClickListeners();
+    }
+
+    private void initViews() {
         btnBack = findViewById(R.id.btnBack);
-        btnViewTuition = findViewById(R.id.btnViewTuition);
-        btnPayment = findViewById(R.id.btnPayment);
+        cardTuitionSubject = findViewById(R.id.cardTuitionSubject);
+        cardDormitory = findViewById(R.id.cardDormitory);
+        cardInvoice = findViewById(R.id.cardInvoice);
+    }
 
-        // Quay về Main
-        btnBack.setOnClickListener(v -> {
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
+    private void setClickListeners() {
+        // Nút quay lại trang trước đó
+        btnBack.setOnClickListener(v -> finish());
+
+        // 1. Mở trang Học phí học phần
+        cardTuitionSubject.setOnClickListener(v -> {
+            Intent intent = new Intent(TuitionActivity.this, SubjectTuitionActivity.class);
+            startActivity(intent);
         });
 
-        // Xem học phí
-        btnViewTuition.setOnClickListener(v -> {
-            startActivity(new Intent(this, TuitionResultActivity.class));
-            finish();
+        // 2. Mở trang Tiền KTX
+        cardDormitory.setOnClickListener(v -> {
+            Intent intent = new Intent(TuitionActivity.this, DormitoryTuitionActivity.class);
+            startActivity(intent);
         });
 
-        // Thanh toán
-        btnPayment.setOnClickListener(v -> {
-            // TODO: mở trang thanh toán
+        // 3. Mở trang Lịch sử Hóa đơn
+        cardInvoice.setOnClickListener(v -> {
+            Intent intent = new Intent(TuitionActivity.this, InvoiceActivity.class);
+            startActivity(intent);
         });
     }
 }

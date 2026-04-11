@@ -7,61 +7,61 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
         android:theme="@style/Theme.UTC2AppReborn">
 
-        <!-- LOGIN -->
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
-        <!-- FORGOT PASSWORD -->
-        <activity
-            android:name=".ui.login.ForgotPasswordActivity"
-            android:exported="false"/>
+        <activity android:name=".ui.login.ForgotPasswordActivity" android:exported="false"/>
+        <activity android:name=".ui.login.TermsActivity" android:exported="false"/>
+        <activity android:name=".ui.login.PrivacyPolicyActivity" android:exported="false"/>
 
-        <!-- MAIN -->
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="false"/>
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"/>
 
-        <!-- PROFILE -->
+        <activity android:name=".ui.profile.ProfileActivity" android:exported="false"/>
+        <activity android:name=".ui.profile.InfoActivity" android:exported="false"/>
+        <activity android:name=".ui.profile.SupportActivity" android:exported="false"/>
         <activity
-            android:name=".ui.profile.ProfileActivity"
-            android:exported="false"/>
-
-        <!-- TRAINING PROGRAM -->
+            android:name=".ui.profile.ChangePasswordActivity"
+            android:exported="false"
+            android:label="@string/title_change_password"/>
         <activity
             android:name=".ui.profile.TrainingProgramActivity"
-            android:exported="false"/>
-
-        <!-- SUPPORT -->
+            android:exported="false"
+            android:label="@string/training_program"/>
         <activity
-            android:name=".ui.profile.SupportActivity"
-            android:exported="false"/>
+            android:name=".ui.profile.GraduationRequirementsActivity"
+            android:exported="false"
+            android:label="@string/title_graduation_requirements"/>
 
-        <!-- ================= TUITION ================= -->
+        <activity android:name=".ui.tuition.TuitionActivity" android:exported="false"/>
 
-        <!-- Trang chọn học phí -->
         <activity
-            android:name=".ui.tuition.TuitionActivity"
-            android:exported="false"/>
+            android:name=".ui.tuition.SubjectTuitionActivity"
+            android:exported="false"
+            android:label="@string/title_subject_tuition"/>
 
-        <!-- Trang xem học phí -->
         <activity
-            android:name=".ui.tuition.TuitionResultActivity"
-            android:exported="false"/>
+            android:name=".ui.tuition.DormitoryTuitionActivity"
+            android:exported="false"
+            android:label="@string/title_dorm_tuition"/>
 
-        <!-- Trang thanh toán -->
-        <!--<activity
-            android:name=".ui.tuition.PaymentActivity"
-            android:exported="false"/>
--->
+        <activity
+            android:name=".ui.tuition.InvoiceActivity"
+            android:exported="false"
+            android:label="@string/title_invoice"/>
+
     </application>
 
 </manifest>
