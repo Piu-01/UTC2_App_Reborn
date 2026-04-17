@@ -6,6 +6,9 @@ import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import com.utc2.appreborn.R;
+import com.utc2.appreborn.ui.tuition.Dorm.DormitoryTuitionActivity;
+import com.utc2.appreborn.ui.tuition.Invoice.InvoiceActivity;
+import com.utc2.appreborn.ui.tuition.Subject.SubjectTuitionActivity;
 
 public class TuitionActivity extends AppCompatActivity {
 

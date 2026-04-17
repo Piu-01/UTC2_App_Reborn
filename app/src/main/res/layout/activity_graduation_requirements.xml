@@ -2,16 +2,15 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerBar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#FFFFFF"
+        android:background="@color/white"
         android:elevation="2dp"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -26,7 +25,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="#000000" />
+            app:tint="@color/black" />
 
         <ImageView
             android:id="@+id/logoSmall"
@@ -44,13 +43,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:text="@string/title_graduation_requirements"
-            android:textColor="#000000"
+            android:textColor="@color/text_black"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/logoSmall"
-            app:layout_constraintTop_toTopOf="parent"
-            android:accessibilityHeading="true" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
@@ -71,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/header_conditions_graduation"
-                android:textColor="#000000"
+                android:textColor="@color/text_black"
                 android:textSize="17sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="24dp"/>
@@ -81,23 +79,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lineSpacingExtra="10dp"
-                android:text="@string/graduation_requirements_content"
-                android:textColor="#333333"
+                android:textColor="@color/text_dark_gray"
                 android:textSize="15sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#EEEEEE"
+                android:background="@color/divider_gray"
                 android:layout_marginVertical="24dp"/>
 
             <TextView
+                android:id="@+id/tvGraduationNote"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/graduation_note"
-                android:textColor="#757575"
+                android:textColor="@color/text_note_gray"
                 android:textSize="13sp"
-                android:textStyle="italic"/>
+                android:textStyle="italic"
+                android:lineSpacingExtra="4dp"/>
 
             <View
                 android:layout_width="match_parent"

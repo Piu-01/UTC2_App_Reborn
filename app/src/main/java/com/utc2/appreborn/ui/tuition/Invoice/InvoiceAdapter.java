@@ -1,4 +1,4 @@
-package com.utc2.appreborn.ui.tuition;
+package com.utc2.appreborn.ui.tuition.Invoice;
 
 import android.view.LayoutInflater;
 import android.view.View;

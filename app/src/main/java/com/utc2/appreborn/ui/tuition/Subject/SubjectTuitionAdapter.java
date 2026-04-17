@@ -1,5 +1,6 @@
-package com.utc2.appreborn.ui.tuition;
+package com.utc2.appreborn.ui.tuition.Subject;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,10 +9,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.utc2.appreborn.R;
 import java.util.List;
+import java.util.Locale; // Import thêm cái này
 
 public class SubjectTuitionAdapter extends RecyclerView.Adapter<SubjectTuitionAdapter.ViewHolder> {
 
-    private List<SubjectTuition> subjectList;
+    // Sửa cảnh báo 'final'
+    private final List<SubjectTuition> subjectList;
 
     public SubjectTuitionAdapter(List<SubjectTuition> subjectList) {
         this.subjectList = subjectList;
@@ -27,17 +30,21 @@ public class SubjectTuitionAdapter extends RecyclerView.Adapter<SubjectTuitionAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         SubjectTuition item = subjectList.get(position);
+
         holder.tvName.setText(item.getName());
         holder.tvDetails.setText(item.getDetails());
-        holder.tvAmount.setText(item.getAmount());
-        holder.tvStatus.setText(item.getStatus());
 
-        // Bạn có thể thêm logic đổi màu Status tại đây nếu muốn
+        // Sửa lỗi 'Implicitly using the default locale' bằng cách thêm Locale.US hoặc Locale.getDefault()
+        holder.tvAmount.setText(String.format(Locale.US, "%,d VND", item.getAmount()));
+
+        // Vì trang này chỉ hiện môn chưa đóng, mình mặc định hiện chữ đỏ luôn
+        holder.tvStatus.setText(holder.itemView.getContext().getString(R.string.status_unpaid));
+        holder.tvStatus.setTextColor(Color.RED);
     }
 
     @Override
     public int getItemCount() {
-        return subjectList.size();
+        return subjectList != null ? subjectList.size() : 0;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

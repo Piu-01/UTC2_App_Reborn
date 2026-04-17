@@ -11,6 +11,8 @@ import androidx.compose.ui.platform.ComposeView;
 
 import com.utc2.appreborn.R;
 import com.utc2.appreborn.ui.components.LiquidBarKt;
+import com.utc2.appreborn.ui.Info.InfoActivity;
+import com.utc2.appreborn.ui.profile.TrainingProgram.TrainingProgramActivity;
 
 public class ProfileActivity extends AppCompatActivity {
 

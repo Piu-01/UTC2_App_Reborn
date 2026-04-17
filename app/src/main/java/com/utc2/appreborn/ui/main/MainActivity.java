@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.utc2.appreborn.R;
 import com.utc2.appreborn.ui.components.LiquidBarKt;
-import com.utc2.appreborn.ui.profile.InfoActivity;
+import com.utc2.appreborn.ui.Info.InfoActivity;
 import com.utc2.appreborn.ui.profile.ProfileActivity; // Import trang Profile mới
 import com.utc2.appreborn.ui.tuition.TuitionActivity;
 

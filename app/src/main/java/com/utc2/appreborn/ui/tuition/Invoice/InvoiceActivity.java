@@ -1,4 +1,4 @@
-package com.utc2.appreborn.ui.tuition;
+package com.utc2.appreborn.ui.tuition.Invoice;
 
 import android.os.Bundle;
 import android.widget.ImageButton;

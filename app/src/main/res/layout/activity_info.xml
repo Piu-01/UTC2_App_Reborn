@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- HEADER WITH BACK BUTTON -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:background="#FFFFFF"
+            android:background="@color/white"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             tools:ignore="RtlSymmetry">
@@ -36,10 +34,9 @@
                 android:text="@string/profile_title"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#000000"/>
+                android:textColor="@color/black"/>
         </RelativeLayout>
 
-        <!-- CONTENT CONTAINER -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,7 +47,6 @@
             android:paddingBottom="24dp"
             tools:ignore="RtlSymmetry">
 
-            <!-- STUDENT CARD IMAGE -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,7 +64,6 @@
                     android:contentDescription="@string/student_card"/>
             </androidx.cardview.widget.CardView>
 
-            <!-- NOI DANG KY KHAI SINH -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -81,7 +76,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/birth_place"
                     android:textSize="13sp"
-                    android:textColor="#666666"
+                    android:textColor="@color/gray_text"
                     android:paddingBottom="4dp"/>
 
                 <TextView
@@ -90,16 +85,15 @@
                     android:layout_height="wrap_content"
                     android:text="Xã gió đó, Tỉnh Đồng Thuận"
                     android:textSize="15sp"
-                    android:textColor="#000000"
+                    android:textColor="@color/black"
                     tools:ignore="HardcodedText"/>
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#E0E0E0"/>
+                android:background="@color/divider_color"/>
 
-            <!-- SO CCCD/CMND -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -112,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/cccd"
                     android:textSize="13sp"
-                    android:textColor="#666666"
+                    android:textColor="@color/gray_text"
                     android:paddingBottom="4dp"/>
 
                 <TextView
@@ -121,16 +115,15 @@
                     android:layout_height="wrap_content"
                     android:text="083385896945785884"
                     android:textSize="15sp"
-                    android:textColor="#000000"
+                    android:textColor="@color/black"
                     tools:ignore="HardcodedText"/>
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#E0E0E0"/>
+                android:background="@color/divider_color"/>
 
-            <!-- NOI THUONG TRU -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -143,7 +136,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/permanent_address"
                     android:textSize="13sp"
-                    android:textColor="#666666"
+                    android:textColor="@color/gray_text"
                     android:paddingBottom="4dp"/>
 
                 <TextView
@@ -152,15 +145,14 @@
                     android:layout_height="wrap_content"
                     android:text="@string/default_address"
                     android:textSize="15sp"
-                    android:textColor="#000000"/>
+                    android:textColor="@color/black"/>
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#E0E0E0"/>
+                android:background="@color/divider_color"/>
 
-            <!-- NOI TAM TRU -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -173,7 +165,7 @@
                     android:layout_height="wrap_content"
                     android:text="Nơi tạm trú:"
                     android:textSize="13sp"
-                    android:textColor="#666666"
+                    android:textColor="@color/gray_text"
                     android:paddingBottom="4dp"
                     tools:ignore="HardcodedText"/>
 
@@ -183,15 +175,14 @@
                     android:layout_height="wrap_content"
                     android:text="@string/default_address"
                     android:textSize="15sp"
-                    android:textColor="#000000"/>
+                    android:textColor="@color/black"/>
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#E0E0E0"/>
+                android:background="@color/divider_color"/>
 
-            <!-- NOI O HIEN TAI -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -204,7 +195,7 @@
                     android:layout_height="wrap_content"
                     android:text="Nơi ở hiện tại:"
                     android:textSize="13sp"
-                    android:textColor="#666666"
+                    android:textColor="@color/gray_text"
                     android:paddingBottom="4dp"
                     tools:ignore="HardcodedText"/>
 
@@ -214,54 +205,47 @@
                     android:layout_height="wrap_content"
                     android:text="@string/default_address"
                     android:textSize="15sp"
-                    android:textColor="#000000"/>
+                    android:textColor="@color/black"/>
             </LinearLayout>
 
-            <!-- BUTTONS SECTION - DÙNG MaterialButton -->
-
-            <!-- Button Chuong trinh dao tao -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTrainingProgram"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:text="@string/training_program"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/white"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="12dp"
-                app:backgroundTint="#2196F3"
+                app:backgroundTint="@color/black"
                 app:cornerRadius="8dp"
                 app:elevation="2dp"/>
 
-            <!-- Button Ho tro 24/7 -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSupport"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:text="@string/title_support"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/white"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="12dp"
-                app:backgroundTint="#4CAF50"
+                app:backgroundTint="@color/black"
                 app:cornerRadius="8dp"
                 app:elevation="2dp"/>
 
-            <!-- Button Thoat dang nhap -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLogout"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:text="@string/logout"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/white"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                app:backgroundTint="#F44336"
+                app:backgroundTint="@color/red_danger"
                 app:cornerRadius="8dp"
                 app:elevation="2dp"/>
 
         </LinearLayout>
-
     </LinearLayout>
-
 </ScrollView>

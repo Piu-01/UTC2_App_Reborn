@@ -1,4 +1,4 @@
-package com.utc2.appreborn.ui.tuition;
+package com.utc2.appreborn.ui.tuition.Invoice;
 
 public class Invoice {
     private String invoiceID;
