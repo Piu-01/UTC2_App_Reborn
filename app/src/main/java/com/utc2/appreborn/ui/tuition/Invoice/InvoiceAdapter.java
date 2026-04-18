@@ -24,9 +24,17 @@ public class InvoiceAdapter extends RecyclerView.Adapter<InvoiceAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Invoice item = invoiceList.get(position);
-        holder.tvID.setText(item.getInvoiceID());
-        holder.tvDate.setText(item.getDate());
-        holder.tvAmount.setText(item.getAmount());
+
+        // Hiển thị mã hóa đơn
+        holder.tvID.setText("Mã HD: " + item.getInvoiceID());
+
+        // Hiển thị ngày
+        holder.tvDate.setText("Ngày: " + item.getDate());
+
+        // Lấy số tiền từ đối tượng Tuition bên trong Invoice
+        // Sau này khi có MySQL, bạn có thể format số này thành "2.500.000 VND"
+        long amount = item.getTuition().getAmount();
+        holder.tvAmount.setText(String.format("%,d VND", amount));
     }
 
     @Override

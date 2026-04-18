@@ -28,9 +28,9 @@ public class DormAdapter extends RecyclerView.Adapter<DormAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         DormTuition item = dormList.get(position);
 
-        // Kiểm tra null trước khi set text để tuyệt đối không crash
         if (holder.tvRoomName != null) {
-            holder.tvRoomName.setText(item.getRoomName());
+            // Trong Tuition.java, chúng ta dùng trường 'name' để lưu tên phòng
+            holder.tvRoomName.setText(item.getName());
         }
 
         if (holder.tvDormDetails != null) {
@@ -38,7 +38,7 @@ public class DormAdapter extends RecyclerView.Adapter<DormAdapter.ViewHolder> {
         }
 
         if (holder.tvDormAmount != null) {
-            // Định dạng tiền tệ: 650,000 VND
+            // Định dạng tiền tệ từ kiểu long của lớp cha
             String formattedAmount = String.format(Locale.getDefault(), "%,d VND", item.getAmount());
             holder.tvDormAmount.setText(formattedAmount);
         }

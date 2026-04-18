@@ -31,15 +31,23 @@ public class SubjectTuitionAdapter extends RecyclerView.Adapter<SubjectTuitionAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         SubjectTuition item = subjectList.get(position);
 
+        // Lấy tên môn học từ lớp cha
         holder.tvName.setText(item.getName());
+
+        // Lấy thông tin tín chỉ (details) từ lớp cha
         holder.tvDetails.setText(item.getDetails());
 
-        // Sửa lỗi 'Implicitly using the default locale' bằng cách thêm Locale.US hoặc Locale.getDefault()
-        holder.tvAmount.setText(String.format(Locale.US, "%,d VND", item.getAmount()));
+        // Định dạng tiền tệ từ kiểu long của lớp cha
+        holder.tvAmount.setText(String.format(Locale.getDefault(), "%,d VND", item.getAmount()));
 
-        // Vì trang này chỉ hiện môn chưa đóng, mình mặc định hiện chữ đỏ luôn
-        holder.tvStatus.setText(holder.itemView.getContext().getString(R.string.status_unpaid));
-        holder.tvStatus.setTextColor(Color.RED);
+        // Xử lý hiển thị trạng thái
+        if (item.getStatus() == 0) {
+            holder.tvStatus.setText(holder.itemView.getContext().getString(R.string.status_unpaid));
+            holder.tvStatus.setTextColor(Color.RED);
+        } else {
+            holder.tvStatus.setText("Đã thanh toán");
+            holder.tvStatus.setTextColor(Color.GREEN);
+        }
     }
 
     @Override

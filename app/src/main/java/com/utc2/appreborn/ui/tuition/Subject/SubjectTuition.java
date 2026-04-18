@@ -1,24 +1,21 @@
 package com.utc2.appreborn.ui.tuition.Subject;
+import com.utc2.appreborn.ui.tuition.Tuition;
 
-public class SubjectTuition {
-    private int id; // Tham số thứ 1
-    private String name; // Tham số thứ 2
-    private String details; // Tham số thứ 3
-    private long amount; // Tham số thứ 4 (Kiểu long để tính toán)
-    private int status; // Tham số thứ 5 (0: Chưa đóng, 1: Đã đóng)
+public class SubjectTuition extends Tuition {
+    // ID này thường là Khóa chính (PRIMARY KEY) tự tăng trong database
+    private int id;
 
-    // Constructor phải có đủ 5 tham số này
     public SubjectTuition(int id, String name, String details, long amount, int status) {
+        // super() đẩy dữ liệu lên lớp cha để quản lý tập trung
+        super(name, details, amount, status);
         this.id = id;
-        this.name = name;
-        this.details = details;
-        this.amount = amount;
-        this.status = status;
+    }
+
+    @Override
+    public String getIdentifier() {
+        // Trả về mã định danh để hiển thị lên giao diện hoặc dùng trong câu lệnh SQL (WHERE id = ...)
+        return "SUBJ-" + id;
     }
 
     public int getId() { return id; }
-    public String getName() { return name; }
-    public String getDetails() { return details; }
-    public long getAmount() { return amount; }
-    public int getStatus() { return status; }
 }

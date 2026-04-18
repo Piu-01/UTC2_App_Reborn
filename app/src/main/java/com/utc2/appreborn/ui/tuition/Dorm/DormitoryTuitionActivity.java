@@ -60,12 +60,13 @@ public class DormitoryTuitionActivity extends AppCompatActivity {
 
     private void loadDormData() {
         dormList = new ArrayList<>();
-        // Trạng thái 0 là chưa đóng
+
+        // Cấu trúc mới: new DormTuition(name, details, amount, status)
+        // 'name' ở đây đóng vai trò là số phòng
         dormList.add(new DormTuition("Phòng 402 - Dãy B", "Tháng 03/2026 - Tiền phòng + Điện nước", 650000, 0));
         dormList.add(new DormTuition("Phòng 402 - Dãy B", "Tháng 02/2026 - Tiền phòng + Điện nước", 720000, 0));
         dormList.add(new DormTuition("Phòng 402 - Dãy B", "Tháng 01/2026 - Tiền phòng + Điện nước", 680000, 0));
     }
-
     private void calculateTotal() {
         totalAmount = 0;
         for (DormTuition item : dormList) {

@@ -57,6 +57,9 @@ public class SubjectTuitionActivity extends AppCompatActivity {
 
     private void loadData() {
         subjectList = new ArrayList<>();
+
+        // Cấu trúc: new SubjectTuition(id, name, details, amount, status)
+        // Lưu ý: details ở đây bạn đang dùng để ghi số tín chỉ (ví dụ: "3 tín chỉ")
         subjectList.add(new SubjectTuition(1, "Lập trình Android", "3 tín chỉ", 1250000, 0));
         subjectList.add(new SubjectTuition(2, "Cấu trúc dữ liệu", "4 tín chỉ", 1600000, 0));
         subjectList.add(new SubjectTuition(3, "Anh văn chuyên ngành", "2 tín chỉ", 850000, 0));
