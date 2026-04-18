@@ -25,9 +25,14 @@
             android:name=".ui.login.LoginActivity"
             android:exported="false" />
 
-        <!-- ================= KÍ TÚC XÁ ================= -->
+        <!-- ================= KÍ TÚC XÁ – ĐĂNG KÝ ================= -->
         <activity
             android:name=".ui.dormitory.DormitoryActivity"
+            android:exported="false" />
+
+        <!-- ================= KÍ TÚC XÁ – TRA PHÒNG ================= -->
+        <activity
+            android:name=".ui.dormitory.lookup.LookupActivity"
             android:exported="false" />
 
     </application>
