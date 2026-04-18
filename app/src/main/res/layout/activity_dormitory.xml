@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="#F5F5F5"
+    android:background="#F1F5F9"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- HEADER -->
+        <!-- ══ HEADER ══ -->
         <LinearLayout
             android:orientation="horizontal"
             android:padding="16dp"
@@ -17,14 +17,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!-- 🔥 FIX: dùng TextView cho đúng Java -->
             <TextView
                 android:id="@+id/btnBack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="←"
-                android:textSize="20sp"
+                android:textSize="22sp"
                 android:textColor="#000000"
+                android:padding="4dp"
                 android:layout_marginEnd="10dp"/>
 
             <TextView
@@ -36,7 +36,7 @@
                 android:textColor="#000000"/>
         </LinearLayout>
 
-        <!-- TAB -->
+        <!-- ══ TAB ══ -->
         <LinearLayout
             android:orientation="horizontal"
             android:background="@drawable/bg_tab_container"
@@ -67,7 +67,7 @@
                 android:textColor="#000000"/>
         </LinearLayout>
 
-        <!-- SEARCH -->
+        <!-- ══ TÌM KIẾM ══ -->
         <EditText
             android:id="@+id/searchBox"
             android:layout_width="match_parent"
@@ -77,11 +77,11 @@
             android:layout_marginHorizontal="16dp"
             android:background="@drawable/bg_search"
             android:padding="12dp"
-
             android:drawableStart="@drawable/ic_search"
-            android:drawablePadding="8dp"/>
+            android:drawablePadding="8dp"
+            android:inputType="text"/>
 
-        <!-- FILTER -->
+        <!-- ══ FILTER ══ -->
         <LinearLayout
             android:orientation="horizontal"
             android:layout_margin="16dp"
@@ -93,7 +93,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Tòa"
+                android:text="Tòa nhà ▾"
                 android:textColor="#000000"
                 android:gravity="center"
                 android:padding="10dp"
@@ -104,7 +104,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Giá"
+                android:text="Giá tiền ▾"
                 android:textColor="#000000"
                 android:gravity="center"
                 android:padding="10dp"
@@ -116,71 +116,150 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Loại"
+                android:text="Loại phòng ▾"
                 android:textColor="#000000"
                 android:gravity="center"
                 android:padding="10dp"
                 android:background="@drawable/bg_search"/>
         </LinearLayout>
 
-        <!-- LIST ROOM -->
-        <LinearLayout
-            android:id="@+id/listContainer"
-            android:orientation="vertical"
+        <!-- ══ DANH SÁCH PHÒNG (RecyclerView) ══ -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRooms"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"/>
 
-        <!-- SELECTED ROOM -->
+        <!-- ══ PHÒNG ĐÃ CHỌN ══ -->
         <LinearLayout
             android:id="@+id/layoutSelected"
             android:orientation="vertical"
             android:visibility="gone"
-            android:layout_margin="16dp"
-            android:padding="16dp"
-            android:background="@drawable/bg_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Phòng đã chọn"
-                android:textColor="#FF0000"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/txtRoomInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Phòng 207 - Tòa 7"
-                android:textColor="#000000"
-                android:layout_marginTop="8dp"/>
-
-            <TextView
-                android:id="@+id/txtPrice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="500.000đ/tháng"
-                android:textColor="#000000"/>
-
-            <TextView
-                android:id="@+id/txtTotal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tổng: 3.900.000"
-                android:textStyle="bold"
-                android:textColor="#000000"
-                android:layout_marginTop="8dp"/>
-
-            <Button
-                android:id="@+id/btnCancel"
+            <!-- CARD thông tin phòng -->
+            <com.google.android.material.card.MaterialCardView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#000000"
+                app:strokeWidth="2dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <!-- HEADER: "Phòng đã chọn:" + icon mũi tên -->
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="16dp"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="14dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Phòng đã chọn:"
+                            android:textColor="#FF0000"
+                            android:textSize="16sp"
+                            android:textStyle="bold"/>
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_arrow_down"
+                            android:tint="#666666"
+                            android:scaleType="centerInside"/>
+                    </LinearLayout>
+
+                    <!-- DIVIDER: có padding 2 bên, không chạm cạnh khung -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:background="#E0E0E0"/>
+
+                    <!-- NỘI DUNG phòng -->
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="16dp"
+                        android:paddingTop="14dp"
+                        android:paddingBottom="16dp">
+
+                        <!-- Tên phòng to, đậm -->
+                        <TextView
+                            android:id="@+id/txtRoomInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#000000"
+                            android:textSize="22sp"
+                            android:textStyle="bold"/>
+
+                        <!-- Info: số người + giá -->
+                        <TextView
+                            android:id="@+id/txtRoomSubInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#555555"
+                            android:textSize="14sp"
+                            android:layout_marginTop="4dp"/>
+
+                        <!-- DIVIDER có padding 2 bên -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="12dp"
+                            android:background="#E0E0E0"/>
+
+                        <!-- Tổng tiền -->
+                        <TextView
+                            android:id="@+id/txtTotal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#555555"
+                            android:textSize="14sp"
+                            android:layout_marginTop="10dp"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!--
+                NÚT HỦY: nằm NGOÀI card, tách rời.
+                Dùng TextView thay Button để tránh Material override màu tím.
+                background="@drawable/bg_button_cancel" → đen + bo góc lớn.
+            -->
+            <TextView
+                android:id="@+id/btnCancel"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="16dp"
                 android:text="Hủy đăng ký"
-                android:background="#000000"
+                android:background="@drawable/bg_button_cancel"
                 android:textColor="#FFFFFF"
-                android:layout_marginTop="10dp"/>
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true"/>
+
         </LinearLayout>
 
     </LinearLayout>

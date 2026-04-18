@@ -5,12 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="12dp"
-
     android:layout_marginHorizontal="16dp"
-
     app:cardCornerRadius="20dp"
     app:cardElevation="0dp"
-
     app:strokeColor="#000000"
     app:strokeWidth="2dp">
 
@@ -20,14 +17,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- TOP -->
+        <!-- TOP: tên phòng + nút đăng ký -->
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical">
 
-            <!-- LEFT -->
+            <!-- LEFT: tên + info -->
             <LinearLayout
                 android:layout_weight="1"
                 android:orientation="vertical"
@@ -38,7 +35,7 @@
                     android:id="@+id/txtTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Phòng 207 - Tòa A"
+                    android:text="Phòng 201 - Tòa A"
                     android:textStyle="bold"
                     android:textSize="16sp"
                     android:textColor="#000000"
@@ -48,35 +45,62 @@
                     android:id="@+id/txtInfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="👥 5   💰 500.000đ/tháng"
+                    android:text="👥 4   💰 300,000đ/tháng   🏠 Nam"
                     android:textColor="#444444"
-                    android:textSize="14sp"/>
+                    android:textSize="13sp"/>
             </LinearLayout>
 
-            <!-- BUTTON -->
-            <Button
+            <!--
+                Dùng TextView thay Button để tránh Material Button
+                tự override màu nền bằng colorPrimary (màu tím).
+                background trực tiếp từ drawable → luôn đen.
+            -->
+            <TextView
                 android:id="@+id/btnRegister"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="44dp"
                 android:text="Đăng ký"
                 android:textAllCaps="false"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/bg_button_black"
-                android:backgroundTint="@null"
-                android:paddingHorizontal="16dp"/>
+                android:gravity="center"
+                android:paddingHorizontal="20dp"
+                android:clickable="true"
+                android:focusable="true"/>
         </LinearLayout>
 
-        <!-- STATUS -->
-        <TextView
+        <!-- STATUS BADGE -->
+        <LinearLayout
             android:id="@+id/txtStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="✔ Còn chỗ"
-            android:textColor="#2E7D32"
-            android:textSize="14sp"
-            android:layout_marginTop="10dp"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_badge_available"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/imgStatusIcon"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_status_check"
+                android:layout_marginEnd="5dp"/>
+
+            <TextView
+                android:id="@+id/tvStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Còn chỗ"
+                android:textColor="#00C853"
+                android:textSize="13sp"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>
