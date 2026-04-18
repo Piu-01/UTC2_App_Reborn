@@ -2,58 +2,100 @@ package com.utc2.appreborn.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.compose.ui.platform.ComposeView;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
+
 import com.utc2.appreborn.R;
 import com.utc2.appreborn.ui.components.LiquidBarKt;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.PopupMenu;
-import androidx.fragment.app.Fragment;
+import com.utc2.appreborn.ui.dormitory.DormitoryActivity;
+
 public class MainActivity extends AppCompatActivity {
+
+    private boolean isOpening = false;
+    private final Handler handler = new Handler(Looper.getMainLooper());
+
+    private Button btnDormitory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toast.makeText(this, "Đã vào MainActivity", Toast.LENGTH_LONG).show();
+        btnDormitory = findViewById(R.id.btnDormitory);
 
-        ComposeView bottomBarCompose = findViewById(R.id.bottom_bar_compose);
-
-        LiquidBarKt.setupLiquidBottomBar(
-                bottomBarCompose,
-                id -> {
-                    handleNavigation(id);
-                    return null;
-                }
-        );
-    }
-    private void handleNavigation(int id) {
-
-//        vd như ở class quản ly trang đó public class SettingFragment extends Fragment {
-//            public SettingFragment() {
-//                super(R.layout.fragment_setting);
-//            }
-//        }
-        // 🔹 B1: Tạo biến Fragment để chứa màn hình cần chuyển
-        Fragment fragment = null;
-
-        // 🔹 B2: Dựa vào ID nhận được từ LiquidBar để chọn màn hình tương ứng
-        // 👉 Lưu ý: ID này phải trùng với ID trong file menu (bottom_nav_menu.xml)
-        if (id == R.id.nav_home) {
-            //fragment = new HomeFragment();
-        } else if (id == R.id.nav_schedule) {
-          //  fragment = new ScheduleFragment();
-        } else if (id == R.id.nav_register) {
-          //  fragment = new RegisterFragment();
-        } else if (id == R.id.nav_result) {
-          //  fragment = new ResultFragment();
-        } else if (id == R.id.nav_profile) {
-           // fragment = new ProfileFragment();
-        } else {
-           // fragment = new HomeFragment(); // fallback
+        if (btnDormitory != null) {
+            btnDormitory.setOnClickListener(v -> openDormitory());
+            btnDormitory.setVisibility(View.VISIBLE);
         }
 
+        // ✅ LIQUID BAR (menu đen)
+        ComposeView bottomBarCompose = findViewById(R.id.bottom_bar_compose);
+
+        if (bottomBarCompose != null) {
+            LiquidBarKt.setupLiquidBottomBar(
+                    bottomBarCompose,
+                    id -> {
+                        handleNavigation(id);
+                        return kotlin.Unit.INSTANCE;
+                    }
+            );
+        }
+    }
+
+    private void openDormitory() {
+        if (isOpening) return;
+        isOpening = true;
+
+        try {
+            Intent intent = new Intent(this, DormitoryActivity.class);
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(this, "Không mở được KTX", Toast.LENGTH_SHORT).show();
+        }
+
+        handler.postDelayed(() -> isOpening = false, 500);
+    }
+
+    private void handleNavigation(int id) {
+
+        if (id == R.id.nav_home) {
+
+            Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show();
+
+            if (btnDormitory != null) {
+                btnDormitory.setVisibility(View.VISIBLE);
+            }
+
+        } else {
+
+            if (btnDormitory != null) {
+                btnDormitory.setVisibility(View.GONE);
+            }
+
+            if (id == R.id.nav_schedule) {
+                Toast.makeText(this, "Lịch học", Toast.LENGTH_SHORT).show();
+
+            } else if (id == R.id.nav_register) {
+                Toast.makeText(this, "Đăng ký học phần", Toast.LENGTH_SHORT).show();
+
+            } else if (id == R.id.nav_result) {
+                Toast.makeText(this, "Kết quả", Toast.LENGTH_SHORT).show();
+
+            } else if (id == R.id.nav_profile) {
+                Toast.makeText(this, "Cá nhân", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
     }
 }

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#F5F5F5"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- HEADER -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- 🔥 FIX: dùng TextView cho đúng Java -->
+            <TextView
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="←"
+                android:textSize="20sp"
+                android:textColor="#000000"
+                android:layout_marginEnd="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kí túc xá"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#000000"/>
+        </LinearLayout>
+
+        <!-- TAB -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:background="@drawable/bg_tab_container"
+            android:layout_margin="16dp"
+            android:padding="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tabDangKy"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Đăng ký"
+                android:gravity="center"
+                android:padding="10dp"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/bg_tab_selected"/>
+
+            <TextView
+                android:id="@+id/tabTraPhong"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Tra phòng"
+                android:gravity="center"
+                android:padding="10dp"
+                android:textColor="#000000"/>
+        </LinearLayout>
+
+        <!-- SEARCH -->
+        <EditText
+            android:id="@+id/searchBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tìm phòng..."
+            android:textColor="#000000"
+            android:layout_marginHorizontal="16dp"
+            android:background="@drawable/bg_search"
+            android:padding="12dp"
+
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="8dp"/>
+
+        <!-- FILTER -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_margin="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/btnToa"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Tòa"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="10dp"
+                android:background="@drawable/bg_search"/>
+
+            <TextView
+                android:id="@+id/btnGia"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Giá"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="10dp"
+                android:layout_marginHorizontal="8dp"
+                android:background="@drawable/bg_search"/>
+
+            <TextView
+                android:id="@+id/btnLoai"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Loại"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="10dp"
+                android:background="@drawable/bg_search"/>
+        </LinearLayout>
+
+        <!-- LIST ROOM -->
+        <LinearLayout
+            android:id="@+id/listContainer"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- SELECTED ROOM -->
+        <LinearLayout
+            android:id="@+id/layoutSelected"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_margin="16dp"
+            android:padding="16dp"
+            android:background="@drawable/bg_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phòng đã chọn"
+                android:textColor="#FF0000"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/txtRoomInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phòng 207 - Tòa 7"
+                android:textColor="#000000"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:id="@+id/txtPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="500.000đ/tháng"
+                android:textColor="#000000"/>
+
+            <TextView
+                android:id="@+id/txtTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tổng: 3.900.000"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:layout_marginTop="8dp"/>
+
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hủy đăng ký"
+                android:background="#000000"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="10dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
