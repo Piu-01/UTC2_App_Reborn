@@ -196,4 +196,54 @@ Chúng tôi cam kết bảo vệ thông tin người dùng ở mức tối đa..
     <string name="btn_pay_dorm">ĐÓNG TIỀN KÝ TÚC XÁ</string>
     <string name="label_total_format">Tổng: %s</string>
     <string name="back_button_desc">Quay lại</string>
+    <string name="semester_name">KỲ HỌC 1</string>
+
+    <!-- ================= Public Services ================= -->ư
+        <string name="title_public_service">Dịch vụ công UTC2</string>
+        <string name="tab_services">Dịch vụ</string>
+        <string name="tab_results">Kết quả</string>
+        <string name="section_public_service">Dịch vụ công</string>
+
+        <string name="service_list_title">Danh sách dịch vụ công</string>
+        <string name="service_list_desc">Xem về quản lý dịch vụ công</string>
+        <string name="reissue_card_title">Cấp lại thẻ sinh viên</string>
+        <string name="reissue_card_desc">Đăng ký cấp lại thẻ sinh viên bị hỏng hoặc thất lạc</string>
+        <string name="loan_support_title">Hỗ trợ vay vốn</string>
+        <string name="loan_support_desc">Thông tin về đăng ký hỗ trợ vay vốn sinh viên</string>
+
+        <string name="date_placeholder">Ngày đăng ký: %1$s</string>
+        <string name="status_approved">Đã duyệt</string>
+        <string name="status_pending">Đang xử lý</string>
+        <string name="view_detail">Xem chi tiết</string>
+        <string name="confirm_card_reissue">Xác nhận đăng ký</string>
+        <string name="card_reissue_notes">Lưu ý: Lệ phí cấp lại thẻ là 50.000đ sẽ được trừ vào tài khoản học phí.</string>
+        <string name="class_title">Lớp:</string>
+    <string name="id_title">Mã SV:</string>
+    <string name="name_title">Họ tên:</string>
+    <string name="loan_amount">Số tiền mong muốn (VNĐ)</string>
+    <string name="loan_reason_hint">Nhập lý do vay vốn học tập...</string>
+    <string name="contact_number_title">Số điện thoại liên hệ</string>
+    <string name="loan_amount_hint">Ví dụ: 15.000.000</string>
+    <string name="loan_reason_title">Lý do vay vốn</string>
+    <string name="cardReissue_registration_success">Đăng ký thành công</string>
+    <string name="card_reissue_reason_hint">Ví dụ: Rơi bóp trên xe bus số 50...</string>
+    <string name="card_reissue_reason_title">Lý do mất thẻ (Không bắt buộc)</string>
+    <string name="confirm_registration">XÁC NHẬN ĐĂNG KÝ</string>
+    <string name="student_confirmation_tips">Lưu ý: Giấy xác nhận dùng để bổ sung hồ sơ cá nhân hoặc các thủ tục hành chính liên quan.</string>
+    <string name="student_confirmation_title">Giấy xác nhận sinh viên</string>
+    <string name="student_confirmation_reasons">Lý do đăng ký</string>
+    <string name="student_confirmation_hint">Ví dụ: Vay vốn ngân hàng, xác nhận làm hồ sơ thực tập...</string>
+
+    <!--- ================= Transcript ================= -->
+    <string name="transcript_registration_title">Đăng ký bảng điểm</string>
+    <string name="transcript_academic_year">Năm học</string>
+    <string name="transcript_academic_year_hint">Chọn năm học cần cấp...</string>
+    <string name="transcript_semester">Học kỳ</string>
+    <string name="transcript_semester_hint">Chọn học kỳ...</string>
+    <string name="transcript_quantity">Số lượng bản in</string>
+    <string name="transcript_quantity_hint">Nhập số lượng...</string>
+    <string name="transcript_note">Ghi chú</string>
+    <string name="transcript_note_hint">Nhập lý do hoặc thông tin bổ sung...</string>
+    <string name="transcript_success">Đăng ký cấp bảng điểm thành công!</string>
+    <string name="error_fill_all">Vui lòng nhập đầy đủ thông tin!</string>
 </resources>

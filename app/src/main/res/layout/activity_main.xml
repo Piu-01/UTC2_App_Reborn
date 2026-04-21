@@ -6,14 +6,6 @@
     android:layout_height="match_parent"
     android:background="#F5F5F5">
 
-    <!--  LIQUID BAR (đặt trước) -->
-    <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/bottom_bar_compose"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <!-- CONTENT AREA -->
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
@@ -27,23 +19,46 @@
             android:text="Nội dung màn hình UTC2"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="80dp"
-            android:textSize="20sp"/>
+            android:textSize="20sp"
+            android:textStyle="bold"/>
 
-        <Button
-            android:id="@+id/btnProfile"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mở Profile"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:gravity="center">
 
-        <Button
-            android:id="@+id/btnTuition"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Học phí"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="200dp"/>
+            <Button
+                android:id="@+id/btnProfile"
+                android:layout_width="220dp"
+                android:layout_height="wrap_content"
+                android:text="Mở Profile"
+                android:layout_marginBottom="10dp"/>
+
+            <Button
+                android:id="@+id/btnTuition"
+                android:layout_width="220dp"
+                android:layout_height="wrap_content"
+                android:text="Học phí"
+                android:layout_marginBottom="10dp"/>
+
+            <Button
+                android:id="@+id/btnPublicService"
+                android:layout_width="220dp"
+                android:layout_height="wrap_content"
+                android:text="Dịch vụ công"
+                android:backgroundTint="#2196F3"
+                android:textColor="#FFFFFF"/>
+
+        </LinearLayout>
 
     </FrameLayout>
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/bottom_bar_compose"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
