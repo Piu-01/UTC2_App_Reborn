@@ -10,14 +10,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
+
+import com.utc2.appreborn.ui.schedule.ScheduleFragment;
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Toast.makeText(this, "Đã vào MainActivity", Toast.LENGTH_LONG).show();
 
         ComposeView bottomBarCompose = findViewById(R.id.bottom_bar_compose);
 
@@ -29,31 +29,28 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
     }
-    private void handleNavigation(int id) {
 
-//        vd như ở class quản ly trang đó public class SettingFragment extends Fragment {
-//            public SettingFragment() {
-//                super(R.layout.fragment_setting);
-//            }
-//        }
-        // 🔹 B1: Tạo biến Fragment để chứa màn hình cần chuyển
+    private void handleNavigation(int id) {
         Fragment fragment = null;
 
-        // 🔹 B2: Dựa vào ID nhận được từ LiquidBar để chọn màn hình tương ứng
-        // 👉 Lưu ý: ID này phải trùng với ID trong file menu (bottom_nav_menu.xml)
         if (id == R.id.nav_home) {
-            //fragment = new HomeFragment();
+            // fragment = new HomeFragment();
         } else if (id == R.id.nav_schedule) {
-          //  fragment = new ScheduleFragment();
+            fragment = new ScheduleFragment();
         } else if (id == R.id.nav_register) {
-          //  fragment = new RegisterFragment();
+            // fragment = new RegisterFragment();
         } else if (id == R.id.nav_result) {
-          //  fragment = new ResultFragment();
+            // fragment = new ResultFragment();
         } else if (id == R.id.nav_profile) {
-           // fragment = new ProfileFragment();
-        } else {
-           // fragment = new HomeFragment(); // fallback
+            // fragment = new ProfileFragment();
         }
 
+        // 🔹 QUAN TRỌNG: Lệnh thực hiện chuyển trang
+        if (fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, fragment) // R.id.fragment_container là ID trong file XML ở trên
+                    .commit();
+        } /// NHớ bổ sung cho nếu null thì quay về trang home...
     }
 }
