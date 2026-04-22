@@ -166,7 +166,7 @@
                             android:layout_width="22dp"
                             android:layout_height="22dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_book_open"
+                            android:src="@drawable/ic_grade"
                             android:scaleType="fitCenter"
                             app:tint="#000000" />
                     </FrameLayout>
@@ -315,7 +315,7 @@
                             android:layout_width="22dp"
                             android:layout_height="22dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_graduation_cap"
+                            android:src="@drawable/ic_rank_triangle"
                             android:scaleType="fitCenter"
                             app:tint="#000000" />
                     </FrameLayout>
