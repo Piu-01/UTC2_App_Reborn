@@ -1,6 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- ── App ── -->
     <string name="app_name">UTC2 App Reborn</string>
+
+    <!-- ── Login ── -->
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
+
+    <!-- ── Bottom nav ── -->
+    <string name="nav_home">Trang chủ</string>
+    <string name="nav_register">Đăng kí học phần</string>
+    <string name="nav_schedule">Lịch</string>
+    <string name="nav_result">Kết quả học tập</string>
+    <string name="nav_profile">Cá nhân</string>
+
+    <!-- ── Academic Results module ── -->
+    <string name="module_academic_results">Kết quả học tập</string>
+
+    <!-- Tab titles -->
+    <string name="tab_grades">Xem điểm</string>
+    <string name="tab_leaderboard">Xếp hạng</string>
+    <string name="tab_scholarships">Học bổng</string>
+    <string name="tab_warnings">Cảnh báo</string>
+
+    <!-- Grades tab -->
+    <string name="label_semester">Học kỳ:</string>
+    <string name="label_gpa_semester">GPA kỳ này</string>
+    <string name="label_credits_semester">Tín chỉ kỳ này</string>
+    <string name="label_passed_subjects">Môn qua</string>
+    <string name="header_subject">Môn học</string>
+    <string name="header_midterm">GK</string>
+    <string name="header_final">CK</string>
+    <string name="header_score">Điểm</string>
+
+    <!-- Leaderboard tab -->
+    <string name="toggle_year">Năm</string>
+    <string name="toggle_semester">Học kì</string>
+    <string name="label_my_rank">THỨ HẠNG CỦA BẠN</string>
+    <string name="label_avg_score">ĐIỂM TRUNG BÌNH</string>
+    <string name="label_top_percent">ĐỨNG ĐẦU</string>
+    <string name="label_ranking_detail">XẾP HẠNG CHI TIẾT</string>
+    <string name="suffix_current_user"> (Bạn)</string>
+
+    <!-- Scholarships tab -->
+    <string name="filter_all">Tất cả</string>
+    <string name="filter_not_received">Chưa nhận</string>
+    <string name="filter_received">Đã nhận</string>
+    <string name="label_scholarship_list">DANH SÁCH</string>
+    <string name="label_value">GIÁ TRỊ</string>
+    <string name="label_min_gpa">GPA tối thiểu: </string>
+
+    <!-- Warnings tab -->
+    <string name="label_serious">Nghiêm trọng</string>
+    <string name="label_normal_warning">Cảnh báo</string>
+    <string name="label_total">Tổng cộng</string>
+    <string name="filter_serious">Nghiêm trọng</string>
+    <string name="badge_serious">NGHIÊM TRỌNG</string>
 </resources>

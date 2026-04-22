@@ -1,23 +1,34 @@
 package com.utc2.appreborn.ui.main;
 
+import android.os.Bundle;
+
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.compose.ui.platform.ComposeView;
-import android.os.Bundle;
-import android.widget.Toast;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.utc2.appreborn.R;
 import com.utc2.appreborn.ui.components.LiquidBarKt;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.PopupMenu;
-import androidx.fragment.app.Fragment;
+import com.utc2.appreborn.ui.results.AcademicResultsFragment;
+
+/**
+ * MainActivity
+ *
+ * - EdgeToEdge enabled → status bar transparent, content goes full screen.
+ *   Mỗi Fragment tự xử lý padding top via ViewCompat.setOnApplyWindowInsetsListener.
+ * - nav_result → AcademicResultsFragment (dashboard 4 thẻ).
+ * - navigateTo() dùng để push sub-fragment từ Dashboard.
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Bật edge-to-edge để nội dung vẽ sau status bar (trong suốt)
+        EdgeToEdge.enable(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Toast.makeText(this, "Đã vào MainActivity", Toast.LENGTH_LONG).show();
 
         ComposeView bottomBarCompose = findViewById(R.id.bottom_bar_compose);
 
@@ -28,32 +39,60 @@ public class MainActivity extends AppCompatActivity {
                     return null;
                 }
         );
-    }
-    private void handleNavigation(int id) {
 
-//        vd như ở class quản ly trang đó public class SettingFragment extends Fragment {
-//            public SettingFragment() {
-//                super(R.layout.fragment_setting);
-//            }
-//        }
-        // 🔹 B1: Tạo biến Fragment để chứa màn hình cần chuyển
+        // Load màn hình mặc định
+        if (savedInstanceState == null) {
+            loadFragment(new AcademicResultsFragment());
+        }
+    }
+
+    // ─────────────────────────────────────────
+    // Bottom Nav routing
+    // ─────────────────────────────────────────
+    private void handleNavigation(int id) {
         Fragment fragment = null;
 
-        // 🔹 B2: Dựa vào ID nhận được từ LiquidBar để chọn màn hình tương ứng
-        // 👉 Lưu ý: ID này phải trùng với ID trong file menu (bottom_nav_menu.xml)
         if (id == R.id.nav_home) {
-            //fragment = new HomeFragment();
+            // fragment = new HomeFragment();
         } else if (id == R.id.nav_schedule) {
-          //  fragment = new ScheduleFragment();
+            // fragment = new ScheduleFragment();
         } else if (id == R.id.nav_register) {
-          //  fragment = new RegisterFragment();
+            // fragment = new RegisterFragment();
         } else if (id == R.id.nav_result) {
-          //  fragment = new ResultFragment();
+            fragment = new AcademicResultsFragment();   // ✅ Dashboard KQHT
         } else if (id == R.id.nav_profile) {
-           // fragment = new ProfileFragment();
-        } else {
-           // fragment = new HomeFragment(); // fallback
+            // fragment = new ProfileFragment();
         }
 
+        if (fragment != null) {
+            // Khi click bottom nav → xóa back stack, quay về dashboard
+            getSupportFragmentManager().popBackStack(null,
+                    androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            loadFragment(fragment);
+        }
+    }
+
+    /**
+     * Replace fragment KHÔNG thêm vào back stack.
+     * Dùng cho bottom nav (root destinations).
+     */
+    private void loadFragment(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
+    }
+
+    /**
+     * Push fragment vào back stack.
+     * Dùng cho điều hướng từ Dashboard → sub-screen.
+     * Được gọi từ AcademicResultsFragment.
+     */
+    public void navigateTo(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }
