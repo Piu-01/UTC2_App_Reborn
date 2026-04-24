@@ -32,52 +32,35 @@ public class LoginActivity extends AppCompatActivity {
 
         // LOGIN BUTTON
         loginBtn.setOnClickListener(v -> {
-
             String userEmail = email.getText().toString();
             String userPass = password.getText().toString();
-            //check xem có để trống email ko
-            if(userEmail.isEmpty()){
+
+            if (userEmail.isEmpty()) {
                 email.setError("Nhập email đi bro :V");
                 email.requestFocus();
                 return;
             }
-            //check xem có để trống mk ko
-            if(userPass.isEmpty()){
+            if (userPass.isEmpty()) {
                 password.setError("Nhập password đi bro :V");
                 password.requestFocus();
                 return;
             }
             auth.signInWithEmailAndPassword(userEmail, userPass)
                     .addOnCompleteListener(task -> {
-
                         if (task.isSuccessful()) {
                             Toast.makeText(this, "Login Success", Toast.LENGTH_SHORT).show();
-
                             startActivity(new Intent(this, MainActivity.class));
                             finish();
                         } else {
-                            Toast.makeText(this, "Login Failed.Sai email hoặc mật khẩu!!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Login Failed. Sai email hoặc mật khẩu!!", Toast.LENGTH_SHORT).show();
                         }
                     });
         });
 
-        //  SKIP LOGIN
+        // SKIP LOGIN – vào thẳng MainActivity, không cần Firebase
         skipBtn.setOnClickListener(v -> {
-
-            auth.signInWithEmailAndPassword(
-                    "test123@gmail.com",
-                    "123456"
-            ).addOnCompleteListener(task -> {
-
-                if(task.isSuccessful()){
-                    startActivity(new Intent(this, MainActivity.class));
-                    Toast.makeText(this, "Skip Success", Toast.LENGTH_SHORT).show();
-                    finish();
-                }else{
-                    Toast.makeText(this,"Skip Failed",Toast.LENGTH_SHORT).show();
-                }
-            });
-
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
         });
     }
 }

@@ -1,23 +1,27 @@
 package com.utc2.appreborn.ui.main;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.compose.ui.platform.ComposeView;
-import android.os.Bundle;
-import android.widget.Toast;
+
 import com.utc2.appreborn.R;
 import com.utc2.appreborn.ui.components.LiquidBarKt;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.PopupMenu;
-import androidx.fragment.app.Fragment;
+import com.utc2.appreborn.ui.courseregistration.CourseRegistrationActivity;
+
 public class MainActivity extends AppCompatActivity {
+
+    private boolean isOpening = false;
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Toast.makeText(this, "Đã vào MainActivity", Toast.LENGTH_LONG).show();
 
         ComposeView bottomBarCompose = findViewById(R.id.bottom_bar_compose);
 
@@ -29,31 +33,41 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
     }
+
     private void handleNavigation(int id) {
-
-//        vd như ở class quản ly trang đó public class SettingFragment extends Fragment {
-//            public SettingFragment() {
-//                super(R.layout.fragment_setting);
-//            }
-//        }
-        // 🔹 B1: Tạo biến Fragment để chứa màn hình cần chuyển
-        Fragment fragment = null;
-
-        // 🔹 B2: Dựa vào ID nhận được từ LiquidBar để chọn màn hình tương ứng
-        // 👉 Lưu ý: ID này phải trùng với ID trong file menu (bottom_nav_menu.xml)
         if (id == R.id.nav_home) {
-            //fragment = new HomeFragment();
-        } else if (id == R.id.nav_schedule) {
-          //  fragment = new ScheduleFragment();
-        } else if (id == R.id.nav_register) {
-          //  fragment = new RegisterFragment();
-        } else if (id == R.id.nav_result) {
-          //  fragment = new ResultFragment();
-        } else if (id == R.id.nav_profile) {
-           // fragment = new ProfileFragment();
-        } else {
-           // fragment = new HomeFragment(); // fallback
-        }
+            Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show();
 
+        } else if (id == R.id.nav_schedule) {
+            Toast.makeText(this, "Lịch học", Toast.LENGTH_SHORT).show();
+
+        } else if (id == R.id.nav_register) {
+            // ✅ Mở màn hình Đăng ký học phần
+            openCourseRegistration();
+
+        } else if (id == R.id.nav_result) {
+            Toast.makeText(this, "Kết quả học tập", Toast.LENGTH_SHORT).show();
+
+        } else if (id == R.id.nav_profile) {
+            Toast.makeText(this, "Cá nhân", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void openCourseRegistration() {
+        if (isOpening) return;
+        isOpening = true;
+        try {
+            Intent intent = new Intent(this, CourseRegistrationActivity.class);
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(this, "Không mở được Đăng ký học phần", Toast.LENGTH_SHORT).show();
+        }
+        handler.postDelayed(() -> isOpening = false, 500);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
     }
 }

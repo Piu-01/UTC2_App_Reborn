@@ -24,6 +24,11 @@
             android:name=".ui.main.MainActivity"
             android:exported="false"/>
 
+        <!-- ĐĂNG KÝ HỌC PHẦN -->
+        <activity
+            android:name=".ui.courseregistration.CourseRegistrationActivity"
+            android:exported="false"/>
+
     </application>
 
 </manifest>
