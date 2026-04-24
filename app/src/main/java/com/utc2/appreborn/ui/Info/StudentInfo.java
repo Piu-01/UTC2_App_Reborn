@@ -17,6 +17,7 @@ public class StudentInfo {
         this.studentCardUrl = studentCardUrl;
     }
 
+
     // Getters
     public String getBirthPlace() { return birthPlace; }
     public String getCccd() { return cccd; }
