@@ -14,51 +14,83 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.utc2.appreborn.R;
+import com.utc2.appreborn.utils.NetworkUtils; // Import Utils
 
 public class SupportActivity extends AppCompatActivity {
 
-    AutoCompleteTextView dropLoai;
-    EditText edtContent;
-    RatingBar ratingBar;
-    Button btnSend;
-    ImageButton btnBack;
+    private AutoCompleteTextView dropLoai;
+    private EditText edtContent;
+    private RatingBar ratingBar;
+    private Button btnSend;
+    private ImageButton btnBack;
 
-    String[] data = {"Lỗi", "Góp ý"};
+    private final String[] data = {"Lỗi", "Góp ý"};
+    private NetworkUtils networkUtils; // Thêm NetworkUtils
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_support);
 
-        // Ánh xạ view
+        initViews();
+        setupDropdown();
+        setupNetworkMonitoring(); // Khởi tạo lắng nghe mạng
+
+        // Sự kiện Back
+        btnBack.setOnClickListener(v -> finish());
+
+        // Sự kiện Gửi
+        btnSend.setOnClickListener(v -> validateAndSend());
+    }
+
+    private void initViews() {
         dropLoai = findViewById(R.id.dropLoai);
         edtContent = findViewById(R.id.edtContent);
         ratingBar = findViewById(R.id.ratingBar);
         btnSend = findViewById(R.id.btnSend);
         btnBack = findViewById(R.id.btnBack);
+    }
 
-        // Dropdown (Material)
+    private void setupDropdown() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_dropdown_item_1line,
                 data
         );
-
         dropLoai.setAdapter(adapter);
 
-        // 👉 chọn item thì tự fill vào ô
+        // Chọn item thì tự fill vào ô
         dropLoai.setOnItemClickListener((parent, view, position, id) -> {
             dropLoai.setText(data[position], false);
         });
+    }
 
-        // Back
-        btnBack.setOnClickListener(v -> finish());
+    // Thiết lập lắng nghe mạng liên tục
+    private void setupNetworkMonitoring() {
+        networkUtils = new NetworkUtils(this, new NetworkUtils.NetworkStatusListener() {
+            @Override
+            public void onNetworkAvailable() {
+                btnSend.setEnabled(true);
+                btnSend.setAlpha(1.0f);
+            }
 
-        // Send
-        btnSend.setOnClickListener(v -> validateAndSend());
+            @Override
+            public void onNetworkLost() {
+                Toast.makeText(SupportActivity.this, "Không có kết nối mạng!", Toast.LENGTH_SHORT).show();
+                btnSend.setEnabled(false);
+                btnSend.setAlpha(0.5f);
+            }
+        });
+        networkUtils.register();
     }
 
     private void validateAndSend() {
+        // Kiểm tra mạng tức thời trước khi gửi
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            Toast.makeText(this, "Vui lòng kết nối mạng để gửi hỗ trợ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String loai = dropLoai.getText().toString().trim();
         String content = edtContent.getText().toString().trim();
         float rating = ratingBar.getRating();
@@ -79,7 +111,6 @@ public class SupportActivity extends AppCompatActivity {
     }
 
     private void sendEmail(String loai, String content, float rating) {
-
         String danhGia;
         if (rating == 1) danhGia = "Rất kém";
         else if (rating == 2) danhGia = "Kém";
@@ -102,6 +133,15 @@ public class SupportActivity extends AppCompatActivity {
             startActivity(Intent.createChooser(intent, "Chọn ứng dụng Email"));
         } catch (Exception e) {
             Toast.makeText(this, "Không tìm thấy ứng dụng Email", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Hủy đăng ký lắng nghe mạng khi thoát activity
+        if (networkUtils != null) {
+            networkUtils.unregister();
         }
     }
 }

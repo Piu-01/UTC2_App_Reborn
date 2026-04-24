@@ -21,6 +21,7 @@ import com.utc2.appreborn.ui.public_services.StudentConfirmationService.StudentC
 import com.utc2.appreborn.ui.public_services.StudentConfirmationService.StudentConfirmationService;
 import com.utc2.appreborn.ui.public_services.TranscriptService.TranscriptRegistrationActivity;
 import com.utc2.appreborn.ui.public_services.TranscriptService.TranscriptService;
+import com.utc2.appreborn.utils.NetworkUtils; // Import Utils
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,9 @@ public class PublicServiceActivity extends AppCompatActivity {
     private PublicServiceAdapter adapter;
     private List<BaseService> historyList = new ArrayList<>();
 
+    // Thêm biến quản lý mạng
+    private NetworkUtils networkUtils;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,13 +45,33 @@ public class PublicServiceActivity extends AppCompatActivity {
         try {
             initViews();
             setupRecyclerView();
+            setupNetworkMonitoring(); // Khởi tạo lắng nghe mạng
             setupEvents();
 
-            // Mặc định ban đầu hiện tab Dịch vụ
             showTabDichVu();
         } catch (Exception e) {
             Toast.makeText(this, "Lỗi khởi tạo: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void setupNetworkMonitoring() {
+        networkUtils = new NetworkUtils(this, new NetworkUtils.NetworkStatusListener() {
+            @Override
+            public void onNetworkAvailable() {
+                // Nếu đang ở Tab Kết quả thì tự động load lại dữ liệu mới nhất
+                if (rvKetQua.getVisibility() == View.VISIBLE) {
+                    loadHistoryData();
+                }
+            }
+
+            @Override
+            public void onNetworkLost() {
+                Toast.makeText(PublicServiceActivity.this,
+                        "Bạn đang ngoại tuyến. Một số tính năng đăng ký sẽ bị tạm dừng.",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+        networkUtils.register();
     }
 
     private void initViews() {
@@ -63,34 +87,24 @@ public class PublicServiceActivity extends AppCompatActivity {
     }
 
     private void setupEvents() {
-        // Chuyển Tab
         btnDichVu.setOnClickListener(v -> showTabDichVu());
         btnKetQua.setOnClickListener(v -> showTabKetQua());
-
-        // Nút Quay lại
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
-        // --- Bắt sự kiện click cho các Card tĩnh (Tab Dịch vụ) ---
+        // Bọc sự kiện click bằng check mạng để tránh user vào đăng ký khi ko có mạng
+        findViewById(R.id.btnCardReissueMenu).setOnClickListener(v -> checkNetAndNavigate(CardReissueActivity.class));
+        findViewById(R.id.btnLoanSupportMenu).setOnClickListener(v -> checkNetAndNavigate(LoanSupportActivity.class));
+        findViewById(R.id.btnTranscriptMenu).setOnClickListener(v -> checkNetAndNavigate(TranscriptRegistrationActivity.class));
+        findViewById(R.id.btnConfirmationMenu).setOnClickListener(v -> checkNetAndNavigate(StudentConfirmationActivity.class));
+    }
 
-        // 1. Nút Cấp lại thẻ
-        findViewById(R.id.btnCardReissueMenu).setOnClickListener(v -> {
-            startActivity(new Intent(this, CardReissueActivity.class));
-        });
-
-        // 2. Nút Hỗ trợ vay vốn
-        findViewById(R.id.btnLoanSupportMenu).setOnClickListener(v -> {
-            startActivity(new Intent(this, LoanSupportActivity.class));
-        });
-
-        // 3. Nút Đăng ký bảng điểm (Mới thêm)
-        findViewById(R.id.btnTranscriptMenu).setOnClickListener(v -> {
-            startActivity(new Intent(this, TranscriptRegistrationActivity.class));
-        });
-
-        // 4. Nút Giấy xác nhận sinh viên (Mới thêm)
-        findViewById(R.id.btnConfirmationMenu).setOnClickListener(v -> {
-            startActivity(new Intent(this, StudentConfirmationActivity.class));
-        });
+    // Hàm tiện ích: Check mạng xong mới cho chuyển trang
+    private void checkNetAndNavigate(Class<?> destination) {
+        if (NetworkUtils.isNetworkAvailable(this)) {
+            startActivity(new Intent(this, destination));
+        } else {
+            Toast.makeText(this, "Cần có mạng để thực hiện thủ tục này!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showTabDichVu() {
@@ -110,7 +124,7 @@ public class PublicServiceActivity extends AppCompatActivity {
         rvKetQua.setVisibility(View.VISIBLE);
 
         if (txtSectionTitle != null) {
-            txtSectionTitle.setText(R.string.tab_results); // Dùng string resource cho chuyên nghiệp
+            txtSectionTitle.setText(R.string.tab_results);
             txtSectionTitle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_scroll_text, 0, 0, 0);
         }
 
@@ -118,35 +132,33 @@ public class PublicServiceActivity extends AppCompatActivity {
     }
 
     private void loadHistoryData() {
+        // Sau này thay đống dữ liệu mẫu này bằng việc gọi Web API
+        // if (!NetworkUtils.isNetworkAvailable(this)) { ... hiện dữ liệu cũ từ SQLite/Room ... }
+
         historyList.clear();
         long now = System.currentTimeMillis();
 
-        // 1. Nạp mẫu: Cấp lại thẻ (Đã duyệt)
         historyList.add(new CardReissueService(
                 getString(R.string.reissue_card_title),
                 "Lý do: Thẻ bị hỏng chip", now, 1, "CARD_REISSUE",
                 getString(R.string.default_name), getString(R.string.default_mssv), getString(R.string.default_class)));
 
-        // 2. Nạp mẫu: Bảng điểm (Đang chờ) - MÔ PHỎNG CHỨC NĂNG MỚI
         historyList.add(new TranscriptService(
                 getString(R.string.transcript_registration_title),
                 "Số lượng: 03 bản", now - 3600000, 0, "TRANSCRIPT_REG",
                 getString(R.string.default_name), getString(R.string.default_mssv), getString(R.string.default_class),
                 "2023 - 2024", "Học kỳ 2", "03"));
 
-        // 3. Nạp mẫu: Xác nhận sinh viên (Đã duyệt) - MÔ PHỎNG CHỨC NĂNG MỚI
         historyList.add(new StudentConfirmationService(
                 getString(R.string.student_confirmation_title),
                 "Lý do: Làm hồ sơ thực tập", now - 86400000, 1, "STUDENT_CONFIRM",
                 getString(R.string.default_name), getString(R.string.default_mssv), getString(R.string.default_class)));
 
-        // 4. Nạp mẫu: Hỗ trợ vay vốn (Đang chờ)
         historyList.add(new LoanSupportService(
                 getString(R.string.loan_support_title),
                 "Số tiền: 10.000.000đ", now - 172800000, 0, "LOAN_SUPPORT",
                 "10000000", "Học kỳ 1", getString(R.string.default_phone)));
 
-        // Thiết lập adapter để hiển thị lên RecyclerView
         adapter = new PublicServiceAdapter(historyList, true);
         rvKetQua.setAdapter(adapter);
     }
@@ -168,6 +180,15 @@ public class PublicServiceActivity extends AppCompatActivity {
             btnDichVu.setBackgroundResource(R.drawable.bg_toggle_container);
             btnDichVu.setTextColor(ContextCompat.getColor(this, R.color.black));
             btnDichVu.setTypeface(null, android.graphics.Typeface.NORMAL);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Luôn hủy đăng ký để tránh memory leak
+        if (networkUtils != null) {
+            networkUtils.unregister();
         }
     }
 }

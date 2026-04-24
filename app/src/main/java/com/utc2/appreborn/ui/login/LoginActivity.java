@@ -1,12 +1,9 @@
 package com.utc2.appreborn.ui.login;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkCapabilities;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -25,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.utc2.appreborn.R;
 import com.utc2.appreborn.ui.main.MainActivity;
+import com.utc2.appreborn.utils.NetworkUtils; // Import class utils mới
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -33,7 +31,8 @@ public class LoginActivity extends AppCompatActivity {
     private TextView txtForgot, txtTerms;
 
     private IAuthService authService;
-    private Dialog loadingDialog; // Đã đổi sang Dialog thuần
+    private Dialog loadingDialog;
+    private NetworkUtils networkUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         initViews();
         createLoadingDialog();
         setupSpannableTerms();
+        setupNetworkMonitoring(); // Khởi tạo lắng nghe mạng
 
         txtForgot.setOnClickListener(v -> navigateTo(ForgotPasswordActivity.class));
         loginBtn.setOnClickListener(v -> validateAndLogin());
@@ -60,52 +60,28 @@ public class LoginActivity extends AppCompatActivity {
         authService = new FirebaseAuthService();
     }
 
-    private void createLoadingDialog() {
-        // Khởi tạo Dialog thuần
-        loadingDialog = new Dialog(this);
-
-        // Loại bỏ tiêu đề mặc định của hệ thống
-        loadingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        // Nạp layout hình vuông của bạn
-        loadingDialog.setContentView(R.layout.custom_loading);
-
-        // Không cho phép đóng khi đang load
-        loadingDialog.setCancelable(false);
-
-        if (loadingDialog.getWindow() != null) {
-            // FIX: Xóa bỏ khung nền đen mặc định của hệ thống
-            loadingDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-            // Giữ hiệu ứng mờ nền phía sau (dim), nếu muốn xóa hẳn thì dùng FLAG_DIM_BEHIND
-            loadingDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        }
-    }
-
-    private void setLoading(boolean isLoading) {
-        if (isLoading) {
-            if (loadingDialog != null && !loadingDialog.isShowing()) {
-                loadingDialog.show();
-
-                // FIX: Ép Window co lại theo kích thước hình vuông (ví dụ 140dp) trong XML
-                // Nếu không có dòng này, Android sẽ tự kéo dài thành hình chữ nhật
-                if (loadingDialog.getWindow() != null) {
-                    loadingDialog.getWindow().setLayout(
-                            WindowManager.LayoutParams.WRAP_CONTENT,
-                            WindowManager.LayoutParams.WRAP_CONTENT
-                    );
-                }
+    private void setupNetworkMonitoring() {
+        networkUtils = new NetworkUtils(this, new NetworkUtils.NetworkStatusListener() {
+            @Override
+            public void onNetworkAvailable() {
+                loginBtn.setEnabled(true);
+                loginBtn.setAlpha(1.0f);
             }
-        } else {
-            if (loadingDialog != null && loadingDialog.isShowing()) {
-                loadingDialog.dismiss();
+
+            @Override
+            public void onNetworkLost() {
+                showToast("Không có kết nối mạng!");
+                loginBtn.setEnabled(false);
+                loginBtn.setAlpha(0.5f); // Làm mờ nút để báo hiệu không bấm được
             }
-        }
+        });
+        networkUtils.register();
     }
 
     private void validateAndLogin() {
-        if (!isNetworkAvailable()) {
-            showToast("Không có kết nối mạng!");
+        // Kiểm tra tức thời qua Utils trước khi thực hiện logic nặng
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            showToast("Vui lòng kết nối mạng để đăng nhập!");
             return;
         }
 
@@ -129,7 +105,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void performLogin(String emailStr, String passStr, boolean isSkip) {
         setLoading(true);
-
         authService.login(emailStr, passStr, new IAuthService.AuthCallback() {
             @Override
             public void onSuccess(String message) {
@@ -142,21 +117,38 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onError(String error) {
                 setLoading(false);
-                showToast(isSkip ? "Lỗi bỏ qua" : error);
+                showToast(isSkip ? "Lỗi đăng nhập" : error);
             }
         });
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager == null) return false;
+    private void createLoadingDialog() {
+        loadingDialog = new Dialog(this);
+        loadingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        loadingDialog.setContentView(R.layout.custom_loading);
+        loadingDialog.setCancelable(false);
+        if (loadingDialog.getWindow() != null) {
+            loadingDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            loadingDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        }
+    }
 
-        android.net.Network network = connectivityManager.getActiveNetwork();
-        if (network == null) return false;
-        NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(network);
-        return capabilities != null && (
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR));
+    private void setLoading(boolean isLoading) {
+        if (isLoading) {
+            if (loadingDialog != null && !loadingDialog.isShowing()) {
+                loadingDialog.show();
+                if (loadingDialog.getWindow() != null) {
+                    loadingDialog.getWindow().setLayout(
+                            WindowManager.LayoutParams.WRAP_CONTENT,
+                            WindowManager.LayoutParams.WRAP_CONTENT
+                    );
+                }
+            }
+        } else {
+            if (loadingDialog != null && loadingDialog.isShowing()) {
+                loadingDialog.dismiss();
+            }
+        }
     }
 
     private void setupSpannableTerms() {
@@ -187,5 +179,14 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Cực kỳ quan trọng: Hủy lắng nghe khi Activity đóng
+        if (networkUtils != null) {
+            networkUtils.unregister();
+        }
     }
 }

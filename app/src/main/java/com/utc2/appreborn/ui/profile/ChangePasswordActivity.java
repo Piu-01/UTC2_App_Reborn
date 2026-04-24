@@ -1,8 +1,5 @@
 package com.utc2.appreborn.ui.profile;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.EditText;
@@ -15,6 +12,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import com.utc2.appreborn.R;
 import com.utc2.appreborn.ui.login.FirebaseAuthService;
 import com.utc2.appreborn.ui.login.IAuthService;
+import com.utc2.appreborn.utils.NetworkUtils; // Import Utils
 
 public class ChangePasswordActivity extends AppCompatActivity {
 
@@ -22,8 +20,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private AppCompatButton btnUpdate;
     private ImageButton btnBack;
 
-    // Sử dụng Service chung
     private IAuthService authService;
+    private NetworkUtils networkUtils; // Thêm biến NetworkUtils
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +29,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_change_password);
 
         initViews();
+        setupNetworkMonitoring(); // Khởi tạo lắng nghe mạng
 
         btnBack.setOnClickListener(v -> finish());
         btnUpdate.setOnClickListener(v -> handlePasswordChange());
@@ -42,13 +41,31 @@ public class ChangePasswordActivity extends AppCompatActivity {
         btnUpdate = findViewById(R.id.btnUpdatePassword);
         btnBack = findViewById(R.id.btnBack);
 
-        // Khởi tạo service
         authService = new FirebaseAuthService();
     }
 
+    // Thiết lập lắng nghe mạng liên tục
+    private void setupNetworkMonitoring() {
+        networkUtils = new NetworkUtils(this, new NetworkUtils.NetworkStatusListener() {
+            @Override
+            public void onNetworkAvailable() {
+                btnUpdate.setEnabled(true);
+                btnUpdate.setAlpha(1.0f);
+            }
+
+            @Override
+            public void onNetworkLost() {
+                showToast("Mất kết nối mạng!");
+                btnUpdate.setEnabled(false);
+                btnUpdate.setAlpha(0.5f);
+            }
+        });
+        networkUtils.register();
+    }
+
     private void handlePasswordChange() {
-        // 1. Kiểm tra mạng
-        if (!isNetworkAvailable()) {
+        // Sử dụng static method từ Utils để check tức thời
+        if (!NetworkUtils.isNetworkAvailable(this)) {
             showToast("Mất mạng rồi bro :V");
             return;
         }
@@ -56,7 +73,6 @@ public class ChangePasswordActivity extends AppCompatActivity {
         String newPass = etNewPass.getText().toString().trim();
         String confirmPass = etConfirmPass.getText().toString().trim();
 
-        // 2. Kiểm tra dữ liệu đầu vào
         if (TextUtils.isEmpty(newPass)) {
             etNewPass.setError("Vui lòng nhập mật khẩu mới");
             return;
@@ -72,37 +88,38 @@ public class ChangePasswordActivity extends AppCompatActivity {
             return;
         }
 
-        // 3. Thực hiện gọi Service
         performChangePassword(newPass);
     }
 
     private void performChangePassword(String newPassword) {
-        btnUpdate.setEnabled(false); // Khóa nút để tránh bấm nhiều lần
+        btnUpdate.setEnabled(false);
 
         authService.changePassword(newPassword, new IAuthService.AuthCallback() {
             @Override
             public void onSuccess(String message) {
                 btnUpdate.setEnabled(true);
                 showToast(message);
-                finish(); // Thành công thì đóng trang
+                finish();
             }
 
             @Override
             public void onError(String error) {
                 btnUpdate.setEnabled(true);
-                // Thông thường lỗi ở đây là do "Requires Recent Login" (Cần login lại)
                 showToast("Lỗi: " + error);
             }
         });
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo net = cm.getActiveNetworkInfo();
-        return net != null && net.isConnected();
-    }
-
     private void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Hủy đăng ký để tránh leak memory
+        if (networkUtils != null) {
+            networkUtils.unregister();
+        }
     }
 }

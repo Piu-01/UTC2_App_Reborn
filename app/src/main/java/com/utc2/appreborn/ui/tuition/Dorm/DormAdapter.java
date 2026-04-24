@@ -10,6 +10,10 @@ import com.utc2.appreborn.R;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Adapter hiển thị danh sách tiền KTX cho sinh viên UTC2.
+ * Kế thừa dữ liệu từ lớp cha Tuition để đảm bảo tính nhất quán.
+ */
 public class DormAdapter extends RecyclerView.Adapter<DormAdapter.ViewHolder> {
     private final List<DormTuition> dormList;
 
@@ -20,6 +24,7 @@ public class DormAdapter extends RecyclerView.Adapter<DormAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Inflate layout item_dorm_tuition mà bạn đã thiết kế
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dorm_tuition, parent, false);
         return new ViewHolder(view);
     }
@@ -28,17 +33,18 @@ public class DormAdapter extends RecyclerView.Adapter<DormAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         DormTuition item = dormList.get(position);
 
+        // Hiển thị Tên phòng (Lấy từ trường 'name' của lớp cha Tuition)
         if (holder.tvRoomName != null) {
-            // Trong Tuition.java, chúng ta dùng trường 'name' để lưu tên phòng
             holder.tvRoomName.setText(item.getName());
         }
 
+        // Hiển thị chi tiết (Lấy từ trường 'details' của lớp cha Tuition - VD: "Tiền điện tháng 10")
         if (holder.tvDormDetails != null) {
             holder.tvDormDetails.setText(item.getDetails());
         }
 
+        // Hiển thị số tiền (Định dạng kiểu 1,000,000 VND)
         if (holder.tvDormAmount != null) {
-            // Định dạng tiền tệ từ kiểu long của lớp cha
             String formattedAmount = String.format(Locale.getDefault(), "%,d VND", item.getAmount());
             holder.tvDormAmount.setText(formattedAmount);
         }
@@ -49,15 +55,18 @@ public class DormAdapter extends RecyclerView.Adapter<DormAdapter.ViewHolder> {
         return dormList != null ? dormList.size() : 0;
     }
 
+    /**
+     * ViewHolder tối ưu hóa việc tìm View (findViewById)
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvRoomName, tvDormDetails, tvDormAmount;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            // KHỚP ID VỚI XML CỦA BẠN:
+            // Đảm bảo ID trong file item_dorm_tuition.xml trùng khớp với các ID dưới đây:
             tvRoomName = itemView.findViewById(R.id.tvRoomName);
             tvDormDetails = itemView.findViewById(R.id.tvDormDetails);
-            tvDormAmount = itemView.findViewById(R.id.tvDormAmount); // Phải là tvDormAmount
+            tvDormAmount = itemView.findViewById(R.id.tvDormAmount);
         }
     }
 }

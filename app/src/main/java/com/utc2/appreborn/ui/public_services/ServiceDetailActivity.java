@@ -1,35 +1,68 @@
 package com.utc2.appreborn.ui.public_services;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.utc2.appreborn.R;
 import com.utc2.appreborn.ui.public_services.CardReissueService.CardReissueService;
 import com.utc2.appreborn.ui.public_services.LoanSupportService.LoanSupportService;
 import com.utc2.appreborn.ui.public_services.StudentConfirmationService.StudentConfirmationService;
 import com.utc2.appreborn.ui.public_services.TranscriptService.TranscriptService;
+import com.utc2.appreborn.utils.NetworkUtils; // Import Utils
 
 public class ServiceDetailActivity extends AppCompatActivity {
 
     private TextView tvTitle, tvStatus, tvTime;
     private LinearLayout layoutDynamicContent;
 
+    // Thêm quản lý mạng
+    private NetworkUtils networkUtils;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_detail);
 
-        initViews();
+        try {
+            initViews();
+            setupNetworkMonitoring(); // Khởi tạo lắng nghe mạng
 
-        BaseService service = (BaseService) getIntent().getSerializableExtra("SERVICE_DATA");
-        if (service != null) {
-            populateData(service);
+            BaseService service = (BaseService) getIntent().getSerializableExtra("SERVICE_DATA");
+            if (service != null) {
+                populateData(service);
+            }
+
+            findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+        } catch (Exception e) {
+            Log.e("ServiceDetail", "Lỗi: " + e.getMessage());
         }
+    }
 
-        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+    private void setupNetworkMonitoring() {
+        networkUtils = new NetworkUtils(this, new NetworkUtils.NetworkStatusListener() {
+            @Override
+            public void onNetworkAvailable() {
+                // Sau này khi dùng Web API: Nếu đang mở trang mà có mạng lại,
+                // ta có thể gọi API để refresh lại trạng thái mới nhất của đơn này.
+                Log.d("Network", "Đã kết nối mạng - Có thể cập nhật trạng thái đơn");
+            }
+
+            @Override
+            public void onNetworkLost() {
+                // Thông báo nhẹ để user biết thông tin có thể chưa được cập nhật mới nhất
+                Toast.makeText(ServiceDetailActivity.this,
+                        "Mất kết nối mạng. Thông tin có thể chưa được cập nhật.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+        networkUtils.register();
     }
 
     private void initViews() {
@@ -54,7 +87,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
         layoutDynamicContent.removeAllViews();
 
-        // 1. Dịch vụ Cấp lại thẻ
+        // Xử lý logic hiển thị dựa trên loại Service (Giữ nguyên logic của bạn)
         if (service instanceof CardReissueService) {
             CardReissueService s = (CardReissueService) service;
             addInfoRow(getString(R.string.name_title), s.getStudentName());
@@ -62,14 +95,12 @@ public class ServiceDetailActivity extends AppCompatActivity {
             addInfoRow(getString(R.string.class_title), s.getClassName());
             addInfoRow("Lý do", s.getDescription());
         }
-        // 2. Dịch vụ Hỗ trợ vay vốn
         else if (service instanceof LoanSupportService) {
             LoanSupportService s = (LoanSupportService) service;
             addInfoRow(getString(R.string.loan_amount), s.getLoanAmount());
             addInfoRow(getString(R.string.contact_number_title), s.getPhoneNumber());
             addInfoRow("Ghi chú", s.getDescription());
         }
-        // 3. Dịch vụ Đăng ký bảng điểm (Mới)
         else if (service instanceof TranscriptService) {
             TranscriptService s = (TranscriptService) service;
             addInfoRow(getString(R.string.name_title), s.getStudentName());
@@ -79,7 +110,6 @@ public class ServiceDetailActivity extends AppCompatActivity {
             addInfoRow(getString(R.string.transcript_semester), s.getSemester());
             addInfoRow(getString(R.string.transcript_quantity), s.getQuantity());
         }
-        // 4. Dịch vụ Xác nhận sinh viên (Mới)
         else if (service instanceof StudentConfirmationService) {
             StudentConfirmationService s = (StudentConfirmationService) service;
             addInfoRow(getString(R.string.name_title), s.getStudentName());
@@ -98,5 +128,13 @@ public class ServiceDetailActivity extends AppCompatActivity {
         tvValue.setText(value != null && !value.isEmpty() ? value : "---");
 
         layoutDynamicContent.addView(rowView);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (networkUtils != null) {
+            networkUtils.unregister();
+        }
     }
 }
