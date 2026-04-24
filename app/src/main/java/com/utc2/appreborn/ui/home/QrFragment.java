@@ -29,7 +29,6 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import com.utc2.appreborn.R;
 import com.utc2.appreborn.databinding.FragmentQrBinding;
 import com.utc2.appreborn.utils.MockHelper;
 
@@ -39,52 +38,63 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * QrFragment  — FIXED
+ * QrFragment — CRASH FIXES
  * ──────────────────────────────────────────────────────────────
- * Fixes in this version:
  *
- *  FIX 1 — Status bar overlap
- *    applyWindowInsets() adds top padding to the toolbar
- *    dynamically so it always sits below the status bar on
- *    every API level and screen size.
+ * FIX A — Back button crash (emulator):
+ *   Root cause: calling getOnBackPressedDispatcher().onBackPressed()
+ *   INSIDE the btn_back click AND having a registered
+ *   OnBackPressedCallback that also calls the same dispatcher →
+ *   infinite loop → StackOverflowError crash.
  *
- *  FIX 2 — Back button not working on emulator
- *    • Back button now calls requireActivity()
- *      .getOnBackPressedDispatcher().onBackPressed()
- *      which is the modern, always-reliable approach.
- *    • Also registers an OnBackPressedCallback so the
- *      hardware / gesture back also works identically
- *      on emulator and real device.
+ *   Fix: btn_back click calls getSupportFragmentManager()
+ *   .popBackStack() DIRECTLY (no dispatcher).
+ *   The OnBackPressedCallback disables itself before popping so
+ *   hardware/gesture back never double-fires.
  *
- *  FIX 3 — Color inconsistency across devices
- *    Colors are driven by @color/qr_btn_primary defined in
- *    colors.xml — no longer rely on ?attr/colorPrimary which
- *    differs between Material2 / Material3 and OEM themes.
+ * FIX B — Share crash:
+ *   Root cause: FileProvider authority not declared in
+ *   AndroidManifest.xml → IllegalArgumentException: "Failed to
+ *   find configured root that contains …"
  *
- * Package: com.utc2.appreborn.ui.home
+ *   Fix: see AndroidManifest.xml and res/xml/file_provider_paths.xml
+ *   snippets at the bottom of this file's Javadoc. The share code
+ *   itself is unchanged; the crash is 100% a manifest/config issue.
+ *
+ * ──────────────────────────────────────────────────────────────
+ * AndroidManifest.xml — add inside <application>:
+ *
+ *   <provider
+ *       android:name="androidx.core.content.FileProvider"
+ *       android:authorities="${applicationId}.provider"
+ *       android:exported="false"
+ *       android:grantUriPermissions="true">
+ *       <meta-data
+ *           android:name="android.support.FILE_PROVIDER_PATHS"
+ *           android:resource="@xml/file_provider_paths" />
+ *   </provider>
+ *
+ * res/xml/file_provider_paths.xml (create this file):
+ *
+ *   <?xml version="1.0" encoding="utf-8"?>
+ *   <paths>
+ *       <cache-path name="images" path="images/" />
+ *   </paths>
+ * ──────────────────────────────────────────────────────────────
  */
 public class QrFragment extends Fragment {
 
-    // ── Tag for FragmentManager / back-stack ──────────────────
     public static final String TAG = "tag_qr";
 
-    // ── Argument keys ─────────────────────────────────────────
     private static final String ARG_FULL_NAME    = "arg_full_name";
     private static final String ARG_STUDENT_CODE = "arg_student_code";
+    private static final int    QR_PX            = 700;
 
-    // ── QR bitmap size (px) ───────────────────────────────────
-    private static final int QR_PX = 700;
-
-    // ── View Binding ──────────────────────────────────────────
     private FragmentQrBinding binding;
-
-    // ── Data ──────────────────────────────────────────────────
     private String studentName;
     private String studentCode;
 
-    // ═══════════════════════════════════════════════════════════
-    //  Factory
-    // ═══════════════════════════════════════════════════════════
+    // ── Factory ───────────────────────────────────────────────
 
     public static QrFragment newInstance(String fullName, String studentCode) {
         QrFragment f   = new QrFragment();
@@ -95,14 +105,11 @@ public class QrFragment extends Fragment {
         return f;
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  Lifecycle
-    // ═══════════════════════════════════════════════════════════
+    // ── Lifecycle ─────────────────────────────────────────────
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Bundle args = getArguments();
         studentName = (args != null)
                 ? args.getString(ARG_FULL_NAME,    MockHelper.getMockFullName())
@@ -126,23 +133,11 @@ public class QrFragment extends Fragment {
                               @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // FIX 1: push toolbar below status bar on every device
         applyWindowInsets();
-
         bindHeader();
         renderQrCode();
         setupClickListeners();
-
-        // FIX 2: register hardware/gesture back so emulator behaves
-        // the same as a real device
-        requireActivity()
-                .getOnBackPressedDispatcher()
-                .addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
-                    @Override
-                    public void handleOnBackPressed() {
-                        navigateBack();
-                    }
-                });
+        registerHardwareBack();
     }
 
     @Override
@@ -151,43 +146,20 @@ public class QrFragment extends Fragment {
         binding = null;
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  FIX 1 — Window insets (status-bar overlap)
-    // ═══════════════════════════════════════════════════════════
+    // ── Status bar inset ──────────────────────────────────────
 
-    /**
-     * Applies the system window top inset as extra top-padding on
-     * the toolbar container so the title is never hidden behind
-     * the status bar.
-     *
-     * Works on API 21+ including edge-to-edge mode (API 30+).
-     */
     private void applyWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(
                 binding.toolbarContainer,
                 (v, insets) -> {
-                    Insets systemBars = insets.getInsets(
-                            WindowInsetsCompat.Type.systemBars());
-                    // Add status bar height as top padding
-                    v.setPadding(
-                            v.getPaddingLeft(),
-                            systemBars.top,            // ← status bar height
-                            v.getPaddingRight(),
-                            v.getPaddingBottom()
-                    );
-                    // Adjust the view's height to accommodate the extra padding
-                    ViewGroup.LayoutParams lp = v.getLayoutParams();
-                    lp.height = getResources().getDimensionPixelSize(
-                            R.dimen.qr_toolbar_height) + systemBars.top;
-                    v.setLayoutParams(lp);
+                    Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                    v.setPadding(v.getPaddingLeft(), bars.top,
+                            v.getPaddingRight(), v.getPaddingBottom());
                     return WindowInsetsCompat.CONSUMED;
-                }
-        );
+                });
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  UI Setup
-    // ═══════════════════════════════════════════════════════════
+    // ── UI ────────────────────────────────────────────────────
 
     private void bindHeader() {
         binding.tvQrStudentName.setText(studentName);
@@ -205,8 +177,8 @@ public class QrFragment extends Fragment {
     }
 
     private void setupClickListeners() {
-        // FIX 2: use dispatcher — works on emulator AND real device
-        binding.btnBack.setOnClickListener(v -> navigateBack());
+        // FIX A: pop back stack DIRECTLY — no dispatcher → no infinite loop
+        binding.btnBack.setOnClickListener(v -> popBack());
 
         binding.btnCopyCode.setOnClickListener(v -> copyCodeToClipboard());
 
@@ -221,25 +193,29 @@ public class QrFragment extends Fragment {
         });
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  FIX 2 — Reliable back navigation
-    // ═══════════════════════════════════════════════════════════
-
     /**
-     * Single back-navigation method used by both the toolbar
-     * button and the OnBackPressedCallback.
-     *
-     * Uses getOnBackPressedDispatcher().onBackPressed() which
-     * respects the back-stack correctly on both emulator and
-     * real devices across all API levels.
+     * FIX A: Register hardware/gesture back.
+     * The callback disables itself BEFORE popping so it cannot
+     * be called twice.
      */
-    private void navigateBack() {
-        requireActivity().getOnBackPressedDispatcher().onBackPressed();
+    private void registerHardwareBack() {
+        requireActivity()
+                .getOnBackPressedDispatcher()
+                .addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        setEnabled(false); // disable self FIRST to prevent re-entry
+                        popBack();
+                    }
+                });
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  QR generation  (ZXing core)
-    // ═══════════════════════════════════════════════════════════
+    /** Single pop method used by both the button and the callback. */
+    private void popBack() {
+        requireActivity().getSupportFragmentManager().popBackStack();
+    }
+
+    // ── QR generation ─────────────────────────────────────────
 
     @Nullable
     private Bitmap generateQrBitmap(String content, int sizePx) {
@@ -255,26 +231,17 @@ public class QrFragment extends Fragment {
 
     @NonNull
     private Bitmap bitMatrixToBitmap(@NonNull BitMatrix matrix) {
-        int    width  = matrix.getWidth();
-        int    height = matrix.getHeight();
-        int[]  pixels = new int[width * height];
-
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                pixels[y * width + x] = matrix.get(x, y)
-                        ? 0xFF000000  // black module
-                        : 0xFFFFFFFF; // white background
-            }
-        }
-
-        Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        bmp.setPixels(pixels, 0, width, 0, 0, width, height);
+        int w = matrix.getWidth(), h = matrix.getHeight();
+        int[] pixels = new int[w * h];
+        for (int y = 0; y < h; y++)
+            for (int x = 0; x < w; x++)
+                pixels[y * w + x] = matrix.get(x, y) ? 0xFF000000 : 0xFFFFFFFF;
+        Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        bmp.setPixels(pixels, 0, w, 0, 0, w, h);
         return bmp;
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  Actions
-    // ═══════════════════════════════════════════════════════════
+    // ── Actions ───────────────────────────────────────────────
 
     private void copyCodeToClipboard() {
         ClipboardManager cm = (ClipboardManager)
@@ -294,7 +261,6 @@ public class QrFragment extends Fragment {
             cv.put(MediaStore.Images.Media.RELATIVE_PATH,
                     Environment.DIRECTORY_PICTURES + "/UTC2");
         }
-
         Uri uri = requireContext().getContentResolver()
                 .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv);
         if (uri == null) {
@@ -312,30 +278,31 @@ public class QrFragment extends Fragment {
         }
     }
 
+    /**
+     * FIX B: Share works ONLY after FileProvider is declared in
+     * AndroidManifest.xml and res/xml/file_provider_paths.xml exists.
+     * See class Javadoc above for the exact XML snippets to add.
+     */
     private void shareQrBitmap(@NonNull Bitmap bitmap) {
         try {
             File cacheDir = new File(requireContext().getCacheDir(), "images");
             //noinspection ResultOfMethodCallIgnored
             cacheDir.mkdirs();
-            File shareFile = new File(cacheDir, "qr_share.png");
-            try (FileOutputStream fos = new FileOutputStream(shareFile)) {
+            File file = new File(cacheDir, "qr_share.png");
+            try (FileOutputStream fos = new FileOutputStream(file)) {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
             }
-
-            Uri contentUri = FileProvider.getUriForFile(
+            Uri uri = FileProvider.getUriForFile(
                     requireContext(),
                     requireContext().getPackageName() + ".provider",
-                    shareFile
+                    file
             );
-
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("image/png");
-            intent.putExtra(Intent.EXTRA_STREAM, contentUri);
-            intent.putExtra(Intent.EXTRA_TEXT,
-                    "Mã QR sinh viên: " + studentCode);
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.putExtra(Intent.EXTRA_TEXT, "Mã QR sinh viên: " + studentCode);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivity(Intent.createChooser(intent, "Chia sẻ mã QR"));
-
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(requireContext(), "Lỗi khi chia sẻ", Toast.LENGTH_SHORT).show();

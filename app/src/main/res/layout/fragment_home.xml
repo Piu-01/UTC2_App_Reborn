@@ -6,10 +6,10 @@
     3. Campus banner image
     4. "Thông báo mới nhất" news feed
 -->
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:fillViewport="true">
 
@@ -105,10 +105,10 @@
                             android:layout_height="22dp"
                             android:layout_marginStart="8dp"
                             android:src="@drawable/ic_add_circle"
-                            android:tint="#FFFFFF"
                             android:clickable="true"
                             android:focusable="true"
-                            android:contentDescription="@string/cd_add" />
+                            android:contentDescription="@string/cd_add"
+                            app:tint="#FFFFFF" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -174,6 +174,25 @@
             android:clipToPadding="false"
             android:nestedScrollingEnabled="false"
             android:overScrollMode="never" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_view_all_news"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="24dp"
+            android:text="Xem thêm thông báo trên web"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            app:strokeColor="@color/qr_btn_primary"
+            app:strokeWidth="1dp"
+            android:textColor="@color/qr_btn_primary"
+            app:cornerRadius="24dp"
+            app:backgroundTint="@color/white" />
+
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

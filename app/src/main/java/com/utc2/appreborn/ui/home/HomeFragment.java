@@ -1,5 +1,7 @@
 package com.utc2.appreborn.ui.home;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,39 +21,33 @@ import com.utc2.appreborn.data.local.StudentProfile;
 import com.utc2.appreborn.databinding.FragmentHomeBinding;
 import com.utc2.appreborn.ui.home.adapter.FeatureAdapter;
 import com.utc2.appreborn.ui.home.adapter.NewsAdapter;
+import com.utc2.appreborn.ui.home.model.NewsItem;
 import com.utc2.appreborn.ui.main.MainActivity;
+import com.utc2.appreborn.ui.news.NewsDetailActivity;
 
 /**
- * HomeFragment
+ * HomeFragment — UPDATED
  * ──────────────────────────────────────────────────────────────
- * Primary landing screen of the app.
+ * Thay đổi trong version này:
+ *   • Nút "Xem thêm thông báo" mở browser → utc2.edu.vn/sinh-vien/thong-bao
+ *   • loadNews() → fetchNewsIfNeeded() (cache 24h)
+ *   • forceRefresh() khi cần làm mới thủ công
  *
- * Architecture:
- *  • View Binding  — no more findViewById() calls.
- *  • HomeViewModel — all data/logic lives there; Fragment only
- *    observes LiveData and updates the UI.
- *  • Repositories  — ViewModel delegates to them; Fragment never
- *    touches repositories or Retrofit directly.
- *
- * Layout:  res/layout/fragment_home.xml
  * Package: com.utc2.appreborn.ui.home
  */
 public class HomeFragment extends Fragment {
 
     private static final String TAG = "HomeFragment";
 
-    // ── View Binding ──────────────────────────────────────────
-    // Nulled out in onDestroyView to avoid memory leaks.
+    // URL trang thông báo sinh viên trên web UTC2
+    private static final String URL_ALL_NEWS =
+            "https://utc2.edu.vn/sinh-vien/thong-bao";
+
     private FragmentHomeBinding binding;
+    private HomeViewModel       viewModel;
+    private NewsAdapter         newsAdapter;
+    private FeatureAdapter      featureAdapter;
 
-    // ── ViewModel ─────────────────────────────────────────────
-    private HomeViewModel viewModel;
-
-    // ── Adapters ──────────────────────────────────────────────
-    private NewsAdapter    newsAdapter;
-    private FeatureAdapter featureAdapter;
-
-    // ── Constructor ───────────────────────────────────────────
     public HomeFragment() {
         super(R.layout.fragment_home);
     }
@@ -74,7 +70,7 @@ public class HomeFragment extends Fragment {
                               @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Obtain ViewModel scoped to this Fragment
+        // AndroidViewModel cần Application — ViewModelProvider tự xử lý
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
         setupFeatureGrid();
@@ -82,105 +78,95 @@ public class HomeFragment extends Fragment {
         observeViewModel();
         setupClickListeners();
 
-        // Kick off the API call
+        // Chỉ gọi API nếu cache hết hạn (> 24h)
         viewModel.loadNews();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        // Prevent memory leak — binding holds a reference to the view hierarchy
         binding = null;
     }
 
     // ═══════════════════════════════════════════════════════════
-    //  Setup helpers
+    //  Setup
     // ═══════════════════════════════════════════════════════════
 
-    /** Initialises the 3-column feature RecyclerView. */
     private void setupFeatureGrid() {
         featureAdapter = new FeatureAdapter(
-                viewModel.getFeatureList(),
-                this::handleFeatureClick
-        );
-
-        binding.rvFeatures.setLayoutManager(
-                new GridLayoutManager(requireContext(), 3));
+                viewModel.getFeatureList(), this::handleFeatureClick);
+        binding.rvFeatures.setLayoutManager(new GridLayoutManager(requireContext(), 3));
         binding.rvFeatures.setNestedScrollingEnabled(false);
         binding.rvFeatures.setHasFixedSize(true);
         binding.rvFeatures.setAdapter(featureAdapter);
     }
 
-    /**
-     * Initialises the news RecyclerView.
-     * NewsAdapter starts empty; LiveData observer fills it.
-     */
     private void setupNewsFeed() {
         newsAdapter = new NewsAdapter(this::handleNewsClick);
-
-        binding.rvNews.setLayoutManager(
-                new LinearLayoutManager(requireContext()));
+        binding.rvNews.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvNews.setNestedScrollingEnabled(false);
         binding.rvNews.setHasFixedSize(false);
         binding.rvNews.setAdapter(newsAdapter);
     }
 
     // ═══════════════════════════════════════════════════════════
-    //  LiveData observers
+    //  Observers
     // ═══════════════════════════════════════════════════════════
 
     private void observeViewModel() {
-        // ── Student profile ───────────────────────────────────
-        viewModel.getStudentProfileLiveData().observe(getViewLifecycleOwner(),
-                this::bindStudentProfile);
+        viewModel.getStudentProfileLiveData()
+                .observe(getViewLifecycleOwner(), this::bindStudentProfile);
 
-        // ── News list ─────────────────────────────────────────
-        viewModel.getNewsLiveData().observe(getViewLifecycleOwner(),
-                newsList -> {
-                    if (newsList != null) {
-                        newsAdapter.submitList(newsList);
-                    }
-                });
+        viewModel.getNewsLiveData().observe(getViewLifecycleOwner(), newsList -> {
+            if (newsList != null) newsAdapter.submitList(newsList);
+        });
 
-        // ── Loading indicator ─────────────────────────────────
-        viewModel.getIsLoadingLiveData().observe(getViewLifecycleOwner(),
-                isLoading -> {
-                    // TODO: show/hide a ProgressBar or shimmer here
-                    Log.d(TAG, "News loading: " + isLoading);
-                });
+        viewModel.getIsLoadingLiveData().observe(getViewLifecycleOwner(), isLoading -> {
+            // Hiện/ẩn loading nếu có ProgressBar trong layout
+            // binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            Log.d(TAG, "Loading: " + isLoading);
+        });
     }
 
-    /** Applies {@link StudentProfile} data to the header. */
     private void bindStudentProfile(StudentProfile profile) {
         if (profile == null) return;
         binding.tvUsername.setText(profile.getFullName());
-        // MSSV is passed to QrFragment — no need to display it here
     }
 
     // ═══════════════════════════════════════════════════════════
-    //  Click listeners
+    //  Click handlers
     // ═══════════════════════════════════════════════════════════
 
     private void setupClickListeners() {
-        // Avatar → Profile (TODO: replace Toast once ProfileFragment is merged)
         binding.ivAvatar.setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Trang cá nhân", Toast.LENGTH_SHORT).show()
-        );
+                Toast.makeText(requireContext(),
+                        "Trang cá nhân", Toast.LENGTH_SHORT).show());
 
-        // "+" icon → QR card screen
         binding.ivAddBtn.setOnClickListener(v -> openQrFragment());
+
+        // Nút "Xem thêm thông báo" → mở trình duyệt
+        binding.btnViewAllNews.setOnClickListener(v -> openAllNewsInBrowser());
     }
 
     /**
-     * Handles taps on feature grid cards.
-     * Each case shows a Toast as a placeholder until
-     * the corresponding feature branch is merged.
+     * Mở trang thông báo UTC2 trong trình duyệt mặc định.
      */
+    private void openAllNewsInBrowser() {
+        Intent intent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse(URL_ALL_NEWS));
+        // Fallback nếu không có trình duyệt (rất hiếm)
+        if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Toast.makeText(requireContext(),
+                    "Không tìm thấy trình duyệt", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void handleFeatureClick(String featureId) {
         switch (featureId) {
             case "hoc_phi":
                 Toast.makeText(requireContext(), "Học phí", Toast.LENGTH_SHORT).show();
-                // TODO: navigate to HocPhiFragment
                 break;
             case "dich_vu_cong":
                 Toast.makeText(requireContext(), "Dịch vụ công", Toast.LENGTH_SHORT).show();
@@ -198,34 +184,27 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(requireContext(), "Danh mục khác", Toast.LENGTH_SHORT).show();
                 break;
             default:
-                Log.w(TAG, "Unknown feature id: " + featureId);
+                Log.w(TAG, "Unknown feature: " + featureId);
         }
     }
 
-    /** Handles taps on news rows. */
-    private void handleNewsClick(com.utc2.appreborn.ui.home.model.NewsItem item) {
-        // TODO: navigate to NewsDetailFragment with item.getId()
-        Toast.makeText(requireContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
+    private void handleNewsClick(NewsItem item) {
+        Intent intent = new Intent(requireContext(), NewsDetailActivity.class);
+        intent.putExtra(NewsDetailActivity.EXTRA_TITLE,   item.getTitle());
+        intent.putExtra(NewsDetailActivity.EXTRA_DATE,    item.getDate());
+        intent.putExtra(NewsDetailActivity.EXTRA_CONTENT, item.getContent());
+        startActivity(intent);
     }
 
     // ═══════════════════════════════════════════════════════════
     //  Navigation
     // ═══════════════════════════════════════════════════════════
 
-    /**
-     * Opens the QR-card screen.
-     *
-     * Student profile is read from the ViewModel's cached LiveData
-     * value (already populated from the repository).
-     */
     private void openQrFragment() {
         StudentProfile profile = viewModel.getStudentProfileLiveData().getValue();
-
         String name = (profile != null) ? profile.getFullName()    : "";
         String code = (profile != null) ? profile.getStudentCode() : "";
-
-        QrFragment qrFragment = QrFragment.newInstance(name, code);
-
-        ((MainActivity) requireActivity()).pushFragment(qrFragment, QrFragment.TAG);
+        ((MainActivity) requireActivity())
+                .pushFragment(QrFragment.newInstance(name, code), QrFragment.TAG);
     }
 }

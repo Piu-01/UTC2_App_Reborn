@@ -1,8 +1,10 @@
 package com.utc2.appreborn.ui.home;
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.utc2.appreborn.data.local.StudentProfile;
 import com.utc2.appreborn.data.repository.NewsRepository;
@@ -16,100 +18,65 @@ import java.util.List;
 /**
  * HomeViewModel
  * ──────────────────────────────────────────────────────────────
- * MVVM ViewModel for {@link HomeFragment}.
- *
- * Responsibilities:
- *  • Holds and exposes all UI state as {@link LiveData}.
- *  • Delegates data fetching to repositories.
- *  • Survives configuration changes (rotation, etc.).
- *  • Cleans up resources (cancels active calls) in onCleared().
- *
- * Dependencies:
- *   implementation 'androidx.lifecycle:lifecycle-viewmodel:2.8.3'
- *   implementation 'androidx.lifecycle:lifecycle-livedata:2.8.3'
- *   (usually included transitively via fragment:1.8.3)
+ * Đổi từ ViewModel → AndroidViewModel để có Application context
+ * cho NewsRepository (cần context để khởi tạo SharedPreferences).
  *
  * Package: com.utc2.appreborn.ui.home
  */
-public class HomeViewModel extends ViewModel {
+public class HomeViewModel extends AndroidViewModel {
 
-    // ── Repositories ──────────────────────────────────────────
     private final NewsRepository    newsRepository;
     private final StudentRepository studentRepository;
 
-    // ── Exposed LiveData ──────────────────────────────────────
-
-    /** List of news items (mock → real after API responds). */
-    private final LiveData<List<NewsItem>> newsLiveData;
-
-    /** True while the news API call is in-flight. */
-    private final LiveData<Boolean> isLoadingLiveData;
-
-    /**
-     * Student profile (name + MSSV).
-     * Merged via MediatorLiveData so HomeFragment observes one stream.
-     */
-    private final MediatorLiveData<StudentProfile> studentProfileLiveData =
+    private final LiveData<List<NewsItem>>           newsLiveData;
+    private final LiveData<Boolean>                  isLoadingLiveData;
+    private final MediatorLiveData<StudentProfile>   studentProfileLiveData =
             new MediatorLiveData<>();
 
-    /** The 6 feature items — static, no need for LiveData. */
     private final List<FeatureItem> featureList;
 
-    // ═══════════════════════════════════════════════════════════
-    //  Constructor
-    // ═══════════════════════════════════════════════════════════
+    public HomeViewModel(Application application) {
+        super(application);
 
-    public HomeViewModel() {
-        newsRepository    = NewsRepository.getInstance();
+        // Khởi tạo với context — bắt buộc cho SharedPreferences cache
+        newsRepository    = NewsRepository.getInstance(application);
         studentRepository = StudentRepository.getInstance();
 
         newsLiveData      = newsRepository.getNewsLiveData();
         isLoadingLiveData = newsRepository.getIsLoadingLiveData();
         featureList       = MockHelper.getFeatureList();
 
-        // Wire student profile from repository into MediatorLiveData
         studentProfileLiveData.addSource(
                 studentRepository.getStudentProfile(),
-                studentProfileLiveData::setValue
-        );
+                studentProfileLiveData::setValue);
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  Public API — observed by HomeFragment
-    // ═══════════════════════════════════════════════════════════
+    // ── Public API ────────────────────────────────────────────
 
-    public LiveData<List<NewsItem>> getNewsLiveData() {
-        return newsLiveData;
-    }
+    public LiveData<List<NewsItem>>  getNewsLiveData()           { return newsLiveData;           }
+    public LiveData<Boolean>         getIsLoadingLiveData()      { return isLoadingLiveData;      }
+    public LiveData<StudentProfile>  getStudentProfileLiveData() { return studentProfileLiveData; }
+    public List<FeatureItem>         getFeatureList()            { return featureList;            }
 
-    public LiveData<Boolean> getIsLoadingLiveData() {
-        return isLoadingLiveData;
-    }
-
-    public LiveData<StudentProfile> getStudentProfileLiveData() {
-        return studentProfileLiveData;
-    }
-
-    public List<FeatureItem> getFeatureList() {
-        return featureList;
+    /**
+     * Gọi khi Fragment khởi động.
+     * Chỉ gọi API nếu cache đã hết hạn (> 24h).
+     */
+    public void loadNews() {
+        newsRepository.fetchNewsIfNeeded();
     }
 
     /**
-     * Triggers a fresh news fetch from the API.
-     * Called from HomeFragment's onViewCreated.
+     * Gọi khi người dùng kéo để làm mới (pull-to-refresh).
+     * Bỏ qua cache, gọi API ngay lập tức.
      */
-    public void loadNews() {
-        newsRepository.fetchNews();
+    public void refreshNews() {
+        newsRepository.forceRefresh();
     }
-
-    // ═══════════════════════════════════════════════════════════
-    //  Cleanup
-    // ═══════════════════════════════════════════════════════════
 
     @Override
     protected void onCleared() {
         super.onCleared();
-        // Cancel any in-flight Retrofit call to prevent memory leaks
         newsRepository.cancelActiveCall();
     }
 }
