@@ -1,160 +1,186 @@
 package com.utc2.appreborn.ui.home;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.utc2.appreborn.R;
+import com.utc2.appreborn.data.local.StudentProfile;
+import com.utc2.appreborn.databinding.FragmentHomeBinding;
 import com.utc2.appreborn.ui.home.adapter.FeatureAdapter;
 import com.utc2.appreborn.ui.home.adapter.NewsAdapter;
-import com.utc2.appreborn.ui.home.model.FeatureItem;
-import com.utc2.appreborn.ui.home.model.NewsItem;
+import com.utc2.appreborn.ui.main.MainActivity;
 
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * HomeFragment
+ * ──────────────────────────────────────────────────────────────
+ * Primary landing screen of the app.
+ *
+ * Architecture:
+ *  • View Binding  — no more findViewById() calls.
+ *  • HomeViewModel — all data/logic lives there; Fragment only
+ *    observes LiveData and updates the UI.
+ *  • Repositories  — ViewModel delegates to them; Fragment never
+ *    touches repositories or Retrofit directly.
+ *
+ * Layout:  res/layout/fragment_home.xml
+ * Package: com.utc2.appreborn.ui.home
+ */
 public class HomeFragment extends Fragment {
 
-    private TextView tvUsername;
-    private RecyclerView rvFeatures;
-    private RecyclerView rvNews;
+    private static final String TAG = "HomeFragment";
 
+    // ── View Binding ──────────────────────────────────────────
+    // Nulled out in onDestroyView to avoid memory leaks.
+    private FragmentHomeBinding binding;
+
+    // ── ViewModel ─────────────────────────────────────────────
+    private HomeViewModel viewModel;
+
+    // ── Adapters ──────────────────────────────────────────────
+    private NewsAdapter    newsAdapter;
+    private FeatureAdapter featureAdapter;
+
+    // ── Constructor ───────────────────────────────────────────
     public HomeFragment() {
         super(R.layout.fragment_home);
     }
+
+    // ═══════════════════════════════════════════════════════════
+    //  Lifecycle
+    // ═══════════════════════════════════════════════════════════
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view,
+                              @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        tvUsername = view.findViewById(R.id.tv_username);
-        rvFeatures = view.findViewById(R.id.rv_features);
-        rvNews     = view.findViewById(R.id.rv_news);
+        // Obtain ViewModel scoped to this Fragment
+        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
-        View ivAvatar = view.findViewById(R.id.iv_avatar);
-        View ivAddBtn = view.findViewById(R.id.iv_add_btn);
-
-        loadUserInfo();
         setupFeatureGrid();
         setupNewsFeed();
+        observeViewModel();
+        setupClickListeners();
 
-        ivAvatar.setOnClickListener(v -> {
-            Toast.makeText(requireContext(), "Trang cá nhân", Toast.LENGTH_SHORT).show();
-            // TODO: mở ProfileFragment sau
-        });
-
-        ivAddBtn.setOnClickListener(v -> {
-            Toast.makeText(requireContext(), "Thẻ sinh viên", Toast.LENGTH_SHORT).show();
-            // TODO: mở StudentCardFragment sau
-        });
+        // Kick off the API call
+        viewModel.loadNews();
     }
 
-    // ─────────────────────────────────────────────
-    //  User info from Firebase Auth
-    // ─────────────────────────────────────────────
-    private void loadUserInfo() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            String displayName = user.getDisplayName();
-            if (displayName != null && !displayName.isEmpty()) {
-                tvUsername.setText(displayName);
-            } else {
-                // Fallback: use email prefix
-                String email = user.getEmail();
-                if (email != null) {
-                    tvUsername.setText(email.split("@")[0]);
-                }
-            }
-        }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Prevent memory leak — binding holds a reference to the view hierarchy
+        binding = null;
     }
 
-    // ─────────────────────────────────────────────
-    //  Feature 3×2 Grid
-    // ─────────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    //  Setup helpers
+    // ═══════════════════════════════════════════════════════════
+
+    /** Initialises the 3-column feature RecyclerView. */
     private void setupFeatureGrid() {
-        rvFeatures.setLayoutManager(new GridLayoutManager(requireContext(), 3));
-        rvFeatures.setNestedScrollingEnabled(false);
-        rvFeatures.setHasFixedSize(true);
+        featureAdapter = new FeatureAdapter(
+                viewModel.getFeatureList(),
+                this::handleFeatureClick
+        );
 
-        List<FeatureItem> features = buildFeatureList();
-        FeatureAdapter adapter = new FeatureAdapter(features, this::handleFeatureClick);
-        rvFeatures.setAdapter(adapter);
+        binding.rvFeatures.setLayoutManager(
+                new GridLayoutManager(requireContext(), 3));
+        binding.rvFeatures.setNestedScrollingEnabled(false);
+        binding.rvFeatures.setHasFixedSize(true);
+        binding.rvFeatures.setAdapter(featureAdapter);
     }
 
-    private List<FeatureItem> buildFeatureList() {
-        List<FeatureItem> list = new ArrayList<>();
-        list.add(new FeatureItem("hoc_phi",        R.drawable.ic_hoc_phi,        "Học phí"));
-        list.add(new FeatureItem("dich_vu_cong",   R.drawable.ic_dich_vu_cong,   "Dịch vụ công"));
-        list.add(new FeatureItem("danh_gia",       R.drawable.ic_danh_gia,       "Đánh giá"));
-        list.add(new FeatureItem("ki_tuc_xa",      R.drawable.ic_ki_tuc_xa,      "Kí túc xá"));
-        list.add(new FeatureItem("ho_tro",         R.drawable.ic_ho_tro,         "Hỗ trợ 24/7"));
-        list.add(new FeatureItem("danh_muc_khac",  R.drawable.ic_danh_muc_khac,  "Danh mục khác"));
-        return list;
-    }
-
-    // ─────────────────────────────────────────────
-    //  News Feed (vertical list)
-    // ─────────────────────────────────────────────
+    /**
+     * Initialises the news RecyclerView.
+     * NewsAdapter starts empty; LiveData observer fills it.
+     */
     private void setupNewsFeed() {
-        rvNews.setLayoutManager(new LinearLayoutManager(requireContext()));
-        rvNews.setNestedScrollingEnabled(false);
-        rvNews.setHasFixedSize(false);
+        newsAdapter = new NewsAdapter(this::handleNewsClick);
 
-        List<NewsItem> newsList = buildNewsList();
-        NewsAdapter adapter = new NewsAdapter(newsList, this::handleNewsClick);
-        rvNews.setAdapter(adapter);
+        binding.rvNews.setLayoutManager(
+                new LinearLayoutManager(requireContext()));
+        binding.rvNews.setNestedScrollingEnabled(false);
+        binding.rvNews.setHasFixedSize(false);
+        binding.rvNews.setAdapter(newsAdapter);
     }
 
-    /** Replace with a real API/Firebase call later */
-    private List<NewsItem> buildNewsList() {
-        List<NewsItem> list = new ArrayList<>();
-        list.add(new NewsItem("1",
-                "Thông báo lịch nghỉ lễ 30/4 và 1/5 năm 2025",
-                "20/04/2025",
-                "Nhà trường thông báo lịch nghỉ lễ Giải phóng miền Nam và Quốc tế Lao động."));
-        list.add(new NewsItem("2",
-                "Kết quả xét học bổng học kỳ 2 năm học 2024–2025",
-                "18/04/2025",
-                "Phòng Công tác Sinh viên thông báo danh sách sinh viên được xét học bổng."));
-        list.add(new NewsItem("3",
-                "Thông báo đăng ký học phần học kỳ 3 năm 2025",
-                "15/04/2025",
-                "Sinh viên đăng ký học phần từ ngày 01/05 đến 10/05/2025."));
-        list.add(new NewsItem("4",
-                "Hướng dẫn làm thẻ sinh viên kỳ mới",
-                "10/04/2025",
-                "Sinh viên năm nhất cần nộp ảnh 3×4 tại Phòng Đào tạo trước 30/04."));
-        return list;
+    // ═══════════════════════════════════════════════════════════
+    //  LiveData observers
+    // ═══════════════════════════════════════════════════════════
+
+    private void observeViewModel() {
+        // ── Student profile ───────────────────────────────────
+        viewModel.getStudentProfileLiveData().observe(getViewLifecycleOwner(),
+                this::bindStudentProfile);
+
+        // ── News list ─────────────────────────────────────────
+        viewModel.getNewsLiveData().observe(getViewLifecycleOwner(),
+                newsList -> {
+                    if (newsList != null) {
+                        newsAdapter.submitList(newsList);
+                    }
+                });
+
+        // ── Loading indicator ─────────────────────────────────
+        viewModel.getIsLoadingLiveData().observe(getViewLifecycleOwner(),
+                isLoading -> {
+                    // TODO: show/hide a ProgressBar or shimmer here
+                    Log.d(TAG, "News loading: " + isLoading);
+                });
     }
 
-    // ─────────────────────────────────────────────
-    //  Click Handlers
-    // ─────────────────────────────────────────────
+    /** Applies {@link StudentProfile} data to the header. */
+    private void bindStudentProfile(StudentProfile profile) {
+        if (profile == null) return;
+        binding.tvUsername.setText(profile.getFullName());
+        // MSSV is passed to QrFragment — no need to display it here
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  Click listeners
+    // ═══════════════════════════════════════════════════════════
+
+    private void setupClickListeners() {
+        // Avatar → Profile (TODO: replace Toast once ProfileFragment is merged)
+        binding.ivAvatar.setOnClickListener(v ->
+                Toast.makeText(requireContext(), "Trang cá nhân", Toast.LENGTH_SHORT).show()
+        );
+
+        // "+" icon → QR card screen
+        binding.ivAddBtn.setOnClickListener(v -> openQrFragment());
+    }
+
+    /**
+     * Handles taps on feature grid cards.
+     * Each case shows a Toast as a placeholder until
+     * the corresponding feature branch is merged.
+     */
     private void handleFeatureClick(String featureId) {
-        // TODO: Replace Toasts with proper navigation to each feature screen
         switch (featureId) {
             case "hoc_phi":
                 Toast.makeText(requireContext(), "Học phí", Toast.LENGTH_SHORT).show();
+                // TODO: navigate to HocPhiFragment
                 break;
             case "dich_vu_cong":
                 Toast.makeText(requireContext(), "Dịch vụ công", Toast.LENGTH_SHORT).show();
@@ -171,11 +197,35 @@ public class HomeFragment extends Fragment {
             case "danh_muc_khac":
                 Toast.makeText(requireContext(), "Danh mục khác", Toast.LENGTH_SHORT).show();
                 break;
+            default:
+                Log.w(TAG, "Unknown feature id: " + featureId);
         }
     }
 
-    private void handleNewsClick(NewsItem item) {
-        // TODO: Navigate to NewsDetailActivity / NewsDetailFragment
+    /** Handles taps on news rows. */
+    private void handleNewsClick(com.utc2.appreborn.ui.home.model.NewsItem item) {
+        // TODO: navigate to NewsDetailFragment with item.getId()
         Toast.makeText(requireContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  Navigation
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Opens the QR-card screen.
+     *
+     * Student profile is read from the ViewModel's cached LiveData
+     * value (already populated from the repository).
+     */
+    private void openQrFragment() {
+        StudentProfile profile = viewModel.getStudentProfileLiveData().getValue();
+
+        String name = (profile != null) ? profile.getFullName()    : "";
+        String code = (profile != null) ? profile.getStudentCode() : "";
+
+        QrFragment qrFragment = QrFragment.newInstance(name, code);
+
+        ((MainActivity) requireActivity()).pushFragment(qrFragment, QrFragment.TAG);
     }
 }

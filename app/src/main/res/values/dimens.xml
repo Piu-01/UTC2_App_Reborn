@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    dimens.xml
+    ─────────────────────────────────────────────
+    Create this file at res/values/dimens.xml if it
+    doesn't already exist.  QrFragment reads
+    @dimen/qr_toolbar_height to calculate the correct
+    toolbar height after adding the status-bar inset.
+-->
+<resources>
+    <!-- Base toolbar height for the QR screen (without status bar) -->
+    <dimen name="qr_toolbar_height">56dp</dimen>
+</resources>

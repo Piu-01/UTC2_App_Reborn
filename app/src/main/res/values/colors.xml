@@ -1,16 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    colors.xml — UPDATED
+    ─────────────────────────────────────────────
+    Added @color/qr_btn_primary so all QR-screen
+    buttons use the exact same purple on every device,
+    regardless of Material theme version or OEM skin.
+-->
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
     <!--  Brand accent — lime/yellow-green used in bottom nav bar  -->
     <color name="nav_bar_bg">#C6F135</color>
     <color name="nav_item_color">#FF4081</color>
+
     <!--  Text  -->
     <color name="text_primary">#1A1A1A</color>
     <color name="text_secondary">#757575</color>
+
     <!--  UI elements  -->
     <color name="divider">#E0E0E0</color>
     <color name="card_bg">#F2F2F2</color>
+
     <!--  Feature card dark background  -->
     <color name="feature_card_bg">#1A1A1A</color>
+
+    <!--
+         QR screen buttons — hardcoded purple so the color
+         is IDENTICAL on emulator, real device, dark/light
+         theme, Material2 and Material3.
+         Change this one value to retheme the entire QR screen.
+    -->
+    <color name="qr_btn_primary">#6B47DC</color>
+
 </resources>
