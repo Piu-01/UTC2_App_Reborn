@@ -1,80 +1,94 @@
 package com.utc2.appreborn.data.remote;
 
+import android.util.Log;
+
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * RetrofitClient
- * ──────────────────────────────────────────────────────────────
- * Thread-safe singleton that owns the single {@link Retrofit}
- * instance for the whole application.
- *
- * Required dependencies (add to build.gradle – app module):
- *   implementation 'com.squareup.retrofit2:retrofit:2.11.0'
- *   implementation 'com.squareup.retrofit2:converter-gson:2.11.0'
- *   implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
- *
- * Package: com.utc2.appreborn.data.remote
+ * RetrofitClient v2 — FORCE RESET SINGLETON
+ * Log tag: UTC2_HTTP
  */
 public final class RetrofitClient {
 
-    // ── Config ────────────────────────────────────────────────
-    public static final String BASE_URL       = "https://utc2.edu.vn/api/v1.0/";
-    private static final int   TIMEOUT_SEC    = 30;
+    public static final String BASE_URL = "https://utc2.edu.vn/api/v1.0/";
+    private static final String LOG_TAG = "UTC2_HTTP";
+    private static final int    TIMEOUT = 30;
 
-    // ── Singleton (double-checked locking) ────────────────────
-    private static volatile Retrofit retrofitInstance;
+    // Đổi tên biến buộc compiler tạo instance mới
+    private static volatile Retrofit client;
 
     private RetrofitClient() {}
 
-    /**
-     * Returns the shared {@link Retrofit} instance,
-     * lazily initialised on first call.
-     */
     public static Retrofit getInstance() {
-        if (retrofitInstance == null) {
+        if (client == null) {
             synchronized (RetrofitClient.class) {
-                if (retrofitInstance == null) {
-                    retrofitInstance = buildRetrofit();
-                }
+                if (client == null) { client = build(); }
             }
         }
-        return retrofitInstance;
+        return client;
     }
 
-    /**
-     * Convenience method — creates a typed {@link ApiService}
-     * without the caller needing to call {@code .create()} manually.
-     *
-     * Usage:
-     *   Call<NewsResponse> call = RetrofitClient.api().getPosts(...);
-     */
     public static ApiService api() {
         return getInstance().create(ApiService.class);
     }
 
-    // ── Builder ───────────────────────────────────────────────
-
-    private static Retrofit buildRetrofit() {
-        // Logging interceptor — change to NONE for release builds
-        HttpLoggingInterceptor logger = new HttpLoggingInterceptor();
-        logger.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(TIMEOUT_SEC, TimeUnit.SECONDS)
-                .readTimeout(TIMEOUT_SEC,    TimeUnit.SECONDS)
-                .writeTimeout(TIMEOUT_SEC,   TimeUnit.SECONDS)
-                .addInterceptor(logger)
+    private static Retrofit build() {
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(TIMEOUT,    TimeUnit.SECONDS)
+                .writeTimeout(TIMEOUT,   TimeUnit.SECONDS)
+                .addInterceptor(logInterceptor())
                 .build();
 
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .client(client)
+                .client(httpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+    }
+
+    private static Interceptor logInterceptor() {
+        return chain -> {
+            Request req = chain.request();
+            Log.i(LOG_TAG, "╔══════════════════════════════════════");
+            Log.i(LOG_TAG, "║ REQUEST: " + req.method() + " " + req.url());
+
+            long t1 = System.currentTimeMillis();
+            Response resp;
+            try {
+                resp = chain.proceed(req);
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "║ FAILED: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+                Log.e(LOG_TAG, "╚══════════════════════════════════════");
+                throw e;
+            }
+
+            long ms = System.currentTimeMillis() - t1;
+            Log.i(LOG_TAG, "║ RESPONSE: HTTP " + resp.code() + " (" + ms + "ms)");
+
+            try {
+                ResponseBody peeked = resp.peekBody(Long.MAX_VALUE);
+                String raw = peeked.string();
+                int chunkSize = 3000;
+                for (int i = 0; i < raw.length(); i += chunkSize) {
+                    Log.i(LOG_TAG, "║ BODY[" + (i/chunkSize) + "]: "
+                            + raw.substring(i, Math.min(i + chunkSize, raw.length())));
+                }
+            } catch (Exception e) {
+                Log.w(LOG_TAG, "║ Cannot peek body: " + e.getMessage());
+            }
+
+            Log.i(LOG_TAG, "╚══════════════════════════════════════");
+            return resp;
+        };
     }
 }
