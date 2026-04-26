@@ -74,9 +74,8 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.ViewHolder
         setSpannedText(holder.txtGiangVien,   "Giảng viên: ",      course.getLecturer());
         setSpannedText(holder.txtThoiGian,    "Thời gian: ",       course.getSchedule());
         setSpannedText(holder.txtPhong,       "Phòng: ",           course.getRoom());
-        setSpannedText(holder.txtNgayHoc,     "Bắt đầu: ",
-                course.getNgayBatDau() + " - " + course.getNgayKetThuc());
-        setSpannedText(holder.txtSoTiet,      "Số tiết: ",         String.valueOf(course.getSoTiet()));
+        setSpannedText(holder.txtNgayHoc,     "Bắt đầu: ",  course.getStartDate() + " → " + course.getEndDate());
+        setSpannedText(holder.txtSoTiet,      "Số tiết: ",  String.valueOf(course.getTotalPeriods()));
 
         // ── Thanh sĩ số ──────────────────────────────────────────────────────
         int current = course.getCurrentStudents();
