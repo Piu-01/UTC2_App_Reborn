@@ -7,35 +7,34 @@
 
     <!-- Main building body -->
     <path
-        android:fillColor="#FFFFFF"
+        android:fillColor="#FFD700"
         android:pathData="M10,42 V20 L26,10 L42,20 V42 Z" />
 
-    <!-- Roof triangle -->
+    <!-- Roof (đã fix + đổi vàng) -->
     <path
-        android:fillColor="#DDDDDD"
-        android:pathData="M8,22 L26,8 L44,22 L42,22 L26,11 L10,22 Z" />
+        android:fillColor="#FFD700"
+        android:pathData="M10,20 L26,10 L42,20 Z" />
 
     <!-- Door -->
     <path
-        android:fillColor="#888888"
+        android:fillColor="#000000"
         android:pathData="M22,42 V32 a4,4 0,0 1,8 0v10 Z" />
 
-    <!-- Windows — left column -->
-    <path android:fillColor="#87CEEB" android:pathData="M14,24 h5 a1,1 0 0 1 1,1 v5 a1,1 0 0 1 -1,1 h-5 a1,1 0 0 1 -1,-1 v-5 a1,1 0 0 1 1,-1 z"/>
-    <path android:fillColor="#87CEEB" android:pathData="M14,34 h5 a1,1 0 0 1 1,1 v5 a1,1 0 0 1 -1,1 h-5 a1,1 0 0 1 -1,-1 v-5 a1,1 0 0 1 1,-1 z"/>
+    <!-- Windows -->
+    <path android:fillColor="#000000" android:pathData="M14,24 h5 a1,1 0 0 1 1,1 v5 a1,1 0 0 1 -1,1 h-5 a1,1 0 0 1 -1,-1 v-5 a1,1 0 0 1 1,-1 z"/>
+    <path android:fillColor="#000000" android:pathData="M14,34 h5 a1,1 0 0 1 1,1 v5 a1,1 0 0 1 -1,1 h-5 a1,1 0 0 1 -1,-1 v-5 a1,1 0 0 1 1,-1 z"/>
+    <path android:fillColor="#000000" android:pathData="M33,24 h5 a1,1 0 0 1 1,1 v5 a1,1 0 0 1 -1,1 h-5 a1,1 0 0 1 -1,-1 v-5 a1,1 0 0 1 1,-1 z"/>
+    <path android:fillColor="#000000" android:pathData="M33,34 h5 a1,1 0 0 1 1,1 v5 a1,1 0 0 1 -1,1 h-5 a1,1 0 0 1 -1,-1 v-5 a1,1 0 0 1 1,-1 z"/>
 
-    <!-- Windows — right column -->
-    <path android:fillColor="#87CEEB" android:pathData="M33,24 h5 a1,1 0 0 1 1,1 v5 a1,1 0 0 1 -1,1 h-5 a1,1 0 0 1 -1,-1 v-5 a1,1 0 0 1 1,-1 z"/>
-    <path android:fillColor="#87CEEB" android:pathData="M33,34 h5 a1,1 0 0 1 1,1 v5 a1,1 0 0 1 -1,1 h-5 a1,1 0 0 1 -1,-1 v-5 a1,1 0 0 1 1,-1 z"/>
-
-    <!-- Ground line -->
+    <!-- Ground -->
     <path
-        android:strokeColor="#CCCCCC"
+        android:strokeColor="#000000"
         android:strokeWidth="2"
         android:pathData="M6,42 H46" />
 
-    <!-- Small chimney / flag on roof -->
+    <!-- Chimney -->
     <path
-        android:fillColor="#AAAAAA"
+        android:fillColor="#000000"
         android:pathData="M24,10 V6 h4 v4 Z" />
+
 </vector>

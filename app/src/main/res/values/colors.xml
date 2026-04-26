@@ -16,21 +16,21 @@
     <color name="card_bg">#F5F5F5</color>
     <color name="feature_card_bg">#1A1A1A</color>
 
-    <!--
-        PRIMARY ACCENT — Vàng (thay toàn bộ tím #6B47DC)
-        Dùng cho: Button filled, Badge MSSV, icon tint, stroke
-    -->
+    <!-- Primary accent — Vàng -->
     <color name="accent_yellow">#FFC107</color>
     <color name="accent_yellow_dark">#F9A825</color>
     <color name="accent_yellow_light">#FFF8E1</color>
-
-    <!-- Text trên nền vàng → dùng đen để tương phản cao -->
     <color name="on_accent">#1A1A1A</color>
 
-    <!--
-        Alias giữ tên cũ để không phải sửa hàng loạt file.
-        qr_btn_primary trỏ đến vàng thay vì tím cũ.
-    -->
+    <!-- Alias giữ tên cũ -->
     <color name="qr_btn_primary">#FFC107</color>
     <color name="qr_btn_primary_text">#1A1A1A</color>
+
+    <!--
+        Toolbar collapsed background.
+        Màu này được dùng trong 2 chỗ:
+          1. app:contentScrim trong CollapsingToolbarLayout (XML)
+          2. AppBarLayout.OnOffsetChangedListener (Java) khi set icon tint
+    -->
+    <color name="toolbar_collapsed_bg">#1E1E1E</color>
 </resources>

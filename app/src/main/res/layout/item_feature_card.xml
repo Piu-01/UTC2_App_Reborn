@@ -1,44 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Feature card item.
-    Layout: icon (upper 60%) + label (lower 40%).
-    Background: rounded dark rectangle.
-    Size is determined by the 3-column GridLayoutManager.
+    item_feature_card.xml — REDESIGNED
+    ──────────────────────────────────────────────────────────────
+    Thay đổi:
+      • LinearLayout → MaterialCardView (nổi, bo góc, shadow)
+      • Nền: trắng (#FFFFFF) thay vì nền tối
+      • Text: đen #333333 thay vì trắng
+      • Elevation 6dp + cornerRadius 12dp
+      • Icon vẫn 52dp nhưng tint theo màu accent (#FFC107)
+
+    IDs giữ nguyên: iv_feature_icon, tv_feature_title
 -->
-<LinearLayout
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
-    android:orientation="vertical"
-    android:gravity="center"
+    android:layout_height="110dp"
     android:layout_margin="6dp"
-    android:background="@drawable/bg_feature_card"
-    android:padding="10dp"
+    app:cardElevation="6dp"
+    app:cardCornerRadius="12dp"
+    app:cardBackgroundColor="@color/white"
+    app:rippleColor="@color/accent_yellow_light"
     android:clickable="true"
-    android:focusable="true"
-    android:foreground="?attr/selectableItemBackgroundBorderless">
+    android:focusable="true">
 
-    <!-- Feature icon — large, centred in the upper portion -->
-    <ImageView
-        android:id="@+id/iv_feature_icon"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
-        android:layout_gravity="center_horizontal"
-        android:scaleType="fitCenter"
-        android:contentDescription="" />
-
-    <!-- Feature label — white, bold, centred at bottom -->
-    <TextView
-        android:id="@+id/tv_feature_title"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:gravity="center"
-        android:textColor="#FFFFFF"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:lineSpacingMultiplier="1.1" />
+        android:padding="10dp">
 
-</LinearLayout>
+        <!-- Feature icon — accent yellow tint -->
+        <ImageView
+            android:id="@+id/iv_feature_icon"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:scaleType="fitCenter"
+            android:contentDescription="" />
+
+        <!-- Feature label — dark text on white card -->
+        <TextView
+            android:id="@+id/tv_feature_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:gravity="center"
+            android:textColor="#333333"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:lineSpacingMultiplier="1.1" />
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

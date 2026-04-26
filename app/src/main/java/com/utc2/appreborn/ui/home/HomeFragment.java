@@ -1,12 +1,15 @@
 package com.utc2.appreborn.ui.home;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,18 +19,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.utc2.appreborn.R;
 import com.utc2.appreborn.data.local.StudentProfile;
-
-/* ── BỎ COMMENT KHI CÓ ROOM DB ────────────────────────────────
-import com.utc2.appreborn.data.local.AppDatabase;
-import com.utc2.appreborn.data.local.UserDao;
-import com.utc2.appreborn.data.local.StudentDao;
-import com.utc2.appreborn.data.local.UserEntity;
-import com.utc2.appreborn.data.local.StudentEntity;
-import java.util.concurrent.Executors;
-─────────────────────────────────────────────────────────────── */
-
 import com.utc2.appreborn.databinding.FragmentHomeBinding;
 import com.utc2.appreborn.ui.home.adapter.FeatureAdapter;
 import com.utc2.appreborn.ui.home.adapter.NewsAdapter;
@@ -37,17 +31,13 @@ import com.utc2.appreborn.ui.news.NewsDetailActivity;
 import com.utc2.appreborn.utils.MockHelper;
 
 /**
- * HomeFragment
+ * HomeFragment — REDESIGNED
  * ──────────────────────────────────────────────────────────────
- * Thay đổi trong version này:
- *
- *  FIX: Nút "Xem thêm thông báo" không mở browser trên Android 11+.
- *    Root cause: intent.resolveActivity() trả về null trên API 30+
- *    vì thiếu <queries> trong AndroidManifest.xml.
- *    Fix: Dùng try/catch startActivity() trực tiếp thay vì
- *    kiểm tra resolveActivity().
- *
- *  NEW: Header hiển thị tên + MSSV từ Mock, sẵn sàng switch sang DB.
+ * Thay đổi:
+ *   • Toolbar sticky với 3 nút mới: QR, Search, Notification
+ *   • Scroll listener: icon toolbar đổi tint trắng → vàng khi
+ *     AppBarLayout collapsed (nền chuyển sang #1E1E1E)
+ *   • Tách riêng hàm xử lý cho từng nút icon
  *
  * Package: com.utc2.appreborn.ui.home
  */
@@ -56,10 +46,16 @@ public class HomeFragment extends Fragment {
     private static final String TAG          = "HomeFragment";
     private static final String URL_ALL_NEWS = "https://utc2.edu.vn/sinh-vien/thong-bao";
 
+    // Ngưỡng % collapse để coi là "đã collapsed" (90%)
+    private static final float COLLAPSE_THRESHOLD = 0.9f;
+
     private FragmentHomeBinding binding;
     private HomeViewModel       viewModel;
     private NewsAdapter         newsAdapter;
     private FeatureAdapter      featureAdapter;
+
+    // Trạng thái toolbar — tránh set màu lặp liên tục
+    private boolean isToolbarCollapsed = false;
 
     public HomeFragment() { super(R.layout.fragment_home); }
 
@@ -87,7 +83,7 @@ public class HomeFragment extends Fragment {
         setupNewsFeed();
         observeViewModel();
         setupClickListeners();
-        loadUserHeader();   // ← hiển thị tên người dùng
+        setupToolbarScrollBehavior();
 
         viewModel.loadNews();
     }
@@ -99,49 +95,69 @@ public class HomeFragment extends Fragment {
     }
 
     // ═══════════════════════════════════════════════════════════
-    //  Header — tên + MSSV
+    //  Scroll behavior — toolbar color change
     // ═══════════════════════════════════════════════════════════
 
     /**
-     * Hiển thị tên người dùng trong header.
+     * Lắng nghe AppBarLayout offset để biết khi nào toolbar
+     * đã collapsed hoàn toàn, rồi đổi tint icon theo nền.
      *
-     * HIỆN TẠI: lấy từ Mock qua StudentRepository (đã có sẵn).
+     * Logic:
+     *   • Expanded (ảnh hiện): icon trắng (#FFFFFF)
+     *   • Collapsed (nền đen #1E1E1E): icon vàng (#FFC107) để
+     *     contrast tốt hơn trên nền tối
      *
-     * KHI CÓ ROOM DB: bỏ comment đoạn DB bên dưới,
-     * xoá/comment đoạn Mock bên trên.
+     * app:contentScrim="@color/toolbar_collapsed_bg" trong XML đã
+     * tự xử lý việc đổi màu nền Toolbar khi cuộn — đây chỉ là
+     * phần đổi màu icon đi kèm.
      */
-    private void loadUserHeader() {
+    private void setupToolbarScrollBehavior() {
+        binding.appBarLayout.addOnOffsetChangedListener(
+                new AppBarLayout.OnOffsetChangedListener() {
+                    @Override
+                    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                        int totalScrollRange = appBarLayout.getTotalScrollRange();
+                        if (totalScrollRange == 0) return;
 
-        // ── ĐANG DÙNG: Mock via ViewModel/Repository ──────────
-        // (tự động được observe trong observeViewModel())
+                        // collapsePercent: 0.0 = fully expanded, 1.0 = fully collapsed
+                        float collapsePercent =
+                                Math.abs(verticalOffset) / (float) totalScrollRange;
 
-        /* ── BỎ COMMENT KHI CÓ ROOM DB ──────────────────────────
-        long currentUserId = getCurrentUserIdFromFirebase();
+                        boolean shouldBeCollapsed = collapsePercent >= COLLAPSE_THRESHOLD;
 
-        AppDatabase db = AppDatabase.getInstance(requireContext());
-        UserDao    userDao    = db.userDao();
-        StudentDao studentDao = db.studentDao();
-
-        // Observe từ DB — tự cập nhật khi data thay đổi
-        userDao.getUserById(currentUserId)
-               .observe(getViewLifecycleOwner(), userEntity -> {
-                   if (userEntity != null) {
-                       binding.tvUsername.setText(userEntity.getFullName());
-                   }
-               });
-        ─────────────────────────────────────────────────────── */
+                        // Chỉ update khi trạng thái thay đổi (tránh redraw liên tục)
+                        if (shouldBeCollapsed != isToolbarCollapsed) {
+                            isToolbarCollapsed = shouldBeCollapsed;
+                            updateToolbarIconTint(isToolbarCollapsed);
+                        }
+                    }
+                });
     }
 
-    /* ── BỎ COMMENT KHI CÓ ROOM DB ────────────────────────────
-    private long getCurrentUserIdFromFirebase() {
-        // Map Firebase UID (String) sang user_id (Long) của bảng USER
-        // Tuỳ cách bạn lưu mapping này — SharedPreferences hoặc Firestore
-        return 1L; // placeholder
+    /**
+     * Đổi tint của 3 icon toolbar + các ImageView trong toolbar.
+     *
+     * @param collapsed true = toolbar đang collapsed (nền tối)
+     */
+    private void updateToolbarIconTint(boolean collapsed) {
+        // Expanded → trắng / Collapsed → vàng (accent_yellow)
+        int tintColor = collapsed
+                ? getResources().getColor(R.color.accent_yellow, null)
+                : Color.WHITE;
+
+        ColorStateList tintList = ColorStateList.valueOf(tintColor);
+
+        binding.btnQr.setImageTintList(tintList);
+        binding.btnSearch.setImageTintList(tintList);
+        binding.btnNotification.setImageTintList(tintList);
+
+        // iv_add_btn và username text cũng cần đổi màu
+        binding.ivAddBtn.setImageTintList(tintList);
+        binding.tvUsername.setTextColor(tintColor);
     }
-    ─────────────────────────────────────────────────────────── */
 
     // ═══════════════════════════════════════════════════════════
-    //  Setup RecyclerViews
+    //  RecyclerViews
     // ═══════════════════════════════════════════════════════════
 
     private void setupFeatureGrid() {
@@ -172,8 +188,8 @@ public class HomeFragment extends Fragment {
             if (list != null) newsAdapter.submitList(list);
         });
 
-        viewModel.getIsLoadingLiveData().observe(getViewLifecycleOwner(), isLoading ->
-                Log.d(TAG, "Loading: " + isLoading));
+        viewModel.getIsLoadingLiveData().observe(getViewLifecycleOwner(), loading ->
+                Log.d(TAG, "Loading: " + loading));
     }
 
     private void bindStudentProfile(StudentProfile profile) {
@@ -186,14 +202,29 @@ public class HomeFragment extends Fragment {
     // ═══════════════════════════════════════════════════════════
 
     private void setupClickListeners() {
+        // Cũ — giữ nguyên
         binding.ivAvatar.setOnClickListener(v ->
                 Toast.makeText(requireContext(), "Trang cá nhân", Toast.LENGTH_SHORT).show());
 
+        // iv_add_btn → vẫn mở QR (giống trước)
         binding.ivAddBtn.setOnClickListener(v -> openQrFragment());
 
-        // Nút xem thêm → mở trình duyệt
+        // ── 3 NÚT MỚI TRÊN TOOLBAR ───────────────────────────
+
+        // Nút QR (icon bên phải)
+        binding.btnQr.setOnClickListener(v -> openQrFragment());
+
+        // Nút Tìm kiếm
+        binding.btnSearch.setOnClickListener(v -> handleSearchClick());
+
+        // Nút Thông báo
+        binding.btnNotification.setOnClickListener(v -> handleNotificationClick());
+
+        // Nút xem thêm trên web
         binding.btnViewAllNews.setOnClickListener(v -> openAllNewsInBrowser());
     }
+
+    // ── Feature grid clicks ───────────────────────────────────
 
     private void handleFeatureClick(String featureId) {
         switch (featureId) {
@@ -220,6 +251,8 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    // ── News click ────────────────────────────────────────────
+
     private void handleNewsClick(NewsItem item) {
         Intent intent = new Intent(requireContext(), NewsDetailActivity.class);
         intent.putExtra(NewsDetailActivity.EXTRA_TITLE,   item.getTitle());
@@ -228,37 +261,50 @@ public class HomeFragment extends Fragment {
         startActivity(intent);
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  Navigation
-    // ═══════════════════════════════════════════════════════════
+    // ── 3 toolbar button handlers ─────────────────────────────
 
     /**
-     * FIX: Nút "Xem thêm thông báo" không hoạt động trên Android 11+.
-     *
-     * Nguyên nhân: resolveActivity() trả về null trên API 30+ khi
-     * thiếu <queries> trong AndroidManifest.xml (package visibility).
-     *
-     * Fix: Dùng try/catch startActivity() trực tiếp — nếu không có
-     * app nào xử lý được thì catch ActivityNotFoundException.
+     * Tìm kiếm — TODO: mở SearchFragment hoặc Activity.
+     * Hiện tại show Toast để giữ chỗ.
+     */
+    private void handleSearchClick() {
+        Toast.makeText(requireContext(), "Tìm kiếm", Toast.LENGTH_SHORT).show();
+        // TODO: startActivity(new Intent(requireContext(), SearchActivity.class));
+    }
+
+    /**
+     * Thông báo — TODO: mở NotificationFragment.
+     * Hiện tại show Toast để giữ chỗ.
+     */
+    private void handleNotificationClick() {
+        Toast.makeText(requireContext(), "Thông báo", Toast.LENGTH_SHORT).show();
+        // TODO: ((MainActivity) requireActivity()).pushFragment(new NotificationFragment(), "tag_notification");
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  Navigation helpers
+    // ═══════════════════════════════════════════════════════════
+
+    private void openQrFragment() {
+        StudentProfile profile = viewModel.getStudentProfileLiveData().getValue();
+        String name = (profile != null) ? profile.getFullName()    : MockHelper.getMockFullName();
+        String code = (profile != null) ? profile.getStudentCode() : MockHelper.getMockStudentCode();
+        ((MainActivity) requireActivity())
+                .pushFragment(QrFragment.newInstance(name, code), QrFragment.TAG);
+    }
+
+    /**
+     * Mở trang thông báo web UTC2 trong browser.
+     * Fix Android 11+: try/catch thay vì resolveActivity().
      */
     private void openAllNewsInBrowser() {
         try {
-            Intent intent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(URL_ALL_NEWS));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(URL_ALL_NEWS));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         } catch (android.content.ActivityNotFoundException e) {
             Toast.makeText(requireContext(),
                     "Không tìm thấy trình duyệt", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void openQrFragment() {
-        StudentProfile profile = viewModel.getStudentProfileLiveData().getValue();
-        String name = (profile != null) ? profile.getFullName()    : MockHelper.getMockFullName();
-        String code = (profile != null) ? profile.getStudentCode() : MockHelper.getMockStudentCode();
-
-        ((MainActivity) requireActivity())
-                .pushFragment(QrFragment.newInstance(name, code), QrFragment.TAG);
     }
 }
