@@ -9,11 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -31,13 +33,19 @@ import com.utc2.appreborn.ui.news.NewsDetailActivity;
 import com.utc2.appreborn.utils.MockHelper;
 
 /**
- * HomeFragment — REDESIGNED
+ * HomeFragment — FINAL FIXES
  * ──────────────────────────────────────────────────────────────
- * Thay đổi:
- *   • Toolbar sticky với 3 nút mới: QR, Search, Notification
- *   • Scroll listener: icon toolbar đổi tint trắng → vàng khi
- *     AppBarLayout collapsed (nền chuyển sang #1E1E1E)
- *   • Tách riêng hàm xử lý cho từng nút icon
+ * Fix 1 — Status bar overlap (Android 15 edge-to-edge):
+ *   Dùng WindowInsetsCompat để đọc chiều cao status bar thực,
+ *   rồi set lên View statusBarSpacer trong layout. Cách này hoạt
+ *   động đúng trên mọi thiết bị, mọi API level, kể cả SDK 36.
+ *
+ * Fix 2 — Profile bar bị che khi scroll:
+ *   Toolbar đã có android:elevation="8dp" trong layout.
+ *   Thêm bUpdateToolbarIconTint() để đổi tint đúng lúc.
+ *
+ * Fix 3 — Bỏ iv_add_btn:
+ *   Đã xóa khỏi layout và toàn bộ listener liên quan.
  *
  * Package: com.utc2.appreborn.ui.home
  */
@@ -46,16 +54,14 @@ public class HomeFragment extends Fragment {
     private static final String TAG          = "HomeFragment";
     private static final String URL_ALL_NEWS = "https://utc2.edu.vn/sinh-vien/thong-bao";
 
-    // Ngưỡng % collapse để coi là "đã collapsed" (90%)
-    private static final float COLLAPSE_THRESHOLD = 0.9f;
+    // Ngưỡng collapsed (0.0 = fully expanded, 1.0 = fully collapsed)
+    private static final float COLLAPSE_THRESHOLD = 0.85f;
 
     private FragmentHomeBinding binding;
     private HomeViewModel       viewModel;
     private NewsAdapter         newsAdapter;
     private FeatureAdapter      featureAdapter;
-
-    // Trạng thái toolbar — tránh set màu lặp liên tục
-    private boolean isToolbarCollapsed = false;
+    private boolean             isToolbarCollapsed = false;
 
     public HomeFragment() { super(R.layout.fragment_home); }
 
@@ -79,6 +85,8 @@ public class HomeFragment extends Fragment {
 
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
+        // Thứ tự quan trọng: insets trước, rồi mới setup các phần còn lại
+        applyStatusBarInset();
         setupFeatureGrid();
         setupNewsFeed();
         observeViewModel();
@@ -95,69 +103,85 @@ public class HomeFragment extends Fragment {
     }
 
     // ═══════════════════════════════════════════════════════════
-    //  Scroll behavior — toolbar color change
+    //  FIX 1 — Status bar inset
     // ═══════════════════════════════════════════════════════════
 
     /**
-     * Lắng nghe AppBarLayout offset để biết khi nào toolbar
-     * đã collapsed hoàn toàn, rồi đổi tint icon theo nền.
+     * Đọc chiều cao status bar thực từ WindowInsets và set lên
+     * View statusBarSpacer (height ban đầu = 0dp trong XML).
      *
-     * Logic:
-     *   • Expanded (ảnh hiện): icon trắng (#FFFFFF)
-     *   • Collapsed (nền đen #1E1E1E): icon vàng (#FFC107) để
-     *     contrast tốt hơn trên nền tối
+     * Tại sao không dùng fitsSystemWindows="true":
+     *   Android 15 (API 35+) bắt buộc edge-to-edge cho app targetSdk ≥ 35.
+     *   Trong Fragment, fitsSystemWindows không được đảm bảo dispatch
+     *   đúng qua toàn bộ view hierarchy. Cách dùng WindowInsetsCompat
+     *   trực tiếp hoạt động đáng tin cậy trên mọi API level.
      *
-     * app:contentScrim="@color/toolbar_collapsed_bg" trong XML đã
-     * tự xử lý việc đổi màu nền Toolbar khi cuộn — đây chỉ là
-     * phần đổi màu icon đi kèm.
+     * Kết quả:
+     *   statusBarSpacer = 24dp (hoặc bất kỳ giá trị thực của device)
+     *   CoordinatorLayout bắt đầu ngay dưới status bar ✓
+     *   Ảnh hero KHÔNG đè lên status bar ✓
+     */
+    private void applyStatusBarInset() {
+        ViewCompat.setOnApplyWindowInsetsListener(
+                binding.getRoot(),
+                (v, windowInsets) -> {
+                    Insets statusBars = windowInsets.getInsets(
+                            WindowInsetsCompat.Type.statusBars());
+
+                    // Set chiều cao statusBarSpacer = chiều cao status bar thực
+                    ViewGroup.LayoutParams lp = binding.statusBarSpacer.getLayoutParams();
+                    lp.height = statusBars.top;
+                    binding.statusBarSpacer.setLayoutParams(lp);
+
+                    // Trả về CONSUMED để các view con không xử lý lại insets này
+                    return WindowInsetsCompat.CONSUMED;
+                }
+        );
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  FIX 2 — Toolbar scroll behavior (icon tint)
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Theo dõi AppBarLayout offset để biết khi nào Toolbar collapsed.
+     *
+     * Khi collapsed (nền #1E1E1E - màu tối):
+     *   Icon 3 nút đổi sang vàng #FFC107 — tương phản cao trên nền tối.
+     * Khi expanded (nền là ảnh):
+     *   Icon giữ nguyên trắng — dễ đọc trên ảnh + gradient overlay.
      */
     private void setupToolbarScrollBehavior() {
         binding.appBarLayout.addOnOffsetChangedListener(
-                new AppBarLayout.OnOffsetChangedListener() {
-                    @Override
-                    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                        int totalScrollRange = appBarLayout.getTotalScrollRange();
-                        if (totalScrollRange == 0) return;
+                (appBarLayout, verticalOffset) -> {
+                    int total = appBarLayout.getTotalScrollRange();
+                    if (total == 0) return;
 
-                        // collapsePercent: 0.0 = fully expanded, 1.0 = fully collapsed
-                        float collapsePercent =
-                                Math.abs(verticalOffset) / (float) totalScrollRange;
+                    float collapseRatio = Math.abs(verticalOffset) / (float) total;
+                    boolean collapsed  = collapseRatio >= COLLAPSE_THRESHOLD;
 
-                        boolean shouldBeCollapsed = collapsePercent >= COLLAPSE_THRESHOLD;
-
-                        // Chỉ update khi trạng thái thay đổi (tránh redraw liên tục)
-                        if (shouldBeCollapsed != isToolbarCollapsed) {
-                            isToolbarCollapsed = shouldBeCollapsed;
-                            updateToolbarIconTint(isToolbarCollapsed);
-                        }
+                    if (collapsed != isToolbarCollapsed) {
+                        isToolbarCollapsed = collapsed;
+                        applyToolbarIconTint(collapsed);
                     }
                 });
     }
 
-    /**
-     * Đổi tint của 3 icon toolbar + các ImageView trong toolbar.
-     *
-     * @param collapsed true = toolbar đang collapsed (nền tối)
-     */
-    private void updateToolbarIconTint(boolean collapsed) {
-        // Expanded → trắng / Collapsed → vàng (accent_yellow)
-        int tintColor = collapsed
-                ? getResources().getColor(R.color.accent_yellow, null)
+    private void applyToolbarIconTint(boolean collapsed) {
+        // Expanded → trắng | Collapsed → vàng
+        int color = collapsed
+                ? requireContext().getColor(R.color.accent_yellow)
                 : Color.WHITE;
-
-        ColorStateList tintList = ColorStateList.valueOf(tintColor);
+        ColorStateList tintList = ColorStateList.valueOf(color);
 
         binding.btnQr.setImageTintList(tintList);
         binding.btnSearch.setImageTintList(tintList);
         binding.btnNotification.setImageTintList(tintList);
-
-        // iv_add_btn và username text cũng cần đổi màu
-        binding.ivAddBtn.setImageTintList(tintList);
-        binding.tvUsername.setTextColor(tintColor);
+        binding.tvUsername.setTextColor(color);
     }
 
     // ═══════════════════════════════════════════════════════════
-    //  RecyclerViews
+    //  Setup RecyclerViews
     // ═══════════════════════════════════════════════════════════
 
     private void setupFeatureGrid() {
@@ -182,19 +206,16 @@ public class HomeFragment extends Fragment {
 
     private void observeViewModel() {
         viewModel.getStudentProfileLiveData()
-                .observe(getViewLifecycleOwner(), this::bindStudentProfile);
+                .observe(getViewLifecycleOwner(), profile -> {
+                    if (profile != null) binding.tvUsername.setText(profile.getFullName());
+                });
 
         viewModel.getNewsLiveData().observe(getViewLifecycleOwner(), list -> {
             if (list != null) newsAdapter.submitList(list);
         });
 
-        viewModel.getIsLoadingLiveData().observe(getViewLifecycleOwner(), loading ->
-                Log.d(TAG, "Loading: " + loading));
-    }
-
-    private void bindStudentProfile(StudentProfile profile) {
-        if (profile == null) return;
-        binding.tvUsername.setText(profile.getFullName());
+        viewModel.getIsLoadingLiveData().observe(getViewLifecycleOwner(),
+                loading -> Log.d(TAG, "Loading: " + loading));
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -202,56 +223,42 @@ public class HomeFragment extends Fragment {
     // ═══════════════════════════════════════════════════════════
 
     private void setupClickListeners() {
-        // Cũ — giữ nguyên
+        // Avatar → trang cá nhân
         binding.ivAvatar.setOnClickListener(v ->
                 Toast.makeText(requireContext(), "Trang cá nhân", Toast.LENGTH_SHORT).show());
 
-        // iv_add_btn → vẫn mở QR (giống trước)
-        binding.ivAddBtn.setOnClickListener(v -> openQrFragment());
+        // FIX 3: KHÔNG còn binding.ivAddBtn — đã xóa khỏi layout
 
-        // ── 3 NÚT MỚI TRÊN TOOLBAR ───────────────────────────
-
-        // Nút QR (icon bên phải)
+        // 3 nút icon toolbar
         binding.btnQr.setOnClickListener(v -> openQrFragment());
-
-        // Nút Tìm kiếm
         binding.btnSearch.setOnClickListener(v -> handleSearchClick());
-
-        // Nút Thông báo
         binding.btnNotification.setOnClickListener(v -> handleNotificationClick());
 
-        // Nút xem thêm trên web
+        // Xem thêm trên web
         binding.btnViewAllNews.setOnClickListener(v -> openAllNewsInBrowser());
     }
 
-    // ── Feature grid clicks ───────────────────────────────────
+    // ─── Feature clicks ───────────────────────────────────────
 
     private void handleFeatureClick(String featureId) {
         switch (featureId) {
             case "hoc_phi":
-                Toast.makeText(requireContext(), "Học phí", Toast.LENGTH_SHORT).show();
-                break;
+                Toast.makeText(requireContext(), "Học phí", Toast.LENGTH_SHORT).show(); break;
             case "dich_vu_cong":
-                Toast.makeText(requireContext(), "Dịch vụ công", Toast.LENGTH_SHORT).show();
-                break;
+                Toast.makeText(requireContext(), "Dịch vụ công", Toast.LENGTH_SHORT).show(); break;
             case "danh_gia":
-                Toast.makeText(requireContext(), "Đánh giá", Toast.LENGTH_SHORT).show();
-                break;
+                Toast.makeText(requireContext(), "Đánh giá", Toast.LENGTH_SHORT).show(); break;
             case "ki_tuc_xa":
-                Toast.makeText(requireContext(), "Kí túc xá", Toast.LENGTH_SHORT).show();
-                break;
+                Toast.makeText(requireContext(), "Kí túc xá", Toast.LENGTH_SHORT).show(); break;
             case "ho_tro":
-                Toast.makeText(requireContext(), "Hỗ trợ 24/7", Toast.LENGTH_SHORT).show();
-                break;
+                Toast.makeText(requireContext(), "Hỗ trợ 24/7", Toast.LENGTH_SHORT).show(); break;
             case "danh_muc_khac":
-                Toast.makeText(requireContext(), "Danh mục khác", Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                Log.w(TAG, "Unknown feature: " + featureId);
+                Toast.makeText(requireContext(), "Danh mục khác", Toast.LENGTH_SHORT).show(); break;
+            default: Log.w(TAG, "Unknown feature: " + featureId);
         }
     }
 
-    // ── News click ────────────────────────────────────────────
+    // ─── News click ───────────────────────────────────────────
 
     private void handleNewsClick(NewsItem item) {
         Intent intent = new Intent(requireContext(), NewsDetailActivity.class);
@@ -261,42 +268,30 @@ public class HomeFragment extends Fragment {
         startActivity(intent);
     }
 
-    // ── 3 toolbar button handlers ─────────────────────────────
+    // ─── 3 toolbar button handlers ────────────────────────────
 
-    /**
-     * Tìm kiếm — TODO: mở SearchFragment hoặc Activity.
-     * Hiện tại show Toast để giữ chỗ.
-     */
     private void handleSearchClick() {
+        // TODO: mở SearchFragment
         Toast.makeText(requireContext(), "Tìm kiếm", Toast.LENGTH_SHORT).show();
-        // TODO: startActivity(new Intent(requireContext(), SearchActivity.class));
     }
 
-    /**
-     * Thông báo — TODO: mở NotificationFragment.
-     * Hiện tại show Toast để giữ chỗ.
-     */
     private void handleNotificationClick() {
+        // TODO: mở NotificationFragment
         Toast.makeText(requireContext(), "Thông báo", Toast.LENGTH_SHORT).show();
-        // TODO: ((MainActivity) requireActivity()).pushFragment(new NotificationFragment(), "tag_notification");
     }
 
     // ═══════════════════════════════════════════════════════════
-    //  Navigation helpers
+    //  Navigation
     // ═══════════════════════════════════════════════════════════
 
     private void openQrFragment() {
-        StudentProfile profile = viewModel.getStudentProfileLiveData().getValue();
-        String name = (profile != null) ? profile.getFullName()    : MockHelper.getMockFullName();
-        String code = (profile != null) ? profile.getStudentCode() : MockHelper.getMockStudentCode();
+        StudentProfile p = viewModel.getStudentProfileLiveData().getValue();
+        String name = (p != null) ? p.getFullName()    : MockHelper.getMockFullName();
+        String code = (p != null) ? p.getStudentCode() : MockHelper.getMockStudentCode();
         ((MainActivity) requireActivity())
                 .pushFragment(QrFragment.newInstance(name, code), QrFragment.TAG);
     }
 
-    /**
-     * Mở trang thông báo web UTC2 trong browser.
-     * Fix Android 11+: try/catch thay vì resolveActivity().
-     */
     private void openAllNewsInBrowser() {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(URL_ALL_NEWS));
