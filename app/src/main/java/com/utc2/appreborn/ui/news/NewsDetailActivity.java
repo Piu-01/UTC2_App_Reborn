@@ -2,6 +2,7 @@ package com.utc2.appreborn.ui.news;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.View;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -12,40 +13,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.utc2.appreborn.databinding.ActivityNewsDetailBinding;
 
 /**
- * NewsDetailActivity
+ * NewsDetailActivity — UPDATED
  * ──────────────────────────────────────────────────────────────
- * Displays the full HTML content of a news post in a WebView.
+ * Thay đổi: List API không trả về content HTML.
+ * Thay vào đó, EXTRA_CONTENT giờ chứa URL trang chi tiết
+ * (https://utc2.edu.vn/sinh-vien/thong-bao/{seo_text}).
  *
- * Receives data via Intent extras:
- *   EXTRA_TITLE   — post title shown in the toolbar
- *   EXTRA_DATE    — formatted date string shown below the title
- *   EXTRA_CONTENT — raw HTML body from the API  (PostDto.content)
- *
- * WebView config:
- *   • JavaScript enabled (some CMS posts use inline scripts)
- *   • CSS wrapper: max-width 100% on all images to prevent overflow
- *   • Links open INSIDE the WebView (no external browser launch)
- *
- * Add to AndroidManifest.xml inside <application>:
- *   <activity
- *       android:name=".ui.news.NewsDetailActivity"
- *       android:parentActivityName=".ui.main.MainActivity"
- *       android:exported="false" />
+ * Logic:
+ *   • Nếu content bắt đầu bằng "http" → loadUrl() (trang web thật)
+ *   • Nếu content là HTML string      → loadDataWithBaseURL() (fallback)
+ *   • Nếu rỗng                        → hiển thị thông báo không có nội dung
  *
  * Package: com.utc2.appreborn.ui.news
  */
 public class NewsDetailActivity extends AppCompatActivity {
 
-    // ── Intent extra keys (public so HomeFragment can reference them) ──
     public static final String EXTRA_TITLE   = "extra_title";
     public static final String EXTRA_DATE    = "extra_date";
-    public static final String EXTRA_CONTENT = "extra_content";
+    public static final String EXTRA_CONTENT = "extra_content"; // URL hoặc HTML
 
     private ActivityNewsDetailBinding binding;
-
-    // ═══════════════════════════════════════════════════════════
-    //  Lifecycle
-    // ═══════════════════════════════════════════════════════════
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +40,6 @@ public class NewsDetailActivity extends AppCompatActivity {
         binding = ActivityNewsDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Read Intent extras
         String title   = getIntent().getStringExtra(EXTRA_TITLE);
         String date    = getIntent().getStringExtra(EXTRA_DATE);
         String content = getIntent().getStringExtra(EXTRA_CONTENT);
@@ -62,13 +48,8 @@ public class NewsDetailActivity extends AppCompatActivity {
         setupWebView();
         loadContent(content);
 
-        // Back button in toolbar
         binding.btnBack.setOnClickListener(v -> finish());
     }
-
-    // ═══════════════════════════════════════════════════════════
-    //  UI
-    // ═══════════════════════════════════════════════════════════
 
     private void bindHeader(String title, String date) {
         if (title != null) binding.tvDetailTitle.setText(title);
@@ -77,76 +58,65 @@ public class NewsDetailActivity extends AppCompatActivity {
 
     @SuppressLint("SetJavaScriptEnabled")
     private void setupWebView() {
-        WebSettings settings = binding.webViewContent.getSettings();
+        WebSettings s = binding.webViewContent.getSettings();
+        s.setJavaScriptEnabled(true);
+        s.setUseWideViewPort(true);
+        s.setLoadWithOverviewMode(true);
+        s.setDomStorageEnabled(true);
 
-        // Enable JS — some CMS-generated HTML needs it
-        settings.setJavaScriptEnabled(true);
-
-        // Responsive text & layout
-        settings.setUseWideViewPort(true);
-        settings.setLoadWithOverviewMode(true);
-        settings.setDomStorageEnabled(true);
-
-        // Keep all links inside the WebView (don't open Chrome)
         binding.webViewContent.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view,
                                                     WebResourceRequest request) {
-                // Return false → WebView handles the URL itself
+                // Mở tất cả link trong WebView, không ra browser ngoài
                 return false;
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                // Ẩn header title/date khi đã load URL (trang web tự có header)
+                if (url != null && url.startsWith("http")) {
+                    binding.tvDetailTitle.setVisibility(View.GONE);
+                    binding.tvDetailDate.setVisibility(View.GONE);
+                }
             }
         });
     }
 
-    /**
-     * Wraps the raw HTML from the API in a minimal CSS shell that:
-     *   • Sets a readable font and line height
-     *   • Clamps image widths so they never overflow the screen
-     *   • Adds comfortable horizontal padding
-     */
-    private void loadContent(String htmlContent) {
-        if (htmlContent == null || htmlContent.isEmpty()) {
-            htmlContent = "<p>Không có nội dung.</p>";
+    private void loadContent(String content) {
+        if (content == null || content.isEmpty()) {
+            // Không có gì → show thông báo
+            loadHtml("<p style='padding:16px;color:#757575;'>Không có nội dung.</p>");
+            return;
         }
 
-        String fullHtml =
-                "<!DOCTYPE html><html><head>"
-                        + "<meta name='viewport' content='width=device-width, initial-scale=1.0'>"
-                        + "<style>"
-                        + "  body {"
-                        + "    font-family: -apple-system, 'Roboto', sans-serif;"
-                        + "    font-size: 16px;"
-                        + "    line-height: 1.7;"
-                        + "    color: #1A1A1A;"
-                        + "    padding: 0 16px 32px 16px;"
-                        + "    margin: 0;"
-                        + "    word-break: break-word;"
-                        + "  }"
-                        // Prevent any image, video, or table from overflowing
-                        + "  img, video, table {"
-                        + "    max-width: 100% !important;"
-                        + "    height: auto !important;"
-                        + "  }"
-                        + "  a { color: #6B47DC; }"
-                        + "  p  { margin: 0 0 12px 0; }"
-                        + "</style>"
-                        + "</head><body>"
-                        + htmlContent
-                        + "</body></html>";
+        if (content.startsWith("http")) {
+            // ✅ Đây là URL trang chi tiết → load thẳng trang web UTC2
+            binding.webViewContent.loadUrl(content);
+        } else {
+            // Fallback: content là raw HTML string
+            loadHtml(content);
+        }
+    }
 
-        // loadDataWithBaseURL lets relative links (images, CSS) resolve correctly
+    /** Bọc HTML string trong shell CSS chuẩn */
+    private void loadHtml(String htmlBody) {
+        String full = "<!DOCTYPE html><html><head>"
+                + "<meta name='viewport' content='width=device-width,initial-scale=1'>"
+                + "<style>"
+                + "body{font-family:Roboto,sans-serif;font-size:16px;"
+                + "line-height:1.7;color:#1A1A1A;padding:0 16px 32px;margin:0}"
+                + "img,video,table{max-width:100%!important;height:auto!important}"
+                + "a{color:#6B47DC}"
+                + "</style></head><body>" + htmlBody + "</body></html>";
+
         binding.webViewContent.loadDataWithBaseURL(
-                "https://utc2.edu.vn/",  // base URL for relative resources
-                fullHtml,
-                "text/html",
-                "UTF-8",
-                null
-        );
+                "https://utc2.edu.vn/", full, "text/html", "UTF-8", null);
     }
 
     @Override
     protected void onDestroy() {
-        // Prevent WebView memory leak
         if (binding != null) {
             binding.webViewContent.stopLoading();
             binding.webViewContent.destroy();

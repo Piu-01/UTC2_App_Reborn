@@ -18,39 +18,50 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.utc2.appreborn.R;
 import com.utc2.appreborn.data.local.StudentProfile;
+
+/* ── BỎ COMMENT KHI CÓ ROOM DB ────────────────────────────────
+import com.utc2.appreborn.data.local.AppDatabase;
+import com.utc2.appreborn.data.local.UserDao;
+import com.utc2.appreborn.data.local.StudentDao;
+import com.utc2.appreborn.data.local.UserEntity;
+import com.utc2.appreborn.data.local.StudentEntity;
+import java.util.concurrent.Executors;
+─────────────────────────────────────────────────────────────── */
+
 import com.utc2.appreborn.databinding.FragmentHomeBinding;
 import com.utc2.appreborn.ui.home.adapter.FeatureAdapter;
 import com.utc2.appreborn.ui.home.adapter.NewsAdapter;
 import com.utc2.appreborn.ui.home.model.NewsItem;
 import com.utc2.appreborn.ui.main.MainActivity;
 import com.utc2.appreborn.ui.news.NewsDetailActivity;
+import com.utc2.appreborn.utils.MockHelper;
 
 /**
- * HomeFragment — UPDATED
+ * HomeFragment
  * ──────────────────────────────────────────────────────────────
  * Thay đổi trong version này:
- *   • Nút "Xem thêm thông báo" mở browser → utc2.edu.vn/sinh-vien/thong-bao
- *   • loadNews() → fetchNewsIfNeeded() (cache 24h)
- *   • forceRefresh() khi cần làm mới thủ công
+ *
+ *  FIX: Nút "Xem thêm thông báo" không mở browser trên Android 11+.
+ *    Root cause: intent.resolveActivity() trả về null trên API 30+
+ *    vì thiếu <queries> trong AndroidManifest.xml.
+ *    Fix: Dùng try/catch startActivity() trực tiếp thay vì
+ *    kiểm tra resolveActivity().
+ *
+ *  NEW: Header hiển thị tên + MSSV từ Mock, sẵn sàng switch sang DB.
  *
  * Package: com.utc2.appreborn.ui.home
  */
 public class HomeFragment extends Fragment {
 
-    private static final String TAG = "HomeFragment";
-
-    // URL trang thông báo sinh viên trên web UTC2
-    private static final String URL_ALL_NEWS =
-            "https://utc2.edu.vn/sinh-vien/thong-bao";
+    private static final String TAG          = "HomeFragment";
+    private static final String URL_ALL_NEWS = "https://utc2.edu.vn/sinh-vien/thong-bao";
 
     private FragmentHomeBinding binding;
     private HomeViewModel       viewModel;
     private NewsAdapter         newsAdapter;
     private FeatureAdapter      featureAdapter;
 
-    public HomeFragment() {
-        super(R.layout.fragment_home);
-    }
+    public HomeFragment() { super(R.layout.fragment_home); }
 
     // ═══════════════════════════════════════════════════════════
     //  Lifecycle
@@ -70,15 +81,14 @@ public class HomeFragment extends Fragment {
                               @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // AndroidViewModel cần Application — ViewModelProvider tự xử lý
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
         setupFeatureGrid();
         setupNewsFeed();
         observeViewModel();
         setupClickListeners();
+        loadUserHeader();   // ← hiển thị tên người dùng
 
-        // Chỉ gọi API nếu cache hết hạn (> 24h)
         viewModel.loadNews();
     }
 
@@ -89,7 +99,49 @@ public class HomeFragment extends Fragment {
     }
 
     // ═══════════════════════════════════════════════════════════
-    //  Setup
+    //  Header — tên + MSSV
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Hiển thị tên người dùng trong header.
+     *
+     * HIỆN TẠI: lấy từ Mock qua StudentRepository (đã có sẵn).
+     *
+     * KHI CÓ ROOM DB: bỏ comment đoạn DB bên dưới,
+     * xoá/comment đoạn Mock bên trên.
+     */
+    private void loadUserHeader() {
+
+        // ── ĐANG DÙNG: Mock via ViewModel/Repository ──────────
+        // (tự động được observe trong observeViewModel())
+
+        /* ── BỎ COMMENT KHI CÓ ROOM DB ──────────────────────────
+        long currentUserId = getCurrentUserIdFromFirebase();
+
+        AppDatabase db = AppDatabase.getInstance(requireContext());
+        UserDao    userDao    = db.userDao();
+        StudentDao studentDao = db.studentDao();
+
+        // Observe từ DB — tự cập nhật khi data thay đổi
+        userDao.getUserById(currentUserId)
+               .observe(getViewLifecycleOwner(), userEntity -> {
+                   if (userEntity != null) {
+                       binding.tvUsername.setText(userEntity.getFullName());
+                   }
+               });
+        ─────────────────────────────────────────────────────── */
+    }
+
+    /* ── BỎ COMMENT KHI CÓ ROOM DB ────────────────────────────
+    private long getCurrentUserIdFromFirebase() {
+        // Map Firebase UID (String) sang user_id (Long) của bảng USER
+        // Tuỳ cách bạn lưu mapping này — SharedPreferences hoặc Firestore
+        return 1L; // placeholder
+    }
+    ─────────────────────────────────────────────────────────── */
+
+    // ═══════════════════════════════════════════════════════════
+    //  Setup RecyclerViews
     // ═══════════════════════════════════════════════════════════
 
     private void setupFeatureGrid() {
@@ -105,7 +157,6 @@ public class HomeFragment extends Fragment {
         newsAdapter = new NewsAdapter(this::handleNewsClick);
         binding.rvNews.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvNews.setNestedScrollingEnabled(false);
-        binding.rvNews.setHasFixedSize(false);
         binding.rvNews.setAdapter(newsAdapter);
     }
 
@@ -117,15 +168,12 @@ public class HomeFragment extends Fragment {
         viewModel.getStudentProfileLiveData()
                 .observe(getViewLifecycleOwner(), this::bindStudentProfile);
 
-        viewModel.getNewsLiveData().observe(getViewLifecycleOwner(), newsList -> {
-            if (newsList != null) newsAdapter.submitList(newsList);
+        viewModel.getNewsLiveData().observe(getViewLifecycleOwner(), list -> {
+            if (list != null) newsAdapter.submitList(list);
         });
 
-        viewModel.getIsLoadingLiveData().observe(getViewLifecycleOwner(), isLoading -> {
-            // Hiện/ẩn loading nếu có ProgressBar trong layout
-            // binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-            Log.d(TAG, "Loading: " + isLoading);
-        });
+        viewModel.getIsLoadingLiveData().observe(getViewLifecycleOwner(), isLoading ->
+                Log.d(TAG, "Loading: " + isLoading));
     }
 
     private void bindStudentProfile(StudentProfile profile) {
@@ -134,33 +182,17 @@ public class HomeFragment extends Fragment {
     }
 
     // ═══════════════════════════════════════════════════════════
-    //  Click handlers
+    //  Click listeners
     // ═══════════════════════════════════════════════════════════
 
     private void setupClickListeners() {
         binding.ivAvatar.setOnClickListener(v ->
-                Toast.makeText(requireContext(),
-                        "Trang cá nhân", Toast.LENGTH_SHORT).show());
+                Toast.makeText(requireContext(), "Trang cá nhân", Toast.LENGTH_SHORT).show());
 
         binding.ivAddBtn.setOnClickListener(v -> openQrFragment());
 
-        // Nút "Xem thêm thông báo" → mở trình duyệt
+        // Nút xem thêm → mở trình duyệt
         binding.btnViewAllNews.setOnClickListener(v -> openAllNewsInBrowser());
-    }
-
-    /**
-     * Mở trang thông báo UTC2 trong trình duyệt mặc định.
-     */
-    private void openAllNewsInBrowser() {
-        Intent intent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse(URL_ALL_NEWS));
-        // Fallback nếu không có trình duyệt (rất hiếm)
-        if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
-            startActivity(intent);
-        } else {
-            Toast.makeText(requireContext(),
-                    "Không tìm thấy trình duyệt", Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void handleFeatureClick(String featureId) {
@@ -200,10 +232,32 @@ public class HomeFragment extends Fragment {
     //  Navigation
     // ═══════════════════════════════════════════════════════════
 
+    /**
+     * FIX: Nút "Xem thêm thông báo" không hoạt động trên Android 11+.
+     *
+     * Nguyên nhân: resolveActivity() trả về null trên API 30+ khi
+     * thiếu <queries> trong AndroidManifest.xml (package visibility).
+     *
+     * Fix: Dùng try/catch startActivity() trực tiếp — nếu không có
+     * app nào xử lý được thì catch ActivityNotFoundException.
+     */
+    private void openAllNewsInBrowser() {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse(URL_ALL_NEWS));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } catch (android.content.ActivityNotFoundException e) {
+            Toast.makeText(requireContext(),
+                    "Không tìm thấy trình duyệt", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void openQrFragment() {
         StudentProfile profile = viewModel.getStudentProfileLiveData().getValue();
-        String name = (profile != null) ? profile.getFullName()    : "";
-        String code = (profile != null) ? profile.getStudentCode() : "";
+        String name = (profile != null) ? profile.getFullName()    : MockHelper.getMockFullName();
+        String code = (profile != null) ? profile.getStudentCode() : MockHelper.getMockStudentCode();
+
         ((MainActivity) requireActivity())
                 .pushFragment(QrFragment.newInstance(name, code), QrFragment.TAG);
     }

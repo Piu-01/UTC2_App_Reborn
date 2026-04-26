@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    colors.xml — UPDATED
-    ─────────────────────────────────────────────
-    Added @color/qr_btn_primary so all QR-screen
-    buttons use the exact same purple on every device,
-    regardless of Material theme version or OEM skin.
--->
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!--  Brand accent — lime/yellow-green used in bottom nav bar  -->
+    <!-- Brand accent — bottom nav bar -->
     <color name="nav_bar_bg">#C6F135</color>
     <color name="nav_item_color">#FF4081</color>
 
-    <!--  Text  -->
+    <!-- Text -->
     <color name="text_primary">#1A1A1A</color>
     <color name="text_secondary">#757575</color>
 
-    <!--  UI elements  -->
+    <!-- UI elements -->
     <color name="divider">#E0E0E0</color>
-    <color name="card_bg">#F2F2F2</color>
-
-    <!--  Feature card dark background  -->
+    <color name="card_bg">#F5F5F5</color>
     <color name="feature_card_bg">#1A1A1A</color>
 
     <!--
-         QR screen buttons — hardcoded purple so the color
-         is IDENTICAL on emulator, real device, dark/light
-         theme, Material2 and Material3.
-         Change this one value to retheme the entire QR screen.
+        PRIMARY ACCENT — Vàng (thay toàn bộ tím #6B47DC)
+        Dùng cho: Button filled, Badge MSSV, icon tint, stroke
     -->
-    <color name="qr_btn_primary">#6B47DC</color>
+    <color name="accent_yellow">#FFC107</color>
+    <color name="accent_yellow_dark">#F9A825</color>
+    <color name="accent_yellow_light">#FFF8E1</color>
 
+    <!-- Text trên nền vàng → dùng đen để tương phản cao -->
+    <color name="on_accent">#1A1A1A</color>
+
+    <!--
+        Alias giữ tên cũ để không phải sửa hàng loạt file.
+        qr_btn_primary trỏ đến vàng thay vì tím cũ.
+    -->
+    <color name="qr_btn_primary">#FFC107</color>
+    <color name="qr_btn_primary_text">#1A1A1A</color>
 </resources>

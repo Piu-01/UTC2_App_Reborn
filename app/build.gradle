@@ -71,6 +71,11 @@ dependencies {
     // ── ZXing (QR generation — no scanner UI) ────────────────
     implementation 'com.google.zxing:core:3.5.3'
 
+    // Room Database (bỏ comment khi sẵn sàng dùng DB)
+    implementation 'androidx.room:room-runtime:2.6.1'
+    annotationProcessor 'androidx.room:room-compiler:2.6.1'
+    // Nếu muốn dùng LiveData với Room (đã có sẵn trong lifecycle):
+    implementation 'androidx.room:room-ktx:2.6.1'  // optional cho Kotlin coroutines
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit

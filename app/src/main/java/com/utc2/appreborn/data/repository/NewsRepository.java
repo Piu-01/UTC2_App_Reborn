@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.utc2.appreborn.data.remote.ApiService;
 import com.utc2.appreborn.data.remote.NewsResponse;
@@ -17,25 +16,35 @@ import com.utc2.appreborn.data.remote.RetrofitClient;
 import com.utc2.appreborn.ui.home.model.NewsItem;
 import com.utc2.appreborn.utils.MockHelper;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * NewsRepository v4 — FINAL FIX
+ * ──────────────────────────────────────────────────────────────
+ * Thay đổi:
+ *  • Dùng lại getPosts() trả về NewsResponse (đã fix DTO)
+ *  • Đổi sang PREFS_NAME mới để xóa cache cũ sai
+ *  • NewsItem.content = URL trang chi tiết (sẽ load bằng WebView)
+ *
+ * Package: com.utc2.appreborn.data.repository
+ */
 public class NewsRepository {
 
     private static final String TAG        = "UTC2_REPO";
-    private static final String PREFS_NAME = "utc2_news_cache_v3";
+    // Đổi tên để tự xóa cache cũ có cấu trúc sai
+    private static final String PREFS_NAME = "utc2_news_v4";
     private static final String KEY_JSON   = "news_json";
     private static final String KEY_LAST   = "last_fetch_ms";
     private static final long   CACHE_TTL  = TimeUnit.HOURS.toMillis(24);
 
+    // ── Singleton ─────────────────────────────────────────────
     private static NewsRepository instance;
 
     public static NewsRepository getInstance(Context context) {
@@ -50,12 +59,14 @@ public class NewsRepository {
         return instance;
     }
 
-    private final SharedPreferences             prefs;
-    private final Gson                          gson = new Gson();
+    // ── State ─────────────────────────────────────────────────
+    private final SharedPreferences               prefs;
+    private final Gson                            gson = new Gson();
     private final MutableLiveData<List<NewsItem>> newsLiveData;
-    private final MutableLiveData<Boolean>      isLoadingLiveData =
+    private final MutableLiveData<Boolean>        isLoadingLiveData =
             new MutableLiveData<>(false);
-    private Call<ResponseBody> activeCall;
+
+    private Call<NewsResponse> activeCall;
 
     private NewsRepository(Context ctx) {
         prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -64,11 +75,12 @@ public class NewsRepository {
                 cached != null ? cached : MockHelper.getMockNewsList());
     }
 
+    // ── Public ────────────────────────────────────────────────
     public LiveData<List<NewsItem>> getNewsLiveData()      { return newsLiveData;      }
     public LiveData<Boolean>        getIsLoadingLiveData() { return isLoadingLiveData; }
 
     public void fetchNewsIfNeeded() {
-        if (isCacheValid()) { Log.d(TAG, "Cache OK — skip API"); return; }
+        if (isCacheValid()) { Log.d(TAG, "Cache OK"); return; }
         fetchFromApi();
     }
 
@@ -78,83 +90,59 @@ public class NewsRepository {
         if (activeCall != null) { activeCall.cancel(); activeCall = null; }
     }
 
+    // ── Network ───────────────────────────────────────────────
     private void fetchFromApi() {
         if (activeCall != null && !activeCall.isCanceled()) activeCall.cancel();
-        isLoadingLiveData.postValue(true);
-        Log.d(TAG, "Fetching from API...");
 
-        activeCall = RetrofitClient.api().getRawPosts(
+        isLoadingLiveData.postValue(true);
+        Log.d(TAG, "Calling API...");
+
+        activeCall = RetrofitClient.api().getPosts(
                 1, 10,
                 ApiService.SORT_FIELD_CREATED_AT,
                 ApiService.SORT_ORDER_DESC,
                 ApiService.FILTER_STUDENT_NEWS,
                 "");
 
-        activeCall.enqueue(new Callback<ResponseBody>() {
+        activeCall.enqueue(new Callback<NewsResponse>() {
+
             @Override
-            public void onResponse(@NonNull Call<ResponseBody> call,
-                                   @NonNull Response<ResponseBody> response) {
+            public void onResponse(@NonNull Call<NewsResponse> call,
+                                   @NonNull Response<NewsResponse> response) {
                 isLoadingLiveData.postValue(false);
                 Log.d(TAG, "HTTP " + response.code());
 
-                if (!response.isSuccessful()) {
-                    try {
-                        String err = response.errorBody() != null
-                                ? response.errorBody().string() : "(null)";
-                        Log.e(TAG, "Error: " + err);
-                    } catch (IOException ignored) {}
+                if (!response.isSuccessful() || response.body() == null) {
+                    Log.e(TAG, "Bad response: " + response.code());
                     return;
                 }
 
-                if (response.body() == null) {
-                    Log.e(TAG, "Body null");
+                List<NewsResponse.PostDto> rows = response.body().getData();
+                Log.d(TAG, "rows size = " + (rows == null ? "null" : rows.size()));
+
+                if (rows == null || rows.isEmpty()) {
+                    Log.e(TAG, "rows is empty");
                     return;
                 }
 
-                String rawJson;
-                try { rawJson = response.body().string(); }
-                catch (IOException e) { Log.e(TAG, "Read error: " + e.getMessage()); return; }
-
-                Log.d(TAG, "JSON length: " + rawJson.length());
-
-                // Step 1: standard Gson
-                List<NewsResponse.PostDto> posts = null;
-                try {
-                    NewsResponse parsed = gson.fromJson(rawJson, NewsResponse.class);
-                    if (parsed != null) posts = parsed.getData();
-                    Log.d(TAG, "Gson getData() = " + (posts == null ? "null" : posts.size()));
-                } catch (JsonSyntaxException e) {
-                    Log.w(TAG, "Gson failed: " + e.getMessage());
-                }
-
-                // Step 2: flexible fallback parser
-                if (posts == null || posts.isEmpty()) {
-                    Log.w(TAG, "Using flexible parser...");
-                    posts = NewsResponse.parseFromRawJson(rawJson);
-                }
-
-                if (posts == null || posts.isEmpty()) {
-                    Log.e(TAG, "No posts found. Check UTC2_HTTP tag for raw body.");
-                    return;
-                }
-
-                List<NewsItem> items = map(posts);
+                List<NewsItem> items = map(rows);
                 newsLiveData.postValue(items);
                 saveToCache(items);
                 updateLastFetchTime();
-                Log.d(TAG, "Loaded " + items.size() + " items successfully");
+                Log.d(TAG, "✓ Loaded " + items.size() + " items");
             }
 
             @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<NewsResponse> call,
+                                  @NonNull Throwable t) {
                 if (call.isCanceled()) return;
                 isLoadingLiveData.postValue(false);
-                Log.e(TAG, "Network error: " + t.getClass().getSimpleName() + " - " + t.getMessage());
-                if (t.getCause() != null) Log.e(TAG, "Cause: " + t.getCause().getMessage());
+                Log.e(TAG, "Network error: " + t.getMessage());
             }
         });
     }
 
+    // ── Cache ─────────────────────────────────────────────────
     private boolean isCacheValid() {
         long last = prefs.getLong(KEY_LAST, 0);
         return last != 0 && (System.currentTimeMillis() - last) < CACHE_TTL;
@@ -180,12 +168,18 @@ public class NewsRepository {
         prefs.edit().putLong(KEY_LAST, System.currentTimeMillis()).apply();
     }
 
+    // ── Mapping ───────────────────────────────────────────────
     private List<NewsItem> map(List<NewsResponse.PostDto> posts) {
-        List<NewsItem> r = new ArrayList<>(posts.size());
-        for (NewsResponse.PostDto d : posts) {
-            r.add(new NewsItem(d.getId(), d.getTitle(), d.getDisplayDate(),
-                    d.getSummary(), d.getContent()));
+        List<NewsItem> result = new ArrayList<>(posts.size());
+        for (NewsResponse.PostDto dto : posts) {
+            result.add(new NewsItem(
+                    dto.getId(),
+                    dto.getTitle(),
+                    dto.getDisplayDate(),
+                    dto.getSummary(),
+                    dto.getDetailUrl()   // URL trang chi tiết → WebView load
+            ));
         }
-        return r;
+        return result;
     }
 }

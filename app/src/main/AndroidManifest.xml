@@ -1,19 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    AndroidManifest.xml — FIXED
+    AndroidManifest.xml — UPDATED
     ──────────────────────────────────────────────────────────────
-    Thay đổi so với bản cũ:
-      1. Thêm android:networkSecurityConfig="@xml/network_security_config"
-         → Fix SSL trust issue với utc2.edu.vn trên Android 7+
-      2. Thêm android:usesCleartextTraffic="false"
-         → Tường minh block HTTP (chỉ dùng HTTPS)
-      3. tools:targetApi="28" để tránh lint warning
+    Thêm <queries> để fix nút "Xem thêm thông báo" trên Android 11+.
+
+    Android 11 (API 30) áp dụng Package Visibility Restrictions.
+    Nếu không khai báo <queries>, intent ACTION_VIEW với scheme
+    "https" sẽ không tìm được browser → startActivity() fail.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Internet permission -->
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- ════════════════════════════════════════════════════════
+         FIX Android 11+: khai báo intent scheme cần dùng.
+         Đặt TRƯỚC thẻ <application>.
+         ════════════════════════════════════════════════════════ -->
+    <queries>
+        <!-- Cho phép mở URL https:// bằng browser bất kỳ -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+        <!-- Cho phép mở URL http:// (fallback) -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="http" />
+        </intent>
+    </queries>
 
     <application
         android:allowBackup="true"
@@ -24,7 +40,7 @@
         android:usesCleartextTraffic="false"
         tools:targetApi="28">
 
-        <!-- LOGIN SCREEN -->
+        <!-- LOGIN -->
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="true">
@@ -34,7 +50,7 @@
             </intent-filter>
         </activity>
 
-        <!-- MAIN APP -->
+        <!-- MAIN -->
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="false" />
@@ -46,7 +62,7 @@
             android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustResize" />
 
-        <!-- FileProvider — dùng cho Share QR -->
+        <!-- FileProvider — Share QR -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
