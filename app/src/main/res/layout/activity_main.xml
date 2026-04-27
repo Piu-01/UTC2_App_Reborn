@@ -11,54 +11,18 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottom_bar_compose">
-
+        app:layout_constraintBottom_toBottomOf="parent">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nội dung màn hình UTC2"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="80dp"
-            android:textSize="20sp"
-            android:textStyle="bold"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <Button
-                android:id="@+id/btnProfile"
-                android:layout_width="220dp"
-                android:layout_height="wrap_content"
-                android:text="Mở Profile"
-                android:layout_marginBottom="10dp"/>
-
-            <Button
-                android:id="@+id/btnTuition"
-                android:layout_width="220dp"
-                android:layout_height="wrap_content"
-                android:text="Học phí"
-                android:layout_marginBottom="10dp"/>
-
-            <Button
-                android:id="@+id/btnPublicService"
-                android:layout_width="220dp"
-                android:layout_height="wrap_content"
-                android:text="Dịch vụ công"
-                android:backgroundTint="#2196F3"
-                android:textColor="#FFFFFF"/>
-
-        </LinearLayout>
-
+            android:text="Nội dung màn hình UTC2" />
     </FrameLayout>
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/bottom_bar_compose"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

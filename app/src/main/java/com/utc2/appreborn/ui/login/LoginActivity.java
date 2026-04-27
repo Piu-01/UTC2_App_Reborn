@@ -155,11 +155,33 @@ public class LoginActivity extends AppCompatActivity {
         String text = "By continuing you agree to our Terms of Service and Privacy Policy";
         SpannableString ss = new SpannableString(text);
 
+        // Lấy màu từ txtForgot (hoặc từ R.color của bạn)
+        int linkColor = txtForgot.getCurrentTextColor();
+
         ClickableSpan terms = new ClickableSpan() {
-            @Override public void onClick(@NonNull View w) { navigateTo(TermsActivity.class); }
+            @Override
+            public void onClick(@NonNull View w) { navigateTo(TermsActivity.class); }
+
+            @Override
+            public void updateDrawState(@NonNull android.text.TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setColor(linkColor); // Đổi màu chữ tại đây
+                ds.setUnderlineText(false); // Bỏ gạch chân nếu bạn muốn giống txtForgot
+                ds.setFakeBoldText(true); // Làm đậm nếu cần
+            }
         };
+
         ClickableSpan privacy = new ClickableSpan() {
-            @Override public void onClick(@NonNull View w) { navigateTo(PrivacyPolicyActivity.class); }
+            @Override
+            public void onClick(@NonNull View w) { navigateTo(PrivacyPolicyActivity.class); }
+
+            @Override
+            public void updateDrawState(@NonNull android.text.TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setColor(linkColor); // Đổi màu chữ tại đây
+                ds.setUnderlineText(false);
+                ds.setFakeBoldText(true);
+            }
         };
 
         int startT = text.indexOf("Terms of Service");
@@ -170,7 +192,8 @@ public class LoginActivity extends AppCompatActivity {
 
         txtTerms.setText(ss);
         txtTerms.setMovementMethod(LinkMovementMethod.getInstance());
-        txtTerms.setHighlightColor(Color.TRANSPARENT);
+        // Dòng này bạn đã sửa đúng ở lần trước để đổi màu khi nhấn vào
+        txtTerms.setHighlightColor(android.graphics.Color.TRANSPARENT);
     }
 
     private void navigateTo(Class<?> cls) {

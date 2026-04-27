@@ -7,6 +7,8 @@
 
     <application
         android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -32,7 +34,6 @@
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
 
-        <activity android:name=".ui.profile.ProfileActivity" android:exported="false" />
         <activity android:name=".ui.Info.InfoActivity" android:exported="false" />
         <activity android:name=".ui.profile.SupportActivity" android:exported="false" />
         <activity
@@ -49,7 +50,6 @@
             android:exported="false"
             android:label="@string/title_graduation_requirements" />
 
-        <activity android:name=".ui.tuition.TuitionActivity" android:exported="false" />
         <activity
             android:name=".ui.tuition.Subject.SubjectTuitionActivity"
             android:exported="false"
@@ -62,11 +62,6 @@
             android:name=".ui.tuition.Invoice.InvoiceActivity"
             android:exported="false"
             android:label="@string/title_invoice" />
-
-        <activity
-            android:name=".ui.public_services.PublicServiceActivity"
-            android:exported="false"
-            android:label="@string/title_public_service" />
 
         <activity
             android:name=".ui.public_services.CardReissueService.CardReissueActivity"

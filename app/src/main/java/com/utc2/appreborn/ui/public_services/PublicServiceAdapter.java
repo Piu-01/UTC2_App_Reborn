@@ -123,10 +123,10 @@ public class PublicServiceAdapter extends RecyclerView.Adapter<PublicServiceAdap
         if (holder.txtStatus != null) {
             if (item.getStatus() == 1) {
                 holder.txtStatus.setText(R.string.status_approved);
-                holder.txtStatus.setTextColor(ContextCompat.getColor(context, R.color.success_green));
+                holder.txtStatus.setTextColor(ContextCompat.getColor(context, R.color.green_success));
             } else {
                 holder.txtStatus.setText(R.string.status_pending);
-                holder.txtStatus.setTextColor(ContextCompat.getColor(context, R.color.text_note_gray));
+                holder.txtStatus.setTextColor(ContextCompat.getColor(context, R.color.text_muted_light));
             }
         }
     }
