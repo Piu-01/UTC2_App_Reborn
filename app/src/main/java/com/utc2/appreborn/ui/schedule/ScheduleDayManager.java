@@ -116,8 +116,9 @@ public class ScheduleDayManager {
                 if (lastVisible >= totalItemCount - 3) {
                     recyclerView.post(() -> dateSelectorAdapter.addFutureWeek());
                 }
-                if (firstVisible <= 3 && !isHorizontalLoading)
-                    loadMorePastHorizontal(horizontalLayoutManager);
+                if (firstVisible <= 3 && !isHorizontalLoading) {
+                    recyclerView.post(() -> loadMorePastHorizontal(horizontalLayoutManager));
+                }
 
                 int centerPos = (firstVisible + lastVisible) / 2;
                 if (centerPos != RecyclerView.NO_POSITION && tvFullDateLabel != null) {
