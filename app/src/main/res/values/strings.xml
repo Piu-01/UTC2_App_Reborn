@@ -1,15 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">UTC2 App Reborn</string>
+    <string name="utc2_subtitle">UTC2 - Phân hiệu TP.HCM</string>
+    <string name="nav_label_home">Trang chủ</string>
+    <string name="nav_label_schedule">Lịch học</string>
+    <string name="nav_label_register">Đăng ký</string>
+    <string name="nav_label_result">Kết quả</string>
+    <string name="nav_label_profile">Cá nhân</string>
+    <string name="Notifications">Thông báo</string>
+    <string name="back">Quay về</string>
+    <string name="loading">Đang xử lý...</string>
+
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
-    <!-- Home screen -->
+    <string name="logout">Đăng xuất</string>
+    <string name="skip_login">Bỏ qua</string>
+    <string name="forgot_password">Quên mật khẩu?</string>
+    <string name="enter_email">Nhập email</string>
+    <string name="send_reset_email">Gửi email reset</string>
+    <string name="reset_email_sent">Đã gửi email đặt lại mật khẩu</string>
+    <string name="email_required">Vui lòng nhập email</string>
+    <string name="forgot_tips">Thư reset có thể nằm trong thư rác</string>
+    <string name="wrong_email_or_pass">Sai email hoặc mật khẩu!!</string>
+    <string name="check_email_for_pass">Vui lòng kiểm tra Email để đặt lại mật khẩu!</string>
+    <string name="terms_full">By continuing, you agree to our Terms of Service and Privacy Policy</string>
+    <string name="terms_title">Điều khoản sử dụng</string>
+    <string name="terms_content">TERMS OF SERVICE\n\nỨng dụng UTC2 Student được phát triển phục vụ sinh viên...</string>
+    <string name="privacy_title">Chính sách bảo mật</string>
+    <string name="privacy_content">PRIVACY POLICY\n\nChúng tôi cam kết bảo vệ thông tin người dùng ở mức tối đa...</string>
+
     <string name="greeting">Xin chào !</string>
     <string name="default_username">Sinh viên</string>
     <string name="section_features">Tính năng mở rộng:</string>
     <string name="section_news">Thông báo mới nhất:</string>
-
-    <!-- Feature labels -->
     <string name="feature_hoc_phi">Học phí</string>
     <string name="feature_dich_vu_cong">Dịch vụ công</string>
     <string name="feature_danh_gia">Đánh giá</string>
@@ -17,9 +41,77 @@
     <string name="feature_ho_tro">Hỗ trợ 24/7</string>
     <string name="feature_danh_muc_khac">Danh mục khác</string>
 
-    <!-- Accessibility / content descriptions -->
-    <string name="cd_campus_header">Ảnh khuôn viên trường</string>
+    <string name="schedule_title">Thời Khóa biểu</string>
+    <string name="session_morning">SÁNG</string>
+    <string name="session_afternoon">CHIỀU</string>
+    <string name="session_evening">TỐI</string>
+    <string name="label_period">TIẾT</string>
+    <string name="label_theory">LÝ THUYẾT</string>
+    <string name="label_no_class">Không có tiết học</string>
+    <string name="label_room">Phòng: </string>
+    <string name="label_student_count">Sĩ số: </string>
+    <string name="prefix_lecturer">GV: %s</string>
+    <string name="format_remaining_periods">CÒN LẠI: %d TIẾT</string>
+    <string name="format_remaining_short">CÒN %d</string>
+    <string name="label_pick_date">Chọn ngày xem lịch</string>
+    <string name="today_upper">HÔM NAY</string>
+    <string name="semester_prefix">HK %s</string>
+    <string name="week_prefix">Tuần %s</string>
+    <string name="month_prefix">Tháng %s</string>
+    <string name="desc_view_mode">Đổi chế độ Ngày/Tuần</string>
+    <string name="desc_go_today">Quay về ngày hiện tại</string>
+
+    <string name="profile_title">Thông tin sinh viên</string>
+    <string name="profile_btn_info">Thông tin cá nhân ></string>
+    <string name="profile_btn_password">Đổi mật khẩu ></string>
+    <string name="profile_label_course">Khóa học</string>
+    <string name="profile_label_faculty">Khoa</string>
+    <string name="profile_label_status">Tình trạng</string>
+    <string name="profile_label_advisor">Cố vấn</string>
+    <string name="profile_val_course">K65\n(2024-2029)</string>
+    <string name="profile_val_faculty">CNTT</string>
+    <string name="profile_val_status">Đang học</string>
+    <string name="profile_val_advisor">KS.Trần Quốc Khánh</string>
+    <string name="profile_training_detail">Chuyên ngành: Công nghệ thông tin\nBậc đào tạo: Đại học chính quy</string>
+    <string name="profile_subject_list">Danh sách học phần</string>
+    <string name="profile_graduation_req">Yêu cầu tốt nghiệp</string>
+    <string name="student_card">Thẻ sinh viên</string>
+    <string name="cccd">Số CCCD/CMND</string>
+    <string name="permanent_address">Nơi thường trú</string>
+    <string name="title_change_password">Đổi mật khẩu</string>
+    <string name="label_new_password">Mật khẩu mới</string>
+    <string name="btn_update_password">Cập nhật mật khẩu</string>
+
+    <string name="title_tuition">Học phí</string>
+    <string name="tuition_subject_title">Học phí học\nphần</string>
+    <string name="tuition_dorm_title">Tiền KTX</string>
+    <string name="tuition_invoice_title">Hóa đơn</string>
+    <string name="status_paid">Đã đóng</string>
+    <string name="status_unpaid">Chưa đóng</string>
+    <string name="btn_pay_now">ĐÓNG TIỀN NGAY</string>
+    <string name="qr_instruction">Dùng App Ngân hàng hoặc Ví điện tử\nđể quét mã chuyển khoản</string>
+    <string name="msg_payment_success">Thanh toán thành công!</string>
+
+    <string name="title_public_service">Dịch vụ công UTC2</string>
+    <string name="reissue_card_title">Cấp lại thẻ sinh viên</string>
+    <string name="loan_support_title">Hỗ trợ vay vốn</string>
+    <string name="student_confirmation_title">Giấy xác nhận sinh viên</string>
+    <string name="transcript_registration_title">Đăng ký bảng điểm</string>
+    <string name="status_approved">Đã duyệt</string>
+    <string name="status_pending">Đang xử lý</string>
+    <string name="confirm_registration">XÁC NHẬN ĐĂNG KÝ</string>
+
+    <string name="title_support">UTC2 Support</string>
+    <string name="report_title">BÁO CÁO VÀ PHẢN HỒI - UTC2</string>
+    <string name="send_report">Gửi báo cáo</string>
+    <string name="rating_label">Mức độ hài lòng:</string>
+
+    <string name="error_fill_all">Vui lòng nhập đầy đủ thông tin!</string>
+    <string name="error_loading_file">Lỗi tải file</string>
+
+    <string name="sample_subject">Pháp luật đại cương</string>
+    <string name="sample_amount">0 VND</string>
+    <string name="default_mssv">2251050001</string>
     <string name="cd_avatar">Ảnh đại diện</string>
-    <string name="cd_add">Thêm</string>
     <string name="cd_campus_banner">Banner khuôn viên</string>
 </resources>

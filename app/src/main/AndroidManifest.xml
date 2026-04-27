@@ -1,30 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    AndroidManifest.xml — UPDATED
-    ──────────────────────────────────────────────────────────────
-    Thêm <queries> để fix nút "Xem thêm thông báo" trên Android 11+.
-
-    Android 11 (API 30) áp dụng Package Visibility Restrictions.
-    Nếu không khai báo <queries>, intent ACTION_VIEW với scheme
-    "https" sẽ không tìm được browser → startActivity() fail.
--->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Internet permission -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <!-- ════════════════════════════════════════════════════════
-         FIX Android 11+: khai báo intent scheme cần dùng.
-         Đặt TRƯỚC thẻ <application>.
-         ════════════════════════════════════════════════════════ -->
     <queries>
-        <!-- Cho phép mở URL https:// bằng browser bất kỳ -->
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="https" />
         </intent>
-        <!-- Cho phép mở URL http:// (fallback) -->
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="http" />
@@ -33,36 +18,92 @@
 
     <application
         android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
         android:theme="@style/Theme.UTC2AppReborn"
         android:networkSecurityConfig="@xml/network_security_config"
         android:usesCleartextTraffic="false"
-        tools:targetApi="28">
+        tools:targetApi="31">
 
-        <!-- LOGIN -->
         <activity
             android:name=".ui.login.LoginActivity"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.login.ForgotPasswordActivity" android:exported="false" />
+        <activity android:name=".ui.login.TermsActivity" android:exported="false" />
+        <activity android:name=".ui.login.PrivacyPolicyActivity" android:exported="false" />
 
-        <!-- MAIN -->
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="false" />
-
-        <!-- NEWS DETAIL -->
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.news.NewsDetailActivity"
             android:exported="false"
             android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustResize" />
 
-        <!-- FileProvider — Share QR -->
+        <activity android:name=".ui.Info.InfoActivity" android:exported="false" />
+        <activity android:name=".ui.profile.SupportActivity" android:exported="false" />
+        <activity
+            android:name=".ui.profile.ChangePasswordActivity"
+            android:exported="false"
+            android:label="@string/title_change_password" />
+        <activity
+            android:name=".ui.profile.TrainingProgram.TrainingProgramActivity"
+            android:exported="false"
+            android:label="@string/training_program" />
+        <activity
+            android:name=".ui.profile.GraduationRequirementsActivity"
+            android:exported="false"
+            android:label="@string/title_graduation_requirements" />
+
+        <activity
+            android:name=".ui.tuition.Subject.SubjectTuitionActivity"
+            android:exported="false"
+            android:label="@string/title_subject_tuition" />
+        <activity
+            android:name=".ui.tuition.Dorm.DormitoryTuitionActivity"
+            android:exported="false"
+            android:label="@string/title_dorm_tuition" />
+        <activity
+            android:name=".ui.tuition.Invoice.InvoiceActivity"
+            android:exported="false"
+            android:label="@string/title_invoice" />
+
+        <activity
+            android:name=".ui.public_services.CardReissueService.CardReissueActivity"
+            android:exported="false"
+            android:label="@string/reissue_card_title"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.public_services.LoanSupportService.LoanSupportActivity"
+            android:exported="false"
+            android:label="@string/loan_support_title"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.public_services.TranscriptService.TranscriptRegistrationActivity"
+            android:exported="false"
+            android:label="@string/transcript_registration_title"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.public_services.StudentConfirmationService.StudentConfirmationActivity"
+            android:exported="false"
+            android:label="@string/student_confirmation_title"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.public_services.ServiceDetailActivity"
+            android:exported="false" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
