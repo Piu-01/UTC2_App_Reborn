@@ -11,7 +11,11 @@ import android.view.View;
 import android.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 
+import com.utc2.appreborn.ui.profile.ProfileFragment;
+import com.utc2.appreborn.ui.public_services.PublicServiceFragment;
 import com.utc2.appreborn.ui.schedule.ScheduleFragment;
+import com.utc2.appreborn.ui.tuition.TuitionFragment;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -42,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.nav_result) {
             // fragment = new ResultFragment();
         } else if (id == R.id.nav_profile) {
-            // fragment = new ProfileFragment();
+             fragment = new ProfileFragment();
         }
 
         // 🔹 QUAN TRỌNG: Lệnh thực hiện chuyển trang

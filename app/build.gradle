@@ -35,13 +35,14 @@ dependencies {
     implementation libs.material
     implementation libs.constraintlayout
 
-    // 🔥 Firebase
+    // Firebase
     implementation platform('com.google.firebase:firebase-bom:34.11.0')
     implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-database'
+    implementation 'com.google.firebase:firebase-storage'
 
-    // 🔥🔥 Compose BOM (QUAN TRỌNG)
+    // Compose
     implementation platform("androidx.compose:compose-bom:2024.10.00")
-
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.material3:material3"
     implementation "androidx.compose.ui:ui-tooling-preview"
@@ -49,6 +50,13 @@ dependencies {
     implementation "androidx.activity:activity-compose"
 
     debugImplementation "androidx.compose.ui:ui-tooling"
+
+    // CardView
+    implementation 'androidx.cardview:cardview:1.0.0'
+
+    // Glide
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
