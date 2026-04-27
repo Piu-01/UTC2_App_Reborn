@@ -29,8 +29,12 @@ android {
         compose true
     }
 }
+// ✅ FIX: Đặt JVM target cho Kotlin ở TOP-LEVEL (ngoài android {})
+// Cách này hoạt động với mọi Kotlin plugin, kể cả kotlin.plugin.compose
+kotlin {
+    jvmToolchain(11)
+}
 dependencies {
-
     implementation libs.appcompat
     implementation libs.material
     implementation libs.constraintlayout
@@ -41,6 +45,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-storage'
 
+    // 🔥🔥 Compose BOM
     // Compose
     implementation platform("androidx.compose:compose-bom:2024.10.00")
     implementation "androidx.compose.ui:ui"
@@ -48,8 +53,32 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling-preview"
     implementation "androidx.compose.animation:animation"
     implementation "androidx.activity:activity-compose"
-
     debugImplementation "androidx.compose.ui:ui-tooling"
+    // ── RecyclerView & CardView ──────────────────────────────
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'androidx.cardview:cardview:1.0.0'
+
+    // ── Fragment ─────────────────────────────────────────────
+    implementation 'androidx.fragment:fragment:1.8.3'
+
+    // ── Lifecycle: ViewModel + LiveData ──────────────────────
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.8.3'
+    implementation 'androidx.lifecycle:lifecycle-livedata:2.8.3'
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.8.3'
+
+    // ── Retrofit 2 + Gson ────────────────────────────────────
+    implementation 'com.squareup.retrofit2:retrofit:2.11.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.11.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
+
+    // ── ZXing (QR generation — no scanner UI) ────────────────
+    implementation 'com.google.zxing:core:3.5.3'
+
+    // Room Database (bỏ comment khi sẵn sàng dùng DB)
+    implementation 'androidx.room:room-runtime:2.6.1'
+    annotationProcessor 'androidx.room:room-compiler:2.6.1'
+    // Nếu muốn dùng LiveData với Room (đã có sẵn trong lifecycle):
+    implementation 'androidx.room:room-ktx:2.6.1'  // optional cho Kotlin coroutines
 
     // CardView
     implementation 'androidx.cardview:cardview:1.0.0'

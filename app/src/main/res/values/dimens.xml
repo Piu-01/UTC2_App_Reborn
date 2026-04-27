@@ -13,4 +13,5 @@
     <dimen name="header_icon_size">36dp</dimen>
 
     <dimen name="distance_time_schedule">50dp</dimen>
+    <dimen name="qr_toolbar_height">56dp</dimen>
 </resources>
