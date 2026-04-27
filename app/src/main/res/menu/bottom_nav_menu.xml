@@ -1,29 +1,38 @@
+<!-- PATH: app/src/main/res/menu/bottom_nav_menu.xml -->
+<!-- ⚠️ Thay thế file hiện có. Thêm nav_assessment vào giữa nav_schedule và nav_result. -->
+
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_house"
-        android:title="Home" />
+        android:title="Home"/>
 
     <item
         android:id="@+id/nav_register"
         android:icon="@drawable/ic_book_open"
-        android:title="Đăng kí học phần" />
+        android:title="Đăng kí học phần"/>
 
     <item
         android:id="@+id/nav_schedule"
         android:icon="@drawable/ic_calendar"
-        android:title="Lịch" />
+        android:title="Lịch"/>
+
+    <!-- ✅ Thêm mới: tab Đánh giá -->
+    <item
+        android:id="@+id/nav_assessment"
+        android:icon="@drawable/ic_assessment"
+        android:title="Đánh giá"/>
 
     <item
         android:id="@+id/nav_result"
         android:icon="@drawable/ic_graduation_cap"
-        android:title="Kết quả học tập" />
+        android:title="Kết quả học tập"/>
 
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/ic_user"
-        android:title="Cá nhân" />
+        android:title="Cá nhân"/>
 
 </menu>

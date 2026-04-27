@@ -1,0 +1,75 @@
+<!-- PATH: app/src/main/res/layout/item_assessment_deduction.xml -->
+
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="10dp"
+    android:background="#FFF8F8">
+
+    <!-- Divider top -->
+    <View
+        android:id="@+id/dividerDeduction"
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:background="#FFCCCC"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Tên tiêu chí trừ điểm -->
+    <TextView
+        android:id="@+id/tvDeductionTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:textColor="#CC0000"
+        android:lineSpacingExtra="3dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintTop_toBottomOf="@id/dividerDeduction"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tilDeductionScore"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <!-- Mức trừ tối đa -->
+    <TextView
+        android:id="@+id/tvPenalty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:textColor="#FF6666"
+        android:layout_marginTop="2dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/tvDeductionTitle"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <!-- Dropdown chọn mức trừ -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilDeductionScore"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="88dp"
+        android:layout_height="wrap_content"
+        android:hint="Điểm"
+        app:boxStrokeColor="#CC0000"
+        app:hintTextColor="#CC0000"
+        app:layout_constraintTop_toBottomOf="@id/dividerDeduction"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/actvDeductionScore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="#CC0000"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:inputType="numberDecimal|numberSigned"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

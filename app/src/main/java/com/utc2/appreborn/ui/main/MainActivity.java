@@ -1,17 +1,20 @@
+// PATH: app/src/main/java/com/utc2/appreborn/ui/main/MainActivity.java
+// ⚠️ Thay thế file hiện có. Thêm xử lý nav_assessment.
+
 package com.utc2.appreborn.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.compose.ui.platform.ComposeView;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.view.MenuItem;
+
 import com.utc2.appreborn.R;
 import com.utc2.appreborn.ui.components.LiquidBarKt;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.PopupMenu;
+import com.utc2.appreborn.ui.assessment.AssessmentFragment;
+import com.utc2.appreborn.ui.schedule.ScheduleFragment;
+
 import androidx.fragment.app.Fragment;
 
-import com.utc2.appreborn.ui.schedule.ScheduleFragment;
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -39,18 +42,19 @@ public class MainActivity extends AppCompatActivity {
             fragment = new ScheduleFragment();
         } else if (id == R.id.nav_register) {
             // fragment = new RegisterFragment();
+        } else if (id == R.id.nav_assessment) {           // ✅ THÊM MỚI
+            fragment = new AssessmentFragment();
         } else if (id == R.id.nav_result) {
             // fragment = new ResultFragment();
         } else if (id == R.id.nav_profile) {
             // fragment = new ProfileFragment();
         }
 
-        // 🔹 QUAN TRỌNG: Lệnh thực hiện chuyển trang
         if (fragment != null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragment_container, fragment) // R.id.fragment_container là ID trong file XML ở trên
+                    .replace(R.id.fragment_container, fragment)
                     .commit();
-        } /// NHớ bổ sung cho nếu null thì quay về trang home...
+        }
     }
 }

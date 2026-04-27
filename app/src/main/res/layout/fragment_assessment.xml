@@ -1,0 +1,240 @@
+<!-- PATH: app/src/main/res/layout/fragment_assessment.xml -->
+
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <!-- ═══ HEADER BAR ═══════════════════════════════════════════════════ -->
+    <View
+        android:id="@+id/viewHeaderBg"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:background="@android:color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvHeaderTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Đánh giá"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.03"
+        app:layout_constraintTop_toTopOf="@id/viewHeaderBg"
+        app:layout_constraintBottom_toBottomOf="@id/viewHeaderBg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- ═══ STUDENT INFO STRIP ════════════════════════════════════════════ -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutStudentInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="10dp"
+        android:background="#F7F7F7"
+        app:layout_constraintTop_toBottomOf="@id/viewHeaderBg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/tvLabelStudentCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MSSV:"
+            android:textSize="12sp"
+            android:textColor="#888"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/tvStudentCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="—"
+            android:textSize="12sp"
+            android:textColor="#111"
+            android:textStyle="bold"
+            android:layout_marginStart="4dp"
+            app:layout_constraintTop_toTopOf="@id/tvLabelStudentCode"
+            app:layout_constraintStart_toEndOf="@id/tvLabelStudentCode"/>
+
+        <TextView
+            android:id="@+id/tvLabelAdvisor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CVHT:"
+            android:textSize="12sp"
+            android:textColor="#888"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelStudentCode"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/tvAdvisorName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="—"
+            android:textSize="12sp"
+            android:textColor="#111"
+            android:layout_marginStart="4dp"
+            app:layout_constraintTop_toTopOf="@id/tvLabelAdvisor"
+            app:layout_constraintStart_toEndOf="@id/tvLabelAdvisor"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ═══ TAB SWITCHER ═════════════════════════════════════════════════ -->
+    <LinearLayout
+        android:id="@+id/layoutTabs"
+        android:layout_width="0dp"
+        android:layout_height="44dp"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_tab_container"
+        android:padding="3dp"
+        app:layout_constraintTop_toBottomOf="@id/layoutStudentInfo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/btnTabRlsv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Sinh viên"
+            android:textSize="13sp"
+            android:textColor="@android:color/white"
+            android:selected="true"
+            android:background="@drawable/bg_tab_item"
+            android:stateListAnimator="@null"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"/>
+
+        <Button
+            android:id="@+id/btnTabCvht"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Cố vấn học tập"
+            android:textSize="13sp"
+            android:textColor="@android:color/black"
+            android:selected="false"
+            android:background="@drawable/bg_tab_item"
+            android:stateListAnimator="@null"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"/>
+
+    </LinearLayout>
+
+    <!-- ═══ PERIOD DROPDOWN ═══════════════════════════════════════════════ -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilPeriod"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="10dp"
+        android:hint="Chọn học kỳ"
+        app:boxStrokeColor="@android:color/black"
+        app:hintTextColor="@android:color/black"
+        app:layout_constraintTop_toBottomOf="@id/layoutTabs"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/actvPeriod"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:textSize="14sp"
+            android:textColor="#111"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- ═══ LOADING ═══════════════════════════════════════════════════════ -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:indeterminateTint="@android:color/black"
+        app:layout_constraintTop_toBottomOf="@id/tilPeriod"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/layoutSummary"/>
+
+    <!-- ═══ CRITERIA LIST ════════════════════════════════════════════════ -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCriteria"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingBottom="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tilPeriod"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/layoutSummary"/>
+
+    <!-- ═══ SUMMARY BAR ═══════════════════════════════════════════════════ -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutSummary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        android:background="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/tvLabelTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tổng điểm"
+            android:textColor="#AAAAAA"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/tvTotalScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="@android:color/white"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelTotal"/>
+
+        <TextView
+            android:id="@+id/tvLabelClassification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Xếp loại"
+            android:textColor="#AAAAAA"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/tvClassification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="—"
+            android:textColor="@android:color/white"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvLabelClassification"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
