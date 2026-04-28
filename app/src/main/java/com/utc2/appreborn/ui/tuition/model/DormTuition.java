@@ -1,5 +1,4 @@
-package com.utc2.appreborn.ui.tuition.Dorm;
-import com.utc2.appreborn.ui.tuition.Tuition;
+package com.utc2.appreborn.ui.tuition.model;
 
 public class DormTuition extends Tuition {
 

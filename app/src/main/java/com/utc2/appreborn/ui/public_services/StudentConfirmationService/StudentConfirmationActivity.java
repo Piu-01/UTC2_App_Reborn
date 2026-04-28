@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.utc2.appreborn.R;
+import com.utc2.appreborn.ui.public_services.model.StudentConfirmationService;
 import com.utc2.appreborn.utils.NetworkUtils; // Import Utils
 
 public class StudentConfirmationActivity extends AppCompatActivity {

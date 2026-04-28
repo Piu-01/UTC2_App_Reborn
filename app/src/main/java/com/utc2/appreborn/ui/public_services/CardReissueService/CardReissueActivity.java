@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.utc2.appreborn.R;
+import com.utc2.appreborn.ui.public_services.model.CardReissueService;
 import com.utc2.appreborn.utils.NetworkUtils; // Import Utils
 
 public class CardReissueActivity extends AppCompatActivity {

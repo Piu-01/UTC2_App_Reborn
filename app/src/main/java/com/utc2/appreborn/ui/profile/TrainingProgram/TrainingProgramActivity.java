@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.chip.Chip;
 import com.utc2.appreborn.R;
+import com.utc2.appreborn.ui.profile.adapter.SubjectAdapter;
+import com.utc2.appreborn.ui.profile.model.Subject;
 import com.utc2.appreborn.utils.NetworkUtils; // Import Utils
 
 import java.util.ArrayList;

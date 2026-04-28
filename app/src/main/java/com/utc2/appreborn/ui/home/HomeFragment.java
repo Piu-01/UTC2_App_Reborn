@@ -25,11 +25,15 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.utc2.appreborn.R;
 import com.utc2.appreborn.data.local.StudentProfile;
 import com.utc2.appreborn.databinding.FragmentHomeBinding;
+import com.utc2.appreborn.ui.Info.InfoFragment;
 import com.utc2.appreborn.ui.home.adapter.FeatureAdapter;
 import com.utc2.appreborn.ui.home.adapter.NewsAdapter;
 import com.utc2.appreborn.ui.home.model.NewsItem;
 import com.utc2.appreborn.ui.main.MainActivity;
 import com.utc2.appreborn.ui.news.NewsDetailActivity;
+import com.utc2.appreborn.ui.profile.SupportActivity;
+import com.utc2.appreborn.ui.public_services.PublicServiceFragment;
+import com.utc2.appreborn.ui.tuition.TuitionFragment;
 import com.utc2.appreborn.utils.MockHelper;
 
 /**
@@ -224,8 +228,12 @@ public class HomeFragment extends Fragment {
 
     private void setupClickListeners() {
         // Avatar → trang cá nhân
-        binding.ivAvatar.setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Trang cá nhân", Toast.LENGTH_SHORT).show());
+        binding.ivAvatar.setOnClickListener(v -> {
+            // Ép kiểu context về MainActivity để gọi hàm chuyển Fragment
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).pushFragment(new InfoFragment(), "InfoFragment");
+            }
+        });
 
         // FIX 3: KHÔNG còn binding.ivAddBtn — đã xóa khỏi layout
 
@@ -241,20 +249,36 @@ public class HomeFragment extends Fragment {
     // ─── Feature clicks ───────────────────────────────────────
 
     private void handleFeatureClick(String featureId) {
+        // Lấy instance của MainActivity để gọi hàm pushFragment
+        MainActivity mainActivity = (MainActivity) requireActivity();
+
         switch (featureId) {
             case "hoc_phi":
-                Toast.makeText(requireContext(), "Học phí", Toast.LENGTH_SHORT).show(); break;
+                mainActivity.pushFragment(new TuitionFragment(), "TuitionFragment");
+                break;
+
             case "dich_vu_cong":
-                Toast.makeText(requireContext(), "Dịch vụ công", Toast.LENGTH_SHORT).show(); break;
-            case "danh_gia":
-                Toast.makeText(requireContext(), "Đánh giá", Toast.LENGTH_SHORT).show(); break;
-            case "ki_tuc_xa":
-                Toast.makeText(requireContext(), "Kí túc xá", Toast.LENGTH_SHORT).show(); break;
+                mainActivity.pushFragment(new PublicServiceFragment(), "PublicServiceFragment");
+                break;
+
             case "ho_tro":
-                Toast.makeText(requireContext(), "Hỗ trợ 24/7", Toast.LENGTH_SHORT).show(); break;
+                // SupportActivity là ACTIVITY (tên class kết thúc bằng Activity)
+                // Nên chỗ này dùng Intent là ĐÚNG, không được sửa thành pushFragment
+                Intent intent = new Intent(requireContext(), SupportActivity.class);
+                startActivity(intent);
+                break;
+
+            case "danh_gia":
+                Toast.makeText(requireContext(), "Đánh giá", Toast.LENGTH_SHORT).show();
+                break;
+            case "ki_tuc_xa":
+                Toast.makeText(requireContext(), "Kí túc xá", Toast.LENGTH_SHORT).show();
+                break;
             case "danh_muc_khac":
-                Toast.makeText(requireContext(), "Danh mục khác", Toast.LENGTH_SHORT).show(); break;
-            default: Log.w(TAG, "Unknown feature: " + featureId);
+                Toast.makeText(requireContext(), "Danh mục khác", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                Log.w(TAG, "Unknown feature: " + featureId);
         }
     }
 

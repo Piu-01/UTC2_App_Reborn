@@ -1,6 +1,6 @@
-package com.utc2.appreborn.ui.Info;
+package com.utc2.appreborn.ui.Info.model;
 
-public class StudentInfo {
+public class InfoItem {
     private String birthPlace;
     private String cccd;
     private String permanentAddress;
@@ -8,7 +8,7 @@ public class StudentInfo {
     private String currentAddress;
     private String studentCardUrl; // Link ảnh thẻ sinh viên trên server
 
-    public StudentInfo(String birthPlace, String cccd, String permanentAddress, String tempAddress, String currentAddress, String studentCardUrl) {
+    public InfoItem(String birthPlace, String cccd, String permanentAddress, String tempAddress, String currentAddress, String studentCardUrl) {
         this.birthPlace = birthPlace;
         this.cccd = cccd;
         this.permanentAddress = permanentAddress;

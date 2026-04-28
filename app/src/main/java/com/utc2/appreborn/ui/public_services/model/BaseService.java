@@ -1,4 +1,4 @@
-package com.utc2.appreborn.ui.public_services;
+package com.utc2.appreborn.ui.public_services.model;
 
 import android.text.format.DateFormat;
 

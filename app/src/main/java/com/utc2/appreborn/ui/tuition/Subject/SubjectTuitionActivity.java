@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.utc2.appreborn.R;
+import com.utc2.appreborn.ui.tuition.adapter.SubjectTuitionAdapter;
+import com.utc2.appreborn.ui.tuition.model.SubjectTuition;
 import com.utc2.appreborn.utils.NetworkUtils; // Import Utils
 import java.util.ArrayList;
 import java.util.List;

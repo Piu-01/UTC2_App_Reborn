@@ -8,8 +8,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.utc2.appreborn.R;
-import com.utc2.appreborn.ui.tuition.Dorm.DormTuition;
-import com.utc2.appreborn.ui.tuition.Subject.SubjectTuition;
+import com.utc2.appreborn.ui.tuition.model.DormTuition;
+import com.utc2.appreborn.ui.tuition.adapter.InvoiceAdapter;
+import com.utc2.appreborn.ui.tuition.model.Invoice;
+import com.utc2.appreborn.ui.tuition.model.SubjectTuition;
 import com.utc2.appreborn.utils.NetworkUtils; // Import Utils
 
 import java.util.ArrayList;

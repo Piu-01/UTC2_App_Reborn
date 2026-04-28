@@ -1,4 +1,4 @@
-package com.utc2.appreborn.ui.tuition.Subject;
+package com.utc2.appreborn.ui.tuition.adapter;
 
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -8,6 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.utc2.appreborn.R;
+import com.utc2.appreborn.ui.tuition.model.SubjectTuition;
+
 import java.util.List;
 import java.util.Locale; // Import thêm cái này
 

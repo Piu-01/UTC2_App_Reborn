@@ -1,6 +1,4 @@
-package com.utc2.appreborn.ui.public_services.StudentConfirmationService;
-
-import com.utc2.appreborn.ui.public_services.BaseService;
+package com.utc2.appreborn.ui.public_services.model;
 
 public class StudentConfirmationService extends BaseService {
     private String studentName;

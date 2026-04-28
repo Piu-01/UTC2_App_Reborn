@@ -1,6 +1,4 @@
-package com.utc2.appreborn.ui.tuition.Invoice;
-
-import com.utc2.appreborn.ui.tuition.Tuition;
+package com.utc2.appreborn.ui.tuition.model;
 
 /**
  * Lớp Invoice - Đại diện cho hóa đơn điện tử sau khi thanh toán.

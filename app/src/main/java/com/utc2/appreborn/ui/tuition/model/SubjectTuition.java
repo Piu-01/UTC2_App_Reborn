@@ -1,5 +1,4 @@
-package com.utc2.appreborn.ui.tuition.Subject;
-import com.utc2.appreborn.ui.tuition.Tuition;
+package com.utc2.appreborn.ui.tuition.model;
 
 public class SubjectTuition extends Tuition {
     // ID này thường là Khóa chính (PRIMARY KEY) tự tăng trong database

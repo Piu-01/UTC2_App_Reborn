@@ -1,4 +1,4 @@
-package com.utc2.appreborn.ui.profile.TrainingProgram;
+package com.utc2.appreborn.ui.profile.model;
 
 public class Subject {
     private String code;

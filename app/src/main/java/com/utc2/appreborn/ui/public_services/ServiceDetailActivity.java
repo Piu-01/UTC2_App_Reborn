@@ -11,10 +11,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.utc2.appreborn.R;
-import com.utc2.appreborn.ui.public_services.CardReissueService.CardReissueService;
-import com.utc2.appreborn.ui.public_services.LoanSupportService.LoanSupportService;
-import com.utc2.appreborn.ui.public_services.StudentConfirmationService.StudentConfirmationService;
+import com.utc2.appreborn.ui.public_services.model.CardReissueService;
+import com.utc2.appreborn.ui.public_services.model.LoanSupportService;
+import com.utc2.appreborn.ui.public_services.model.StudentConfirmationService;
 import com.utc2.appreborn.ui.public_services.TranscriptService.TranscriptService;
+import com.utc2.appreborn.ui.public_services.model.BaseService;
 import com.utc2.appreborn.utils.NetworkUtils; // Import Utils
 
 public class ServiceDetailActivity extends AppCompatActivity {

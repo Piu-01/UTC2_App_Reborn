@@ -1,4 +1,4 @@
-package com.utc2.appreborn.ui.public_services;
+package com.utc2.appreborn.ui.public_services.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -16,13 +15,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.utc2.appreborn.R;
 import com.utc2.appreborn.ui.public_services.CardReissueService.CardReissueActivity;
-import com.utc2.appreborn.ui.public_services.CardReissueService.CardReissueService;
+import com.utc2.appreborn.ui.public_services.model.CardReissueService;
 import com.utc2.appreborn.ui.public_services.LoanSupportService.LoanSupportActivity;
-import com.utc2.appreborn.ui.public_services.LoanSupportService.LoanSupportService;
+import com.utc2.appreborn.ui.public_services.model.LoanSupportService;
+import com.utc2.appreborn.ui.public_services.ServiceDetailActivity;
 import com.utc2.appreborn.ui.public_services.StudentConfirmationService.StudentConfirmationActivity;
-import com.utc2.appreborn.ui.public_services.StudentConfirmationService.StudentConfirmationService;
+import com.utc2.appreborn.ui.public_services.model.StudentConfirmationService;
 import com.utc2.appreborn.ui.public_services.TranscriptService.TranscriptRegistrationActivity;
 import com.utc2.appreborn.ui.public_services.TranscriptService.TranscriptService;
+import com.utc2.appreborn.ui.public_services.model.BaseService;
 
 import java.io.Serializable;
 import java.util.List;

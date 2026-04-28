@@ -1,6 +1,4 @@
-package com.utc2.appreborn.ui.public_services.LoanSupportService;
-
-import com.utc2.appreborn.ui.public_services.BaseService;
+package com.utc2.appreborn.ui.public_services.model;
 
 public class LoanSupportService extends BaseService {
     private String loanAmount;

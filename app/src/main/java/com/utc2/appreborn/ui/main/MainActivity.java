@@ -51,9 +51,9 @@ public class MainActivity extends AppCompatActivity {
         } else if (navId == R.id.nav_schedule) {
             switchTab(ScheduleFragment.class, TAG_SCHEDULE);
         } else if (navId == R.id.nav_register) {
-            switchTab(PublicServiceFragment.class, TAG_SERVICES);
+            //switchTab(RegisterFragment.class, TAG_REGISTER);
         } else if (navId == R.id.nav_result) {
-            switchTab(TuitionFragment.class, TAG_TUITION);
+            //switchTab(ResultFragment.class, TAG_RESULT);
         } else if (navId == R.id.nav_profile) {
             switchTab(ProfileFragment.class, TAG_PROFILE);
         } else {

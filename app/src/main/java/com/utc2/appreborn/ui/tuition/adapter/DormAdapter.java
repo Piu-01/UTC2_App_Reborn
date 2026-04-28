@@ -1,4 +1,4 @@
-package com.utc2.appreborn.ui.tuition.Dorm;
+package com.utc2.appreborn.ui.tuition.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +7,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.utc2.appreborn.R;
+import com.utc2.appreborn.ui.tuition.model.DormTuition;
+
 import java.util.List;
 import java.util.Locale;
 

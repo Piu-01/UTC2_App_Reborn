@@ -1,4 +1,4 @@
-package com.utc2.appreborn.ui.tuition;
+package com.utc2.appreborn.ui.tuition.model;
 
 /**
  * Lớp trừu tượng Tuition - Đại diện cho các loại hóa đơn/lệ phí.
