@@ -31,6 +31,7 @@ import com.utc2.appreborn.ui.home.adapter.NewsAdapter;
 import com.utc2.appreborn.ui.home.model.NewsItem;
 import com.utc2.appreborn.ui.main.MainActivity;
 import com.utc2.appreborn.ui.news.NewsDetailActivity;
+import com.utc2.appreborn.ui.dormitory.DormitoryActivity;
 import com.utc2.appreborn.ui.profile.SupportActivity;
 import com.utc2.appreborn.ui.public_services.PublicServiceFragment;
 import com.utc2.appreborn.ui.tuition.TuitionFragment;
@@ -272,6 +273,7 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(requireContext(), "Đánh giá", Toast.LENGTH_SHORT).show();
                 break;
             case "ki_tuc_xa":
+                startActivity(new Intent(requireContext(), DormitoryActivity.class));
                 break;
             case "danh_muc_khac":
                 Toast.makeText(requireContext(), "Danh mục khác", Toast.LENGTH_SHORT).show();
