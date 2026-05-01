@@ -246,12 +246,4 @@
     <string name="week_sample">T.24</string>
     <string name="date_sample">T3, 07 thg 4</string>
     <string name="sample_semester_short">Kỳ %s</string>
-    <string name="ktx_title">Kí túc xá</string>
-    <string name="dang_ky">Đăng ký</string>
-    <string name="tra_phong">Tra phòng</string>
-    <string name="toa_nha">Tòa nhà</string>
-    <string name="gia_tien">Giá tiền</string>
-    <string name="loai_phong">Loại phòng</string>
-    <string name="phong_da_chon">Phòng đã chọn</string>
-    <string name="huy_dang_ky">Hủy đăng ký</string>
 </resources>
