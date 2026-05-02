@@ -1,104 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="app_name">UTC2 App Reborn</string>
+    <string name="utc2_subtitle">UTC2 - Phân hiệu TP.HCM</string>
+
+    <!-- Nav labels -->
     <string name="nav_label_home">Trang chủ</string>
     <string name="nav_label_register">Đăng ký</string>
     <string name="nav_label_schedule">Lịch học</string>
     <string name="nav_label_result">Kết quả</string>
     <string name="nav_label_profile">Cá nhân</string>
 
-    <string name="app_name">UTC2 App Reborn</string>
-    // Tên ứng dụng hiển thị trên Launcher
-    <string name="utc2_subtitle">UTC2 - Phân hiệu TP.HCM</string>
-    // Tên đầy đủ của trường dùng làm phụ đề
-
+    <!-- Login -->
     <string name="email">Email</string>
-    // Nhãn cho trường nhập địa chỉ email
     <string name="password">Password</string>
-    // Nhãn cho trường nhập mật khẩu
     <string name="login">Login</string>
-    // Văn bản trên nút thực hiện đăng nhập
     <string name="Notifications">Notifications</string>
-    // Tiêu đề danh sách các thông báo
 
+    <!-- Schedule -->
     <string name="schedule_title">Thời Khóa biểu</string>
-    // Tiêu đề chính màn hình thời khóa biểu
     <string name="session_morning_sample">SÁNG</string>
-    // Nhãn phân loại buổi sáng trong danh sách
     <string name="separator"> - </string>
-    // Ký tự dùng để ngăn cách các thành phần thông tin
-
     <string name="label_period">TIẾT</string>
-    // Đơn vị đo thời gian học (tiết học)
     <string name="label_theory">LÝ THUYẾT</string>
-    // Nhãn phân loại hình thức học lý thuyết
     <string name="label_no_class">Không có tiết học</string>
-    // Thông báo khi một khung giờ không có lịch
     <string name="label_room">Phòng: </string>
-    // Tiền tố hiển thị trước tên phòng học
     <string name="label_student_count">Sĩ số: </string>
-    // Tiền tố hiển thị số lượng sinh viên
     <string name="prefix_lecturer">GV: %s</string>
-    // Định dạng hiển thị tên giảng viên
     <string name="format_remaining_periods">CÒN LẠI: %d TIẾT</string>
-    // Số tiết chưa học của môn (đầy đủ)
     <string name="format_remaining_short">CÒN %d</string>
-    // Số tiết chưa học (rút gọn cho giao diện tuần)
     <string name="sample_time">07:00</string>
-    // Văn bản mẫu cho các mốc giờ trong cột thời gian
     <string name="sample_current_time">14:20</string>
-    // Văn bản mẫu hiển thị giờ hiện tại trên timeline
-
     <string name="sample_class">CQ.65.CNTT</string>
-    // Tên lớp học mẫu để hiển thị thiết kế
     <string name="sample_semester_short">Kỳ %s</string>
-    // Định dạng gọi học kỳ ngắn
     <string name="semester_sample">HK II</string>
-    // Văn bản mẫu cho học kỳ
     <string name="week_sample">T.24</string>
-    // Văn bản mẫu cho số tuần rút gọn
     <string name="date_sample">T3, 07 thg 4</string>
-    // Văn bản mẫu cho định dạng ngày tháng
     <string name="sample_subject">Pháp luật đại cương</string>
-    // Tên môn học mẫu
     <string name="sample_date_range">13/04 — 06/06</string>
-    // Khoảng thời gian bắt đầu-kết thúc mẫu
     <string name="placeholder_none">None</string>
-    // Giá trị mặc định khi dữ liệu bị trống
-
     <string name="today_upper">HÔM NAY</string>
-    // Nhãn "Hôm nay" viết hoa cho badge và chỉ báo
     <string name="sample_day_number">30</string>
-    // Số ngày mẫu trong lịch
     <string name="sample_day_name">T2</string>
-    // Tên thứ mẫu trong lịch
-
     <string name="semester_prefix">HK %s</string>
-    // Định dạng hiển thị học kỳ (Ví dụ: HK I)
     <string name="week_prefix">Tuần %s</string>
-    // Định dạng hiển thị số tuần học
     <string name="month_prefix">Tháng %s</string>
-    // Định dạng hiển thị tháng
     <string name="desc_size_toggle">Phóng to/Thu nhỏ lịch</string>
-    // Mô tả cho nút thay đổi kích thước lịch
     <string name="desc_view_mode">Đổi chế độ Ngày/Tuần</string>
-    // Mô tả cho nút chuyển đổi kiểu xem
     <string name="desc_go_today">Quay về ngày hiện tại</string>
-    // Mô tả cho nút định vị về hôm nay
     <string name="desc_prev">Ngày trước</string>
-    // Mô tả hành động lùi lại một ngày
     <string name="desc_next">Ngày sau</string>
-    // Mô tả hành động tiến tới một ngày
     <string name="contentDescriptionCheduleChange">Chuyển chế độ xem</string>
-    // Mô tả chung cho việc thay đổi UI lịch
-
-    <!-- Buổi học — dùng bởi ScheduleLanguage.Label -->
     <string name="session_morning">SÁNG</string>
-    <!-- Đổi tên từ session_morning_sample → session_morning (xoá cái cũ) -->
     <string name="session_afternoon">CHIỀU</string>
     <string name="session_evening">TỐI</string>
-
-    <!-- DatePicker title -->
     <string name="label_pick_date">Chọn ngày xem lịch</string>
 
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!-- Màn hình Đánh giá                                         -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+
+    <!-- Header -->
+    <string name="assessment_title">Đánh giá</string>
+    <string name="assessment_label_student_code">MSSV:</string>
+    <string name="assessment_label_advisor">CVHT:</string>
+    <string name="assessment_placeholder_dash">—</string>
+
+    <!-- Tab -->
+    <string name="assessment_tab_student">Sinh viên</string>
+    <string name="assessment_tab_advisor">Cố vấn học tập</string>
+
+    <!-- Period + Choose -->
+    <string name="assessment_hint_period">Đợt đánh giá</string>
+    <string name="assessment_btn_choose">Chọn</string>
+
+    <!-- Column headers -->
+    <string name="assessment_col_stt">STT</string>
+    <string name="assessment_col_content">Nội dung</string>
+    <string name="assessment_col_score">Điểm</string>
+    <string name="assessment_col_sv_score">SV đánh giá</string>
+    <string name="assessment_col_tapthe">Tập thể lớp</string>
+    <string name="assessment_col_khoa">Khoa/Bộ môn</string>
+    <string name="assessment_col_truong">Trường</string>
+
+    <!-- Summary RLSV -->
+    <string name="assessment_label_total_score">Tổng điểm</string>
+    <string name="assessment_label_classification">Xếp loại</string>
+    <string name="assessment_default_score">0</string>
+    <string name="assessment_default_classification">—</string>
+    <string name="assessment_result_title">KẾT QUẢ ĐIỂM RÈN LUYỆN</string>
+    <string name="assessment_result_council_label">Kết quả điểm rèn luyện do Hội đồng đánh giá thông qua:</string>
+    <string name="assessment_total_and_classification">TỔNG ĐIỂM VÀ XẾP LOẠI</string>
+
+    <!-- Buttons -->
+    <string name="assessment_btn_evidence">Nộp MC</string>
+    <string name="assessment_btn_evidence_done">✓ Đã nộp MC</string>
+    <string name="assessment_btn_print">In đánh giá</string>
+    <string name="assessment_btn_save">Lưu đánh giá</string>
+
+    <!-- Toast -->
+    <string name="assessment_toast_evidence_attached">Đã đính kèm minh chứng</string>
+
+    <!-- CVHT section -->
+    <string name="assessment_cvht_opinion_label">2. Ý kiến sinh viên</string>
+    <string name="assessment_cvht_opinion_hint">Ý kiến đóng góp, nhận xét, kiến nghị về CVHT (Vui lòng gõ Tiếng Việt có dấu, nếu không có câu trả lời vui lòng để trống)</string>
+    <string name="assessment_cvht_reminder">*Vui lòng kiểm tra các thông tin trước khi nộp phiếu đánh giá.*</string>
+
+    <!-- Ghi chú RLSV -->
+    <string name="assessment_note_1">Trước khi tổ chức đánh giá RLSV, yêu cầu CVHT, Cán bộ lớp phổ biến chi tiết cho từng sinh viên thực hiện đúng nội quy quy định.</string>
+    <string name="assessment_note_2">Từng sinh viên căn cứ vào kết quả rèn luyện, tự đánh giá theo mức điểm chi tiết. Bản đánh giá phải thông qua họp lớp dưới sự chủ trì của CVHT.</string>
+    <string name="assessment_note_3">Điểm RLSV được dùng để xét học tiếp, ngừng học, xét thi đua khen thưởng, xét tốt nghiệp.</string>
+
+    <!-- Thang xếp loại -->
+    <string name="assessment_rank_excellent">Từ 90 đến 100 điểm: Loại xuất sắc</string>
+    <string name="assessment_rank_good">Từ 80 đến dưới 90 điểm: Loại tốt</string>
+    <string name="assessment_rank_fair">Từ 65 đến dưới 80 điểm: Loại khá</string>
+    <string name="assessment_rank_average">Từ 50 đến dưới 65 điểm: Loại trung bình</string>
+    <string name="assessment_rank_weak">Từ 35 đến dưới 50 điểm: Loại yếu</string>
+    <string name="assessment_rank_poor">Dưới 35 điểm: Loại kém</string>
+
+    <!-- Home screen -->
+    <string name="home_btn_assessment">Đánh giá rèn luyện</string>
 
 </resources>

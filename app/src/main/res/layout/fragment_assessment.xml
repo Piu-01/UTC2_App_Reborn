@@ -1,240 +1,642 @@
-<!-- PATH: app/src/main/res/layout/fragment_assessment.xml -->
-
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@android:color/white">
 
-    <!-- ═══ HEADER BAR ═══════════════════════════════════════════════════ -->
-    <View
-        android:id="@+id/viewHeaderBg"
-        android:layout_width="0dp"
+    <!-- ═══ HEADER ════════════════════════════════════════════════════════ -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@android:color/black"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="4dp"
+        android:paddingEnd="16dp"
+        android:background="@android:color/white"
+        android:elevation="4dp">
 
-    <TextView
-        android:id="@+id/tvHeaderTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Đánh giá"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:letterSpacing="0.03"
-        app:layout_constraintTop_toTopOf="@id/viewHeaderBg"
-        app:layout_constraintBottom_toBottomOf="@id/viewHeaderBg"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <!-- ═══ STUDENT INFO STRIP ════════════════════════════════════════════ -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layoutStudentInfo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="10dp"
-        android:background="#F7F7F7"
-        app:layout_constraintTop_toBottomOf="@id/viewHeaderBg"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        <!-- Nút back ← -->
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_chevron_left"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/desc_prev"
+            app:tint="@android:color/black"/>
 
         <TextView
-            android:id="@+id/tvLabelStudentCode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/assessment_title"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginStart="4dp"/>
+
+    </LinearLayout>
+
+    <!-- Divider dưới header -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0"/>
+
+    <!-- ═══ INFO: MSSV + CVHT ════════════════════════════════════════════ -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="6dp"
+        android:background="@android:color/white">
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MSSV:"
-            android:textSize="12sp"
-            android:textColor="#888"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            android:text="@string/assessment_label_student_code"
+            android:textSize="13sp"
+            android:textColor="#666"/>
 
         <TextView
             android:id="@+id/tvStudentCode"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="—"
-            android:textSize="12sp"
-            android:textColor="#111"
+            android:layout_weight="1"
+            android:text="@string/assessment_placeholder_dash"
+            android:textSize="13sp"
             android:textStyle="bold"
-            android:layout_marginStart="4dp"
-            app:layout_constraintTop_toTopOf="@id/tvLabelStudentCode"
-            app:layout_constraintStart_toEndOf="@id/tvLabelStudentCode"/>
+            android:textColor="@android:color/black"
+            android:layout_marginStart="4dp"/>
 
         <TextView
-            android:id="@+id/tvLabelAdvisor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CVHT:"
-            android:textSize="12sp"
-            android:textColor="#888"
-            app:layout_constraintTop_toBottomOf="@id/tvLabelStudentCode"
-            app:layout_constraintStart_toStartOf="parent"/>
+            android:text="@string/assessment_label_advisor"
+            android:textSize="13sp"
+            android:textColor="#666"
+            android:layout_marginStart="16dp"/>
 
         <TextView
             android:id="@+id/tvAdvisorName"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="—"
-            android:textSize="12sp"
-            android:textColor="#111"
-            android:layout_marginStart="4dp"
-            app:layout_constraintTop_toTopOf="@id/tvLabelAdvisor"
-            app:layout_constraintStart_toEndOf="@id/tvLabelAdvisor"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            android:text="@string/assessment_placeholder_dash"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginStart="4dp"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
-    <!-- ═══ TAB SWITCHER ═════════════════════════════════════════════════ -->
+    <!-- ═══ TAB SWITCHER ══════════════════════════════════════════════════ -->
     <LinearLayout
-        android:id="@+id/layoutTabs"
-        android:layout_width="0dp"
-        android:layout_height="44dp"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
         android:orientation="horizontal"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/bg_tab_container"
-        android:padding="3dp"
-        app:layout_constraintTop_toBottomOf="@id/layoutStudentInfo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="4dp"
+        android:background="@android:color/white">
 
+        <!-- Tab Sinh viên -->
         <Button
             android:id="@+id/btnTabRlsv"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Sinh viên"
-            android:textSize="13sp"
-            android:textColor="@android:color/white"
-            android:selected="true"
+            android:text="@string/assessment_tab_student"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:textColor="@android:color/black"
             android:background="@drawable/bg_tab_item"
             android:stateListAnimator="@null"
+            android:layout_marginEnd="4dp"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"/>
 
+        <!-- Tab Cố vấn học tập -->
         <Button
             android:id="@+id/btnTabCvht"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Cố vấn học tập"
-            android:textSize="13sp"
-            android:textColor="@android:color/black"
-            android:selected="false"
+            android:text="@string/assessment_tab_advisor"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
             android:background="@drawable/bg_tab_item"
             android:stateListAnimator="@null"
+            android:layout_marginStart="4dp"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"/>
 
     </LinearLayout>
 
-    <!-- ═══ PERIOD DROPDOWN ═══════════════════════════════════════════════ -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilPeriod"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="0dp"
+    <!-- ═══ ROW: ĐỢT ĐÁNH GIÁ + CHỌN ════════════════════════════════════ -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="10dp"
-        android:hint="Chọn học kỳ"
-        app:boxStrokeColor="@android:color/black"
-        app:hintTextColor="@android:color/black"
-        app:layout_constraintTop_toBottomOf="@id/layoutTabs"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="6dp"
+        android:gravity="center_vertical">
 
-        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/actvPeriod"
-            android:layout_width="match_parent"
+        <!-- Dropdown học kỳ -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilPeriod"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:inputType="none"
-            android:textSize="14sp"
-            android:textColor="#111"/>
+            android:layout_weight="1"
+            android:hint="@string/assessment_hint_period"
+            android:layout_marginEnd="8dp"
+            app:boxStrokeColor="@android:color/black"
+            app:hintTextColor="#666">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/actvPeriod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:textSize="14sp"
+                android:textColor="#111"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Nút Chọn -->
+        <Button
+            android:id="@+id/btnChoose"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width="90dp"
+            android:layout_height="56dp"
+            android:text="@string/assessment_btn_choose"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@android:color/black"
+            android:stateListAnimator="@null"/>
+
+    </LinearLayout>
+
+    <!-- ═══ BẢNG TIÊU ĐỀ CỘT (chỉ hiện khi Tab RLSV) ════════════════════ -->
+    <LinearLayout
+        android:id="@+id/layoutColumnHeaderRlsv"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:background="#F5F5F5"
+        android:gravity="center_vertical"
+        android:visibility="visible">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/assessment_col_stt"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="#555"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:text="@string/assessment_col_content"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="#555"/>
+
+        <TextView
+            android:layout_width="52dp"
+            android:layout_height="wrap_content"
+            android:text="@string/assessment_col_score"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="#555"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/tvColSvDanhGia"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content"
+            android:text="@string/assessment_col_sv_score"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="#555"
+            android:gravity="center"/>
+
+        <!-- Các cột thêm khi tab CVHT -->
+        <TextView
+            android:id="@+id/tvColTapThe"
+            android:layout_width="52dp"
+            android:layout_height="wrap_content"
+            android:text="@string/assessment_col_tapthe"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:textColor="#555"
+            android:gravity="center"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tvColKhoa"
+            android:layout_width="52dp"
+            android:layout_height="wrap_content"
+            android:text="@string/assessment_col_khoa"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:textColor="#555"
+            android:gravity="center"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tvColTruong"
+            android:layout_width="52dp"
+            android:layout_height="wrap_content"
+            android:text="@string/assessment_col_truong"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:textColor="#555"
+            android:gravity="center"
+            android:visibility="gone"/>
+
+    </LinearLayout>
 
     <!-- ═══ LOADING ═══════════════════════════════════════════════════════ -->
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:indeterminateTint="@android:color/black"
-        app:layout_constraintTop_toBottomOf="@id/tilPeriod"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/layoutSummary"/>
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:indeterminateTint="@android:color/black"/>
 
-    <!-- ═══ CRITERIA LIST ════════════════════════════════════════════════ -->
+    <!-- ═══ DANH SÁCH TIÊU CHÍ ════════════════════════════════════════════ -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCriteria"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_weight="1"
         android:clipToPadding="false"
-        android:paddingBottom="8dp"
-        app:layout_constraintTop_toBottomOf="@id/tilPeriod"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/layoutSummary"/>
+        android:paddingBottom="4dp"/>
 
-    <!-- ═══ SUMMARY BAR ═══════════════════════════════════════════════════ -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layoutSummary"
-        android:layout_width="0dp"
+    <!-- ═══ PHẦN TỔNG KẾT (RLSV) ══════════════════════════════════════════ -->
+    <LinearLayout
+        android:id="@+id/layoutSummaryRlsv"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:visibility="visible">
+
+        <!-- Dòng tổng điểm + xếp loại -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/assessment_label_total_score"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#111"/>
+
+            <EditText
+                android:id="@+id/etTotalScore"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:text="@string/assessment_default_score"
+                android:textSize="14sp"
+                android:textColor="#111"
+                android:layout_marginStart="8dp"
+                android:inputType="numberDecimal"
+                android:background="@null"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/assessment_label_classification"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#111"
+                android:gravity="end"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/tvClassification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/assessment_default_classification"
+                android:textSize="14sp"
+                android:textColor="#111"/>
+
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E0E0E0"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Kết quả điểm rèn luyện -->
+        <TextView
+            android:id="@+id/tvResultTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/assessment_result_title"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#0057A8"
+            android:gravity="center"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/assessment_result_council_label"
+                android:textSize="13sp"
+                android:textColor="#444"/>
+
+            <TextView
+                android:id="@+id/tvCouncilScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/assessment_default_score"
+                android:textSize="13sp"
+                android:textColor="#111"
+                android:textStyle="bold"
+                android:layout_marginStart="4dp"/>
+
+        </LinearLayout>
+
+        <!-- Nút In đánh giá -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPrint"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="@string/assessment_btn_print"
+            android:textSize="13sp"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            app:backgroundTint="#4CAF50"
+            app:cornerRadius="6dp"
+            app:icon="@drawable/ic_assessment"
+            app:iconGravity="start"
+            app:iconSize="16dp"/>
+
+    </LinearLayout>
+
+    <!-- ═══ PHẦN TỔNG KẾT RLSV (bảng đa cột) ═════════════════════════════ -->
+    <LinearLayout
+        android:id="@+id/layoutSummaryFull"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:visibility="gone">
+
+        <!-- Tiêu đề xanh -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/assessment_total_and_classification"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="#0057A8"
+            android:gravity="center"
+            android:paddingBottom="6dp"/>
+
+        <!-- Dòng Tổng điểm -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="@string/assessment_label_total_score"
+                android:textSize="13sp"
+                android:textColor="#111"/>
+
+            <EditText
+                android:id="@+id/etTotalScoreRlsv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="94"
+                android:textSize="13sp"
+                android:inputType="numberDecimal"
+                android:gravity="center"/>
+
+            <EditText
+                android:id="@+id/etCouncilScoreRlsv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="89.0"
+                android:textSize="13sp"
+                android:inputType="numberDecimal"
+                android:gravity="center"/>
+
+            <EditText
+                android:id="@+id/etSchoolScoreRlsv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="89.0"
+                android:textSize="13sp"
+                android:inputType="numberDecimal"
+                android:gravity="center"/>
+
+        </LinearLayout>
+
+        <!-- Dòng Xếp loại -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="@string/assessment_label_classification"
+                android:textSize="13sp"
+                android:textColor="#111"/>
+
+            <TextView
+                android:id="@+id/tvClassRlsv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Xuất sắc"
+                android:textSize="13sp"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/tvClassCouncil"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Tốt"
+                android:textSize="13sp"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/tvClassSchool"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Tốt"
+                android:textSize="13sp"
+                android:gravity="center"/>
+
+        </LinearLayout>
+
+        <!-- 2 nút: Lưu + In -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="10dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSave"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginEnd="12dp"
+                android:text="@string/assessment_btn_save"
+                android:textSize="13sp"
+                android:textAllCaps="false"
+                app:backgroundTint="#2196F3"
+                app:cornerRadius="6dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPrintFull"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="@string/assessment_btn_print"
+                android:textSize="13sp"
+                android:textAllCaps="false"
+                app:backgroundTint="#4CAF50"
+                app:cornerRadius="6dp"
+                app:icon="@drawable/ic_assessment"
+                app:iconGravity="start"
+                app:iconSize="16dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- ═══ PHẦN TỔNG KẾT CVHT ═══════════════════════════════════════════ -->
+    <LinearLayout
+        android:id="@+id/layoutSummaryCvht"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@android:color/white"
         android:paddingHorizontal="16dp"
-        android:paddingVertical="12dp"
-        android:background="@android:color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:paddingVertical="10dp"
+        android:visibility="gone">
 
+        <!-- Ý kiến sinh viên -->
         <TextView
-            android:id="@+id/tvLabelTotal"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tổng điểm"
-            android:textColor="#AAAAAA"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <TextView
-            android:id="@+id/tvTotalScore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:textColor="@android:color/white"
-            android:textSize="28sp"
+            android:text="@string/assessment_cvht_opinion_label"
+            android:textSize="13sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvLabelTotal"/>
+            android:textColor="#CC0000"/>
 
         <TextView
-            android:id="@+id/tvLabelClassification"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Xếp loại"
-            android:textColor="#AAAAAA"
+            android:text="@string/assessment_cvht_opinion_hint"
             android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:textColor="#666"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="6dp"/>
 
-        <TextView
-            android:id="@+id/tvClassification"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilOpinion"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="—"
+            app:boxStrokeColor="#CCCCCC">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etOpinion"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:gravity="top"
+                android:inputType="textMultiLine"
+                android:textSize="13sp"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Lưu ý đỏ -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/assessment_cvht_reminder"
+            android:textSize="12sp"
+            android:textColor="#CC0000"
+            android:textStyle="italic"
+            android:gravity="center"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Nút In đánh giá -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPrintCvht"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:text="@string/assessment_btn_print"
+            android:textSize="13sp"
+            android:textAllCaps="false"
             android:textColor="@android:color/white"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvLabelClassification"/>
+            app:backgroundTint="#4CAF50"
+            app:cornerRadius="6dp"
+            app:icon="@drawable/ic_assessment"
+            app:iconGravity="start"
+            app:iconSize="16dp"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

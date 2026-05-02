@@ -1,5 +1,3 @@
-// PATH: app/src/main/java/com/utc2/appreborn/ui/assessment/AssessmentFragment.java
-
 package com.utc2.appreborn.ui.assessment;
 
 import android.content.Intent;
@@ -19,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.utc2.appreborn.R;
 import com.utc2.appreborn.databinding.FragmentAssessmentBinding;
 import com.utc2.appreborn.model.AssessmentPeriod;
 
@@ -27,32 +26,27 @@ import java.util.List;
 
 public class AssessmentFragment extends Fragment {
 
-    // ─── Fields ───────────────────────────────────────────────────────────────
-
     private FragmentAssessmentBinding binding;
     private AssessmentViewModel       viewModel;
     private AssessmentAdapter         adapter;
 
-    /** ID tiêu chí đang chờ người dùng chọn file minh chứng */
     private int pendingEvidenceCriteriaId = -1;
 
-    /** ActivityResultLauncher để mở file picker (GetContent) */
     private final ActivityResultLauncher<String> filePickerLauncher =
             registerForActivityResult(
                     new ActivityResultContracts.GetContent(),
                     uri -> {
                         if (uri != null && pendingEvidenceCriteriaId != -1) {
-                            // Giữ quyền đọc file lâu dài
                             try {
                                 requireContext().getContentResolver()
                                         .takePersistableUriPermission(
                                                 uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                             } catch (Exception ignored) {}
-
                             viewModel.updateEvidenceUri(pendingEvidenceCriteriaId, uri.toString());
                             adapter.notifyEvidenceUpdated(pendingEvidenceCriteriaId);
                             Toast.makeText(requireContext(),
-                                    "Đã đính kèm minh chứng", Toast.LENGTH_SHORT).show();
+                                    R.string.assessment_toast_evidence_attached,
+                                    Toast.LENGTH_SHORT).show();
                             pendingEvidenceCriteriaId = -1;
                         }
                     }
@@ -74,6 +68,7 @@ public class AssessmentFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this).get(AssessmentViewModel.class);
 
+        setupBackButton();
         setupAdapter();
         setupTabSwitcher();
         setupPeriodDropdown();
@@ -88,27 +83,31 @@ public class AssessmentFragment extends Fragment {
 
     // ─── Setup ────────────────────────────────────────────────────────────────
 
+    private void setupBackButton() {
+        binding.btnBack.setOnClickListener(v -> {
+            if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+                getParentFragmentManager().popBackStack();
+            } else if (requireActivity().getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+    }
+
     private void setupAdapter() {
         adapter = new AssessmentAdapter(
-                // Score changed → cập nhật tổng điểm
                 updatedList -> viewModel.onScoreChanged(updatedList),
-
-                // Evidence clicked → lưu id và mở file picker
                 criteriaId -> {
                     pendingEvidenceCriteriaId = criteriaId;
-                    // Cho phép chọn mọi loại file (ảnh, PDF…)
                     filePickerLauncher.launch("*/*");
                 }
         );
-
         binding.rvCriteria.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvCriteria.setAdapter(adapter);
-        // Tắt animation khi update score để tránh nhấp nháy
         binding.rvCriteria.setItemAnimator(null);
     }
 
     private void setupTabSwitcher() {
-        // Mặc định: tab RLSV active
+        // Mặc định: RLSV (Sinh viên) đang chọn → nền đen, CVHT → nền xám
         selectTab(true);
 
         binding.btnTabRlsv.setOnClickListener(v -> {
@@ -120,15 +119,42 @@ public class AssessmentFragment extends Fragment {
             selectTab(false);
             viewModel.switchTab(false);
         });
+
+        // Nút Chọn kỳ → load lại data
+        binding.btnChoose.setOnClickListener(v -> {
+            boolean isRlsv = Boolean.TRUE.equals(viewModel.getIsStudentTab().getValue());
+            viewModel.switchTab(isRlsv);
+        });
     }
 
+    /**
+     * Cập nhật trạng thái visual của 2 tab.
+     * isRlsv = true  → Sinh viên: nền trắng, text đen | Cố vấn: nền đen, text trắng
+     * isRlsv = false → ngược lại
+     *
+     * (Theo ảnh UI: tab đang chọn = nền đen / text trắng)
+     */
     private void selectTab(boolean isRlsv) {
+        int black = requireContext().getColor(android.R.color.black);
+        int white = requireContext().getColor(android.R.color.white);
+
         binding.btnTabRlsv.setSelected(isRlsv);
         binding.btnTabCvht.setSelected(!isRlsv);
-        binding.btnTabRlsv.setTextColor(requireContext().getColor(
-                isRlsv ? android.R.color.white : android.R.color.black));
-        binding.btnTabCvht.setTextColor(requireContext().getColor(
-                isRlsv ? android.R.color.black : android.R.color.white));
+
+        binding.btnTabRlsv.setBackgroundColor(isRlsv  ? black : 0xFFDDDDDD);
+        binding.btnTabCvht.setBackgroundColor(!isRlsv ? black : 0xFFDDDDDD);
+        binding.btnTabRlsv.setTextColor(isRlsv  ? white : black);
+        binding.btnTabCvht.setTextColor(!isRlsv ? white : black);
+
+        // Ẩn/hiện phần summary phù hợp
+        binding.layoutSummaryRlsv.setVisibility(isRlsv ? View.VISIBLE : View.GONE);
+        binding.layoutSummaryCvht.setVisibility(isRlsv ? View.GONE   : View.VISIBLE);
+        binding.layoutSummaryFull.setVisibility(View.GONE); // chỉ dùng khi cần
+
+        // Cột header: RLSV chỉ cần 4 cột, CVHT (nếu muốn bổ sung cột về sau)
+        binding.tvColTapThe.setVisibility(View.GONE);
+        binding.tvColKhoa.setVisibility(View.GONE);
+        binding.tvColTruong.setVisibility(View.GONE);
     }
 
     private void setupPeriodDropdown() {
@@ -138,13 +164,12 @@ public class AssessmentFragment extends Fragment {
             List<String> labels = new ArrayList<>();
             for (AssessmentPeriod p : periods) labels.add(p.getLabel());
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+            ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
                     requireContext(),
                     android.R.layout.simple_spinner_dropdown_item,
                     labels);
 
-            binding.actvPeriod.setAdapter(adapter);
-            // Chọn mặc định học kỳ đầu tiên
+            binding.actvPeriod.setAdapter(spinnerAdapter);
             binding.actvPeriod.setText(labels.get(0), false);
             viewModel.setSelectedPeriod(periods.get(0));
 
@@ -156,28 +181,27 @@ public class AssessmentFragment extends Fragment {
     // ─── Observers ────────────────────────────────────────────────────────────
 
     private void observeViewModel() {
-        // Danh sách tiêu chí
         viewModel.getCriteria().observe(getViewLifecycleOwner(), list -> {
             binding.progressBar.setVisibility(View.GONE);
             adapter.submitList(list);
         });
 
-        // Tổng điểm & xếp loại (real-time)
         viewModel.getTotalScore().observe(getViewLifecycleOwner(), score -> {
-            String display = formatScore(score);
-            binding.tvTotalScore.setText(display);
+            String formatted = formatScore(score);
+            binding.etTotalScore.setText(formatted);
+            binding.etTotalScoreRlsv.setText(formatted);
         });
 
         viewModel.getClassification().observe(getViewLifecycleOwner(), cls -> {
             binding.tvClassification.setText(cls);
+            binding.tvClassRlsv.setText(cls);
         });
 
-        // Thông tin sinh viên
-        viewModel.getStudentCode().observe(getViewLifecycleOwner(), code ->
-                binding.tvStudentCode.setText(code));
+        viewModel.getStudentCode().observe(getViewLifecycleOwner(),
+                code -> binding.tvStudentCode.setText(code));
 
-        viewModel.getAdvisorName().observe(getViewLifecycleOwner(), name ->
-                binding.tvAdvisorName.setText(name));
+        viewModel.getAdvisorName().observe(getViewLifecycleOwner(),
+                name -> binding.tvAdvisorName.setText(name));
     }
 
     // ─── Helpers ──────────────────────────────────────────────────────────────

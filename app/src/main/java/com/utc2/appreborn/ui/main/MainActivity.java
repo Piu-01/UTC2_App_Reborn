@@ -1,19 +1,15 @@
-// PATH: app/src/main/java/com/utc2/appreborn/ui/main/MainActivity.java
-// ⚠️ Thay thế file hiện có. Thêm xử lý nav_assessment.
-
 package com.utc2.appreborn.ui.main;
+
+import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.compose.ui.platform.ComposeView;
-import android.os.Bundle;
-import android.view.MenuItem;
+import androidx.fragment.app.Fragment;
 
 import com.utc2.appreborn.R;
 import com.utc2.appreborn.ui.components.LiquidBarKt;
-import com.utc2.appreborn.ui.assessment.AssessmentFragment;
+import com.utc2.appreborn.ui.home.HomeFragment;
 import com.utc2.appreborn.ui.schedule.ScheduleFragment;
-
-import androidx.fragment.app.Fragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,8 +18,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ComposeView bottomBarCompose = findViewById(R.id.bottom_bar_compose);
+        // Hiển thị HomeFragment mặc định khi mở app
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new HomeFragment())
+                    .commit();
+        }
 
+        ComposeView bottomBarCompose = findViewById(R.id.bottom_bar_compose);
         LiquidBarKt.setupLiquidBottomBar(
                 bottomBarCompose,
                 id -> {
@@ -37,13 +40,11 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = null;
 
         if (id == R.id.nav_home) {
-            // fragment = new HomeFragment();
+            fragment = new HomeFragment();
         } else if (id == R.id.nav_schedule) {
             fragment = new ScheduleFragment();
         } else if (id == R.id.nav_register) {
             // fragment = new RegisterFragment();
-        } else if (id == R.id.nav_assessment) {           // ✅ THÊM MỚI
-            fragment = new AssessmentFragment();
         } else if (id == R.id.nav_result) {
             // fragment = new ResultFragment();
         } else if (id == R.id.nav_profile) {

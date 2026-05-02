@@ -1,91 +1,121 @@
-<!-- PATH: app/src/main/res/layout/item_assessment_criteria.xml -->
-
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<!--
+    item_assessment_criteria.xml
+    Layout 1 hàng tiêu chí trong bảng đánh giá:
+      [STT] [Nội dung (multi-line)] [Điểm max] [Dropdown SV đánh giá]
+
+    Tab RLSV:  hiện tvStt, tvContent, tvMaxScore, tilScore
+    Tab CVHT:  giống RLSV, chỉ khác số cột (xử lý từ Adapter)
+-->
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="16dp"
-    android:paddingVertical="10dp"
-    android:background="@android:color/white">
+    android:orientation="vertical">
 
-    <!-- Divider top -->
+    <!-- Divider trên -->
     <View
-        android:id="@+id/divider"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="#E0E0E0"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:background="#E0E0E0"/>
 
-    <!-- Tên tiêu chí -->
-    <TextView
-        android:id="@+id/tvCriteriaTitle"
-        android:layout_width="0dp"
+    <!-- Hàng nội dung -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="13sp"
-        android:textColor="#222222"
-        android:lineSpacingExtra="3dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintTop_toBottomOf="@id/divider"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tilScore"/>
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:gravity="center_vertical"
+        android:minHeight="48dp"
+        android:background="@android:color/white">
 
-    <!-- Điểm tối đa -->
-    <TextView
-        android:id="@+id/tvMaxScore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="11sp"
-        android:textColor="#888888"
-        android:layout_marginTop="4dp"
-        app:layout_constraintTop_toBottomOf="@id/tvCriteriaTitle"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <!-- Nút nộp minh chứng (chỉ hiện khi requiresEvidence = true) -->
-    <Button
-        android:id="@+id/btnEvidence"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="32dp"
-        android:text="Nộp MC"
-        android:textSize="11sp"
-        android:textStyle="bold"
-        android:textAllCaps="false"
-        android:paddingHorizontal="10dp"
-        android:stateListAnimator="@null"
-        android:visibility="gone"
-        app:strokeColor="@android:color/black"
-        app:layout_constraintTop_toBottomOf="@id/tvMaxScore"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <!-- Ô nhập điểm (dropdown + tay) -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilScore"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="88dp"
-        android:layout_height="wrap_content"
-        android:hint="Điểm"
-        app:boxStrokeColor="@android:color/black"
-        app:hintTextColor="#666"
-        app:layout_constraintTop_toBottomOf="@id/divider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/actvScore"
-            android:layout_width="match_parent"
+        <!-- STT -->
+        <TextView
+            android:id="@+id/tvStt"
+            android:layout_width="28dp"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="#111"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:inputType="numberDecimal|numberSigned"/>
+            android:textSize="13sp"
+            android:textColor="#333"
+            android:gravity="center"/>
 
-    </com.google.android.material.textfield.TextInputLayout>
+        <!-- Nội dung tiêu chí (chiếm phần lớn) -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="8dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/tvCriteriaTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="#222"
+                android:lineSpacingExtra="2dp"/>
+
+            <!-- Nút nộp minh chứng (chỉ hiện khi cần) -->
+            <LinearLayout
+                android:id="@+id/layoutEvidence"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/btnEvidence"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:text="@string/assessment_btn_evidence"
+                    android:textSize="11sp"
+                    android:textAllCaps="false"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:stateListAnimator="@null"
+                    app:strokeColor="@android:color/black"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Điểm tối đa -->
+        <TextView
+            android:id="@+id/tvMaxScore"
+            android:layout_width="44dp"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="#333"
+            android:gravity="center"/>
+
+        <!-- Dropdown SV đánh giá -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilScore"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content"
+            app:boxStrokeColor="@android:color/black"
+            app:hintTextColor="#666"
+            app:boxBackgroundColor="@android:color/white">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/actvScore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="#111"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:inputType="none"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
