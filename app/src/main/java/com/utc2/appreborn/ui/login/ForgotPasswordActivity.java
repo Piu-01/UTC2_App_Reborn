@@ -1,9 +1,7 @@
 package com.utc2.appreborn.ui.login;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -12,15 +10,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.utc2.appreborn.R;
+import com.utc2.appreborn.utils.NetworkUtils;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
-
-    private EditText edtEmail;
-    private Button btnReset;
-    private ImageButton btnBack;
-
-    // Vẫn dùng Interface để mốt đổi Backend cho dễ
-    private IAuthService authService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,64 +20,49 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_forgot_password);
 
         initViews();
-
-        // Nút quay lại
-        btnBack.setOnClickListener(v -> finish());
-
-        // Nút gửi yêu cầu reset
-        btnReset.setOnClickListener(v -> validateAndReset());
     }
 
     private void initViews() {
-        edtEmail = findViewById(R.id.edtEmail);
-        btnReset = findViewById(R.id.btnReset);
-        btnBack = findViewById(R.id.btnBack);
+        EditText edtEmail = findViewById(R.id.edtEmail);
+        Button btnReset = findViewById(R.id.btnReset);
+        ImageButton btnBack = findViewById(R.id.btnBack);
 
-        // Khởi tạo service (Firebase)
-        authService = new FirebaseAuthService();
-    }
+        // Thiết lập giao diện từ strings.xml của AppReborn
+        btnReset.setText(R.string.send_reset_email);
+        edtEmail.setHint(R.string.enter_email);
 
-    private void validateAndReset() {
-        // Kiểm tra mạng trước khi gửi
-        if (!isNetworkAvailable()) {
-            showToast("Mất mạng rồi bro ơi :V");
-            return;
-        }
+        // Nút quay lại màn hình đăng nhập
+        btnBack.setOnClickListener(v -> finish());
 
-        String email = edtEmail.getText().toString().trim();
-
-        if (email.isEmpty()) {
-            edtEmail.setError("Nhập email nhận pass đi bro :V");
-            edtEmail.requestFocus();
-            return;
-        }
-
-        performReset(email);
-    }
-
-    private void performReset(String email) {
-        // Vô hiệu hóa nút để tránh bấm nhiều lần khi đang đợi mail gửi đi
-        btnReset.setEnabled(false);
-
-        authService.resetPassword(email, new IAuthService.AuthCallback() {
-            @Override
-            public void onSuccess(String message) {
-                showToast(message);
-                finish(); // Thành công thì đóng trang quay về Login
+        // Nút gửi yêu cầu reset mật khẩu
+        btnReset.setOnClickListener(v -> {
+            // Sử dụng NetworkUtils để tiết kiệm tài nguyên hệ thống
+            if (!NetworkUtils.isNetworkAvailable(this)) {
+                showToast(getString(R.string.error_no_network));
+                return;
             }
 
-            @Override
-            public void onError(String error) {
-                btnReset.setEnabled(true); // Lỗi thì bật lại nút cho bấm lại
-                showToast(error);
+            String email = edtEmail.getText().toString().trim();
+
+            if (email.isEmpty()) {
+                edtEmail.setError(getString(R.string.email_required));
+                edtEmail.requestFocus();
+                return;
             }
+
+            // Thực hiện tác vụ giả lập vì đang dùng dữ liệu cứng
+            performResetTask(btnReset);
         });
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo net = cm.getActiveNetworkInfo();
-        return net != null && net.isConnected();
+    private void performResetTask(View btn) {
+        btn.setEnabled(false);
+
+        // Thông báo sinh viên kiểm tra email (ví dụ: gửi tới email sv UTC2)
+        showToast(getString(R.string.check_email_for_pass));
+
+        // Giả lập độ trễ xử lý 1.5 giây trước khi tự động quay về Login
+        btn.postDelayed(this::finish, 1500);
     }
 
     private void showToast(String message) {

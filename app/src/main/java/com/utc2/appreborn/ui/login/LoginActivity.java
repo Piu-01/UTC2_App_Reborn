@@ -5,121 +5,131 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.utc2.appreborn.R;
 import com.utc2.appreborn.ui.main.MainActivity;
-import com.utc2.appreborn.utils.NetworkUtils; // Import class utils mới
+import com.utc2.appreborn.utils.NetworkUtils;
+import com.utc2.appreborn.utils.SessionManager;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText email, password;
-    private Button loginBtn, skipBtn;
-    private TextView txtForgot, txtTerms;
-
-    private IAuthService authService;
+    private EditText editMssv, editPassword;
+    private Button loginBtn, googleLoginBtn;
+    private GoogleSignInClient mGoogleSignInClient;
+    private SessionManager sessionManager;
     private Dialog loadingDialog;
-    private NetworkUtils networkUtils;
+
+    private final ActivityResultLauncher<Intent> googleSignInLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                setLoading(false);
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                    handleSignInResult(task);
+                }
+            }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        initViews();
-        createLoadingDialog();
-        setupSpannableTerms();
-        setupNetworkMonitoring(); // Khởi tạo lắng nghe mạng
+        sessionManager = SessionManager.getInstance(this);
 
-        txtForgot.setOnClickListener(v -> navigateTo(ForgotPasswordActivity.class));
-        loginBtn.setOnClickListener(v -> validateAndLogin());
-        skipBtn.setOnClickListener(v -> performLogin("test123@gmail.com", "123456", true));
+        if (sessionManager.isLoggedIn()) {
+            navigateToMain();
+            return;
+        }
+
+        initViews();
+        setupGoogleSignIn();
+        createLoadingDialog();
     }
 
     private void initViews() {
-        email = findViewById(R.id.email);
-        password = findViewById(R.id.password);
+        editMssv = findViewById(R.id.editMssv);
+        editPassword = findViewById(R.id.editPassword);
         loginBtn = findViewById(R.id.loginBtn);
-        skipBtn = findViewById(R.id.skipBtn);
-        txtForgot = findViewById(R.id.txtForgot);
-        txtTerms = findViewById(R.id.txtTerms);
+        googleLoginBtn = findViewById(R.id.googleLoginBtn);
+        Button skipBtn = findViewById(R.id.skipBtn);
 
-        authService = new FirebaseAuthService();
+        loginBtn.setOnClickListener(v -> performManualLogin());
+        googleLoginBtn.setOnClickListener(v -> performGoogleSignIn());
+        skipBtn.setOnClickListener(v -> performSkipLogin());
     }
 
-    private void setupNetworkMonitoring() {
-        networkUtils = new NetworkUtils(this, new NetworkUtils.NetworkStatusListener() {
-            @Override
-            public void onNetworkAvailable() {
-                loginBtn.setEnabled(true);
-                loginBtn.setAlpha(1.0f);
-            }
-
-            @Override
-            public void onNetworkLost() {
-                showToast("Không có kết nối mạng!");
-                loginBtn.setEnabled(false);
-                loginBtn.setAlpha(0.5f); // Làm mờ nút để báo hiệu không bấm được
-            }
-        });
-        networkUtils.register();
+    private void setupGoogleSignIn() {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
-    private void validateAndLogin() {
-        // Kiểm tra tức thời qua Utils trước khi thực hiện logic nặng
-        if (!NetworkUtils.isNetworkAvailable(this)) {
-            showToast("Vui lòng kết nối mạng để đăng nhập!");
+    private void performManualLogin() {
+        String mssv = editMssv.getText().toString().trim();
+        String pass = editPassword.getText().toString().trim();
+
+        if (mssv.isEmpty() || pass.isEmpty()) {
+            showToast(getString(R.string.error_fill_all));
             return;
         }
 
-        String userEmail = email.getText().toString().trim();
-        String userPass = password.getText().toString().trim();
-
-        if (userEmail.isEmpty()) {
-            email.setError("Vui lòng nhập email!");
-            email.requestFocus();
-            return;
-        }
-
-        if (userPass.isEmpty()) {
-            password.setError("Vui lòng nhập mật khẩu!");
-            password.requestFocus();
-            return;
-        }
-
-        performLogin(userEmail, userPass, false);
-    }
-
-    private void performLogin(String emailStr, String passStr, boolean isSkip) {
         setLoading(true);
-        authService.login(emailStr, passStr, new IAuthService.AuthCallback() {
-            @Override
-            public void onSuccess(String message) {
-                setLoading(false);
-                showToast(isSkip ? "Bỏ qua thành công" : message);
-                navigateTo(MainActivity.class);
-                finish();
-            }
 
-            @Override
-            public void onError(String error) {
-                setLoading(false);
-                showToast(isSkip ? "Lỗi đăng nhập" : error);
+        // Kiểm tra tài khoản hardcoded
+        if (mssv.equals(getString(R.string.default_mssv)) && pass.equals("123456")) {
+            sessionManager.createLoginSession("MANUAL_TOKEN", "mssv", mssv);
+            showToast(getString(R.string.welcome_user) + " " + getString(R.string.default_name));
+            setLoading(false);
+            navigateToMain();
+        } else {
+            setLoading(false);
+            showToast(getString(R.string.wrong_email_or_pass));
+        }
+    }
+
+    private void performSkipLogin() {
+        sessionManager.createLoginSession("GUEST_TOKEN", "role", "guest");
+        showToast(getString(R.string.skip_login) + "...");
+        navigateToMain();
+    }
+
+    private void performGoogleSignIn() {
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            showToast(getString(R.string.error_connect_network));
+            return;
+        }
+        setLoading(true);
+        googleSignInLauncher.launch(mGoogleSignInClient.getSignInIntent());
+    }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            if (account != null) {
+                sessionManager.createLoginSession(account.getIdToken(), "google", account.getEmail());
+                showToast(getString(R.string.welcome_user) + " " + account.getDisplayName());
+                navigateToMain();
             }
-        });
+        } catch (ApiException e) {
+            showToast(getString(R.string.error_login_failed));
+        }
     }
 
     private void createLoadingDialog() {
@@ -129,7 +139,6 @@ public class LoginActivity extends AppCompatActivity {
         loadingDialog.setCancelable(false);
         if (loadingDialog.getWindow() != null) {
             loadingDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            loadingDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         }
     }
 
@@ -137,12 +146,6 @@ public class LoginActivity extends AppCompatActivity {
         if (isLoading) {
             if (loadingDialog != null && !loadingDialog.isShowing()) {
                 loadingDialog.show();
-                if (loadingDialog.getWindow() != null) {
-                    loadingDialog.getWindow().setLayout(
-                            WindowManager.LayoutParams.WRAP_CONTENT,
-                            WindowManager.LayoutParams.WRAP_CONTENT
-                    );
-                }
             }
         } else {
             if (loadingDialog != null && loadingDialog.isShowing()) {
@@ -151,65 +154,12 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void setupSpannableTerms() {
-        String text = "By continuing you agree to our Terms of Service and Privacy Policy";
-        SpannableString ss = new SpannableString(text);
-
-        // Lấy màu từ txtForgot (hoặc từ R.color của bạn)
-        int linkColor = txtForgot.getCurrentTextColor();
-
-        ClickableSpan terms = new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View w) { navigateTo(TermsActivity.class); }
-
-            @Override
-            public void updateDrawState(@NonNull android.text.TextPaint ds) {
-                super.updateDrawState(ds);
-                ds.setColor(linkColor); // Đổi màu chữ tại đây
-                ds.setUnderlineText(false); // Bỏ gạch chân nếu bạn muốn giống txtForgot
-                ds.setFakeBoldText(true); // Làm đậm nếu cần
-            }
-        };
-
-        ClickableSpan privacy = new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View w) { navigateTo(PrivacyPolicyActivity.class); }
-
-            @Override
-            public void updateDrawState(@NonNull android.text.TextPaint ds) {
-                super.updateDrawState(ds);
-                ds.setColor(linkColor); // Đổi màu chữ tại đây
-                ds.setUnderlineText(false);
-                ds.setFakeBoldText(true);
-            }
-        };
-
-        int startT = text.indexOf("Terms of Service");
-        ss.setSpan(terms, startT, startT + 16, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        int startP = text.indexOf("Privacy Policy");
-        ss.setSpan(privacy, startP, startP + 14, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        txtTerms.setText(ss);
-        txtTerms.setMovementMethod(LinkMovementMethod.getInstance());
-        // Dòng này bạn đã sửa đúng ở lần trước để đổi màu khi nhấn vào
-        txtTerms.setHighlightColor(android.graphics.Color.TRANSPARENT);
-    }
-
-    private void navigateTo(Class<?> cls) {
-        startActivity(new Intent(this, cls));
+    private void navigateToMain() {
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
     }
 
     private void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // Cực kỳ quan trọng: Hủy lắng nghe khi Activity đóng
-        if (networkUtils != null) {
-            networkUtils.unregister();
-        }
     }
 }

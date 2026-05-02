@@ -27,12 +27,11 @@ public class ProfileFragment extends Fragment {
     private AppCompatButton btnInfo, btnChangePassword;
     private ImageView btnNotification;
     private TextView tvStudentName, tvStudentId;
-    private NetworkUtils networkUtils;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Nạp đúng file layout thiết kế bạn đã gửi
+        // Nạp layout fragment_profile
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
@@ -41,12 +40,11 @@ public class ProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         initViews(view);
-        setupNetworkMonitoring();
+        setupStudentData();
         setClickListeners();
     }
 
     private void initViews(View view) {
-        // Ánh xạ các View theo đúng ID trong XML thiết kế của bạn
         layoutSubjectList = view.findViewById(R.id.layoutSubjectList);
         layoutGraduationReq = view.findViewById(R.id.layoutGraduationReq);
         btnInfo = view.findViewById(R.id.btnProfileInfo);
@@ -56,52 +54,43 @@ public class ProfileFragment extends Fragment {
         tvStudentId = view.findViewById(R.id.tvStudentId);
     }
 
-    private void setupNetworkMonitoring() {
-        networkUtils = new NetworkUtils(requireContext(), new NetworkUtils.NetworkStatusListener() {
-            @Override
-            public void onNetworkAvailable() {
-                if (isAdded()) {
-                    btnChangePassword.setEnabled(true);
-                    btnChangePassword.setAlpha(1.0f);
-                }
-            }
-
-            @Override
-            public void onNetworkLost() {
-                if (isAdded()) {
-                    showToast("Bạn đang ngoại tuyến.");
-                    btnChangePassword.setEnabled(false);
-                    btnChangePassword.setAlpha(0.5f);
-                }
-            }
-        });
-        networkUtils.register();
+    private void setupStudentData() {
+        // Hiển thị dữ liệu mẫu từ strings.xml để app chuyên nghiệp hơn
+        if (isAdded()) {
+            tvStudentName.setText(getString(R.string.default_name)); // Nguyễn Minh Phúc
+            tvStudentId.setText(getString(R.string.default_mssv));  // 2251050001
+        }
     }
 
     private void setClickListeners() {
-        // Xử lý chuyển sang InfoFragment (Dùng FragmentTransaction để giữ cấu trúc Fragment)
+        // Chuyển sang màn hình Thông tin chi tiết
         btnInfo.setOnClickListener(v -> {
             InfoFragment infoFragment = new InfoFragment();
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            // Thay đổi R.id.fragment_container thành ID FrameLayout chính trong MainActivity của bạn
+            // Đảm bảo R.id.fragment_container khớp với ID trong MainActivity của bạn
             transaction.replace(R.id.fragment_container, infoFragment);
             transaction.addToBackStack(null);
             transaction.commit();
         });
 
+        // Chuyển sang màn hình Đổi mật khẩu (Chỉ kiểm tra mạng khi nhấn nút - Tối ưu RAM)[cite: 1]
         btnChangePassword.setOnClickListener(v -> {
             if (NetworkUtils.isNetworkAvailable(requireContext())) {
                 startActivity(new Intent(requireContext(), ChangePasswordActivity.class));
             } else {
-                showToast("Vui lòng kết nối mạng để đổi mật khẩu!");
+                // Sử dụng thông báo lỗi từ resources của bạn[cite: 1]
+                showToast(getString(R.string.error_connect_network));
             }
         });
 
+        // Mở Chương trình đào tạo
         layoutSubjectList.setOnClickListener(v -> {
             startActivity(new Intent(requireContext(), TrainingProgramActivity.class));
         });
 
+        // Mở Điều kiện tốt nghiệp
         layoutGraduationReq.setOnClickListener(v -> {
+            // Lưu ý: Đảm bảo bạn đã tạo GraduationRequirementsActivity
             startActivity(new Intent(requireContext(), GraduationRequirementsActivity.class));
         });
 
@@ -111,14 +100,6 @@ public class ProfileFragment extends Fragment {
     private void showToast(String msg) {
         if (isAdded()) {
             Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (networkUtils != null) {
-            networkUtils.unregister();
         }
     }
 }

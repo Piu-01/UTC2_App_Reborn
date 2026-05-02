@@ -1,6 +1,4 @@
-package com.utc2.appreborn.ui.public_services.TranscriptService;
-
-import com.utc2.appreborn.ui.public_services.model.BaseService;
+package com.utc2.appreborn.ui.public_services.model;
 
 public class TranscriptService extends BaseService {
     private String studentName;

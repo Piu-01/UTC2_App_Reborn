@@ -13,7 +13,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.utc2.appreborn.R;
 import com.utc2.appreborn.databinding.FragmentInfoBinding;
 import com.utc2.appreborn.ui.Info.adapter.InfoAdapter;
 import com.utc2.appreborn.ui.Info.model.InfoItem;
@@ -25,9 +29,9 @@ import com.utc2.appreborn.utils.NetworkUtils;
 public class InfoFragment extends Fragment {
 
     private FragmentInfoBinding binding;
-    private FirebaseAuth mAuth;
     private NetworkUtils networkUtils;
     private InfoAdapter infoAdapter;
+    private GoogleSignInClient mGoogleSignInClient;
 
     @Nullable
     @Override
@@ -40,9 +44,15 @@ public class InfoFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mAuth = FirebaseAuth.getInstance();
+        // Khởi tạo Google Sign-In Client thay vì FirebaseAuth
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
 
-        if (mAuth.getCurrentUser() == null) {
+        // Kiểm tra phiên đăng nhập bằng Google
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(requireContext());
+        if (account == null) {
             navigateToLogin();
             return;
         }
@@ -70,7 +80,8 @@ public class InfoFragment extends Fragment {
             @Override
             public void onNetworkLost() {
                 if (isAdded()) {
-                    Toast.makeText(requireContext(), "Bạn đang ngoại tuyến", Toast.LENGTH_SHORT).show();
+                    // Sử dụng string resource để tránh lỗi "String literal" và Typo
+                    Toast.makeText(requireContext(), getString(R.string.error_no_network), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -86,13 +97,16 @@ public class InfoFragment extends Fragment {
         binding.btnTrainingProgram.setOnClickListener(v ->
                 startActivity(new Intent(requireContext(), TrainingProgramActivity.class)));
 
-        binding.btnLogout.setOnClickListener(v -> {
-            mAuth.signOut();
-            navigateToLogin();
-        });
+        binding.btnLogout.setOnClickListener(v -> performLogout());
+    }
+
+    private void performLogout() {
+        // Đăng xuất khỏi Google và điều hướng về Login
+        mGoogleSignInClient.signOut().addOnCompleteListener(task -> navigateToLogin());
     }
 
     private void navigateToLogin() {
+        if (!isAdded()) return;
         Intent intent = new Intent(requireContext(), LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -100,7 +114,7 @@ public class InfoFragment extends Fragment {
     }
 
     private void fetchStudentDataFromSQL() {
-        // Mock data cho InfoItem
+        // Mock data cho InfoItem[cite: 5]
         InfoItem data = new InfoItem(
                 "Xã gió đó, Tỉnh Đồng Thuận", "083385896945785884",
                 "Đồng Thuận, Việt Nam", "Quận 9, TP. Hồ Chí Minh",
@@ -112,18 +126,15 @@ public class InfoFragment extends Fragment {
     private void updateUI(InfoItem info) {
         if (info == null || binding == null) return;
 
-        // Cập nhật dữ liệu vào Adapter thay vì setText từng TextView
         if (infoAdapter != null) {
             infoAdapter.setStudentData(info);
         }
-
-        // Nếu bạn dùng Glide để load ảnh thẻ:
-        // Glide.with(this).load(info.getStudentCardUrl()).into(binding.imgStudentCard);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        // Hủy đăng ký để tránh rò rỉ bộ nhớ (Memory leak)[cite: 4]
         if (networkUtils != null) networkUtils.unregister();
         binding = null;
     }

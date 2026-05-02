@@ -12,11 +12,15 @@ import com.utc2.appreborn.ui.tuition.model.DormTuition;
 import com.utc2.appreborn.ui.tuition.adapter.InvoiceAdapter;
 import com.utc2.appreborn.ui.tuition.model.Invoice;
 import com.utc2.appreborn.ui.tuition.model.SubjectTuition;
-import com.utc2.appreborn.utils.NetworkUtils; // Import Utils
+import com.utc2.appreborn.utils.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * InvoiceActivity_2.java
+ * Quản lý hiển thị lịch sử hóa đơn và giám sát trạng thái mạng[cite: 13].
+ */
 public class InvoiceActivity extends AppCompatActivity {
 
     private RecyclerView rvInvoices;
@@ -40,7 +44,7 @@ public class InvoiceActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        // Nút Back - Dùng Expression Lambda để xóa cảnh báo vàng
+        // Nút Back - Dùng Expression Lambda để xử lý sự kiện đóng activity[cite: 13].
         ImageButton btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> finish());
 
@@ -48,10 +52,11 @@ public class InvoiceActivity extends AppCompatActivity {
     }
 
     private void setupNetworkMonitoring() {
+        // Khởi tạo giám sát mạng để thông báo cho người dùng khi mất kết nối[cite: 13].
         networkUtils = new NetworkUtils(this, new NetworkUtils.NetworkStatusListener() {
             @Override
             public void onNetworkAvailable() {
-                // Có mạng thì có thể gọi hàm refresh data từ Server tại đây
+                // Có thể thực hiện làm mới dữ liệu từ Server tại đây khi có mạng lại[cite: 13].
                 Log.d("Network", "Đã kết nối - Sẵn sàng cập nhật hóa đơn");
             }
 
@@ -66,6 +71,7 @@ public class InvoiceActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
+        // Cấu hình LayoutManager và Adapter để hiển thị danh sách hóa đơn[cite: 13].
         rvInvoices.setLayoutManager(new LinearLayoutManager(this));
         adapter = new InvoiceAdapter(invoiceList);
         rvInvoices.setAdapter(adapter);
@@ -74,14 +80,13 @@ public class InvoiceActivity extends AppCompatActivity {
     private void loadInvoiceData() {
         invoiceList = new ArrayList<>();
 
-        // Giả lập dữ liệu (Sau này lụm từ Database/API)
-        // Lưu ý: Invoice đang gom nhóm các đối tượng khác nhau (Polymorphism)
+        // Giả lập dữ liệu hóa đơn bao gồm cả học phí môn học và phí ký túc xá (Tính đa hình)[cite: 13].
         try {
             SubjectTuition monHoc = new SubjectTuition(1, "Lập trình Android", "Học kỳ 2", 2500000, 1);
             DormTuition tienPhong = new DormTuition("Phòng 403", "Tháng 03/2026", 1250000, 1);
             SubjectTuition monHoc2 = new SubjectTuition(2, "Cấu trúc dữ liệu", "Học kỳ 1", 650000, 1);
 
-            // Thêm vào danh sách hóa đơn
+            // Thêm các đối tượng vào danh sách hiển thị[cite: 13].
             invoiceList.add(new Invoice("UTC2_2026_001", "10/04/2026", monHoc));
             invoiceList.add(new Invoice("UTC2_2026_002", "15/03/2026", tienPhong));
             invoiceList.add(new Invoice("UTC2_2026_003", "05/02/2026", monHoc2));
@@ -93,7 +98,7 @@ public class InvoiceActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Hủy lắng nghe mạng để tránh rò rỉ bộ nhớ
+        // Quan trọng: Hủy đăng ký lắng nghe mạng để tránh rò rỉ bộ nhớ (Memory Leak)[cite: 13].
         if (networkUtils != null) {
             networkUtils.unregister();
         }
