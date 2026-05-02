@@ -25,7 +25,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.utc2.appreborn.R;
 import com.utc2.appreborn.data.local.StudentProfile;
 import com.utc2.appreborn.databinding.FragmentHomeBinding;
-import com.utc2.appreborn.ui.Info.InfoFragment;
+import com.utc2.appreborn.ui.profile.InfoFragment;
 import com.utc2.appreborn.ui.home.adapter.FeatureAdapter;
 import com.utc2.appreborn.ui.home.adapter.NewsAdapter;
 import com.utc2.appreborn.ui.home.model.NewsItem;

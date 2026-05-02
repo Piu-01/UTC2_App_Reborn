@@ -1,66 +1,57 @@
 package com.utc2.appreborn.data.repository;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.utc2.appreborn.data.local.StudentLocalDataSource;
 import com.utc2.appreborn.data.local.StudentProfile;
 
 /**
  * StudentRepository
  * ──────────────────────────────────────────────────────────────
- * Single source of truth for the logged-in student's profile.
+ * Nguồn dữ liệu duy nhất cho thông tin sinh viên đang đăng nhập.
  *
- * Priority order for display name:
- *   1. Firebase Auth → displayName
- *   2. Firebase Auth → email prefix (before "@")
- *   3. StudentLocalDataSource → fullName  (mock or DB)
- *
- * The student_code (MSSV) always comes from the local data source
- * (database table STUDENT_PROFILE) — not from Firebase Auth.
- *
- * Package: com.utc2.appreborn.data.repository
+ * Thứ tự ưu tiên cho tên hiển thị:
+ *   1. Google Account → Display Name
+ *   2. Google Account → Email prefix (trước ký tự "@")
+ *   3. StudentLocalDataSource → FullName (Dữ liệu mẫu hoặc DB)
  */
 public class StudentRepository {
 
-    // ── Singleton ─────────────────────────────────────────────
     private static StudentRepository instance;
+    private final StudentLocalDataSource localDataSource;
+    private final Context context;
 
-    public static StudentRepository getInstance() {
+    // Sử dụng context để truy cập GoogleSignIn
+    private StudentRepository(Context context, StudentLocalDataSource localDataSource) {
+        this.context = context.getApplicationContext();
+        this.localDataSource = localDataSource;
+    }
+
+    public static StudentRepository getInstance(Context context) {
         if (instance == null) {
-            instance = new StudentRepository(StudentLocalDataSource.getInstance());
+            instance = new StudentRepository(context, StudentLocalDataSource.getInstance());
         }
         return instance;
     }
 
-    private final StudentLocalDataSource localDataSource;
-
-    private StudentRepository(StudentLocalDataSource localDataSource) {
-        this.localDataSource = localDataSource;
-    }
-
-    // ═══════════════════════════════════════════════════════════
-    //  Public API
-    // ═══════════════════════════════════════════════════════════
-
     /**
-     * Returns a {@link LiveData<StudentProfile>} that emits once
-     * immediately with the best available data.
-     *
-     * LiveData is used here so the ViewModel can observe it
-     * consistently alongside other LiveData streams.
+     * Trả về LiveData chứa thông tin StudentProfile.
      */
     public LiveData<StudentProfile> getStudentProfile() {
         MutableLiveData<StudentProfile> liveData = new MutableLiveData<>();
 
-        // Read local profile first (fast — no I/O in current mock impl)
+        // Đọc profile từ nguồn dữ liệu cục bộ
         StudentProfile localProfile = localDataSource.getStudentProfile();
 
-        // Resolve the best display name
+        // Xác định tên hiển thị tốt nhất từ Google hoặc Local
         String displayName = resolveDisplayName(localProfile.getFullName());
 
+        // Cập nhật giá trị mới cho LiveData
         liveData.setValue(new StudentProfile(
                 localProfile.getStudentCode(),
                 displayName
@@ -69,30 +60,29 @@ public class StudentRepository {
         return liveData;
     }
 
-    // ── Private helpers ───────────────────────────────────────
-
     /**
-     * Walks the priority chain for the user's display name:
-     *   Firebase displayName → email prefix → fallback name.
+     * Giải quyết tên hiển thị theo thứ tự ưu tiên:
+     * Google Display Name → Email prefix → Fallback name.
      */
     private String resolveDisplayName(String fallbackName) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        // Lấy thông tin tài khoản Google đã đăng nhập thay vì FirebaseUser
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
 
-        if (user != null) {
-            // Priority 1 — explicit display name set in Firebase
-            String displayName = user.getDisplayName();
+        if (account != null) {
+            // Ưu tiên 1: Tên hiển thị từ tài khoản Google
+            String displayName = account.getDisplayName();
             if (displayName != null && !displayName.isEmpty()) {
                 return displayName;
             }
 
-            // Priority 2 — email prefix
-            String email = user.getEmail();
+            // Ưu tiên 2: Tiền tố email (phần trước @)
+            String email = account.getEmail();
             if (email != null && email.contains("@")) {
                 return email.split("@")[0];
             }
         }
 
-        // Priority 3 — DB / mock value
+        // Ưu tiên 3: Giá trị mặc định từ database hoặc mock data[cite: 5]
         return fallbackName;
     }
 }

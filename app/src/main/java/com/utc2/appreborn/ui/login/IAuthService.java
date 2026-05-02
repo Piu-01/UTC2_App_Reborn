@@ -1,5 +1,4 @@
 package com.utc2.appreborn.ui.login;
-
 public interface IAuthService {
     interface AuthCallback {
         void onSuccess(String message);
@@ -8,8 +7,9 @@ public interface IAuthService {
 
     void login(String email, String password, AuthCallback callback);
 
-    // RESET MK:
+    // THÊM MỚI: Đăng nhập bằng Google
+    void loginWithGoogle(String idToken, AuthCallback callback);
+
     void resetPassword(String email, AuthCallback callback);
-    //ĐỔI MK:
     void changePassword(String newPassword, AuthCallback callback);
 }

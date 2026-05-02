@@ -14,17 +14,14 @@ import com.utc2.appreborn.R;
 import com.utc2.appreborn.ui.public_services.model.CardReissueService;
 import com.utc2.appreborn.ui.public_services.model.LoanSupportService;
 import com.utc2.appreborn.ui.public_services.model.StudentConfirmationService;
-import com.utc2.appreborn.ui.public_services.TranscriptService.TranscriptService;
+import com.utc2.appreborn.ui.public_services.model.TranscriptService;
 import com.utc2.appreborn.ui.public_services.model.BaseService;
-import com.utc2.appreborn.utils.NetworkUtils; // Import Utils
+import com.utc2.appreborn.utils.NetworkUtils;
 
 public class ServiceDetailActivity extends AppCompatActivity {
 
     private TextView tvTitle, tvStatus, tvTime;
     private LinearLayout layoutDynamicContent;
-
-    // Thêm quản lý mạng
-    private NetworkUtils networkUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +30,11 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
         try {
             initViews();
-            setupNetworkMonitoring(); // Khởi tạo lắng nghe mạng
+
+            // Kiểm tra mạng nhanh khi vừa mở trang chi tiết dịch vụ
+            if (!NetworkUtils.isNetworkAvailable(this)) {
+                showToast("Thông tin đang hiển thị ngoại tuyến.");
+            }
 
             BaseService service = (BaseService) getIntent().getSerializableExtra("SERVICE_DATA");
             if (service != null) {
@@ -42,28 +43,8 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
             findViewById(R.id.btnBack).setOnClickListener(v -> finish());
         } catch (Exception e) {
-            Log.e("ServiceDetail", "Lỗi: " + e.getMessage());
+            Log.e("ServiceDetail", "Lỗi khởi tạo: " + e.getMessage());
         }
-    }
-
-    private void setupNetworkMonitoring() {
-        networkUtils = new NetworkUtils(this, new NetworkUtils.NetworkStatusListener() {
-            @Override
-            public void onNetworkAvailable() {
-                // Sau này khi dùng Web API: Nếu đang mở trang mà có mạng lại,
-                // ta có thể gọi API để refresh lại trạng thái mới nhất của đơn này.
-                Log.d("Network", "Đã kết nối mạng - Có thể cập nhật trạng thái đơn");
-            }
-
-            @Override
-            public void onNetworkLost() {
-                // Thông báo nhẹ để user biết thông tin có thể chưa được cập nhật mới nhất
-                Toast.makeText(ServiceDetailActivity.this,
-                        "Mất kết nối mạng. Thông tin có thể chưa được cập nhật.",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-        networkUtils.register();
     }
 
     private void initViews() {
@@ -77,7 +58,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
         tvTitle.setText(service.getTitle());
         tvTime.setText(getString(R.string.date_placeholder, service.getDate()));
 
-        // Thiết lập Badge trạng thái
+        // Thiết lập Badge trạng thái dịch vụ công
         if (service.getStatus() == 1) {
             tvStatus.setText(R.string.status_approved);
             tvStatus.setBackgroundResource(R.drawable.bg_status_done);
@@ -88,7 +69,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
 
         layoutDynamicContent.removeAllViews();
 
-        // Xử lý logic hiển thị dựa trên loại Service (Giữ nguyên logic của bạn)
+        // Xử lý hiển thị thông tin chi tiết dựa trên từng loại dịch vụ[cite: 2]
         if (service instanceof CardReissueService) {
             CardReissueService s = (CardReissueService) service;
             addInfoRow(getString(R.string.name_title), s.getStudentName());
@@ -131,11 +112,7 @@ public class ServiceDetailActivity extends AppCompatActivity {
         layoutDynamicContent.addView(rowView);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (networkUtils != null) {
-            networkUtils.unregister();
-        }
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

@@ -22,7 +22,7 @@ import com.utc2.appreborn.ui.public_services.ServiceDetailActivity;
 import com.utc2.appreborn.ui.public_services.StudentConfirmationService.StudentConfirmationActivity;
 import com.utc2.appreborn.ui.public_services.model.StudentConfirmationService;
 import com.utc2.appreborn.ui.public_services.TranscriptService.TranscriptRegistrationActivity;
-import com.utc2.appreborn.ui.public_services.TranscriptService.TranscriptService;
+import com.utc2.appreborn.ui.public_services.model.TranscriptService;
 import com.utc2.appreborn.ui.public_services.model.BaseService;
 
 import java.io.Serializable;

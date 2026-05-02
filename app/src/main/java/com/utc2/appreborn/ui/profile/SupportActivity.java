@@ -3,6 +3,7 @@ package com.utc2.appreborn.ui.profile;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -14,7 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.utc2.appreborn.R;
-import com.utc2.appreborn.utils.NetworkUtils; // Import Utils
+import com.utc2.appreborn.utils.NetworkUtils;
 
 public class SupportActivity extends AppCompatActivity {
 
@@ -25,7 +26,6 @@ public class SupportActivity extends AppCompatActivity {
     private ImageButton btnBack;
 
     private final String[] data = {"Lỗi", "Góp ý"};
-    private NetworkUtils networkUtils; // Thêm NetworkUtils
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,6 @@ public class SupportActivity extends AppCompatActivity {
 
         initViews();
         setupDropdown();
-        setupNetworkMonitoring(); // Khởi tạo lắng nghe mạng
 
         // Sự kiện Back
         btnBack.setOnClickListener(v -> finish());
@@ -59,35 +58,17 @@ public class SupportActivity extends AppCompatActivity {
         );
         dropLoai.setAdapter(adapter);
 
-        // Chọn item thì tự fill vào ô
+        // Khi chọn item thì cập nhật text và đóng dropdown
         dropLoai.setOnItemClickListener((parent, view, position, id) -> {
             dropLoai.setText(data[position], false);
         });
     }
 
-    // Thiết lập lắng nghe mạng liên tục
-    private void setupNetworkMonitoring() {
-        networkUtils = new NetworkUtils(this, new NetworkUtils.NetworkStatusListener() {
-            @Override
-            public void onNetworkAvailable() {
-                btnSend.setEnabled(true);
-                btnSend.setAlpha(1.0f);
-            }
-
-            @Override
-            public void onNetworkLost() {
-                Toast.makeText(SupportActivity.this, "Không có kết nối mạng!", Toast.LENGTH_SHORT).show();
-                btnSend.setEnabled(false);
-                btnSend.setAlpha(0.5f);
-            }
-        });
-        networkUtils.register();
-    }
-
     private void validateAndSend() {
-        // Kiểm tra mạng tức thời trước khi gửi
+        // Kiểm tra mạng bằng hàm static để tối ưu tài nguyên
         if (!NetworkUtils.isNetworkAvailable(this)) {
-            Toast.makeText(this, "Vui lòng kết nối mạng để gửi hỗ trợ", Toast.LENGTH_SHORT).show();
+            // Sử dụng string resource để thông báo chuyên nghiệp hơn
+            showToast(getString(R.string.error_connect_network));
             return;
         }
 
@@ -96,13 +77,13 @@ public class SupportActivity extends AppCompatActivity {
         float rating = ratingBar.getRating();
 
         if (loai.isEmpty()) {
-            dropLoai.setError("Chưa chọn loại");
+            dropLoai.setError("Vui lòng chọn loại yêu cầu");
             dropLoai.requestFocus();
             return;
         }
 
         if (content.isEmpty()) {
-            edtContent.setError("Chưa nhập nội dung");
+            edtContent.setError("Vui lòng nhập nội dung phản hồi");
             edtContent.requestFocus();
             return;
         }
@@ -112,36 +93,34 @@ public class SupportActivity extends AppCompatActivity {
 
     private void sendEmail(String loai, String content, float rating) {
         String danhGia;
-        if (rating == 1) danhGia = "Rất kém";
-        else if (rating == 2) danhGia = "Kém";
-        else if (rating == 3) danhGia = "Trung bình";
-        else if (rating == 4) danhGia = "Tốt";
-        else if (rating == 5) danhGia = "Rất tốt";
+        // Chuyển đổi mức sao sang văn bản để người nhận email dễ hiểu
+        if (rating >= 5) danhGia = "Rất tốt";
+        else if (rating >= 4) danhGia = "Tốt";
+        else if (rating >= 3) danhGia = "Trung bình";
+        else if (rating >= 2) danhGia = "Kém";
+        else if (rating >= 1) danhGia = "Rất kém";
         else danhGia = "Chưa đánh giá";
 
-        String message = "Loại: " + loai +
-                "\nMức độ hài lòng: " + danhGia + " (" + rating + "/5)" +
-                "\n\nNội dung:\n" + content;
+        // Tạo nội dung email gửi đến bộ phận hỗ trợ
+        String message = "Phản hồi từ sinh viên UTC2" +
+                "\nLoại yêu cầu: " + loai +
+                "\nĐánh giá ứng dụng: " + danhGia + " (" + rating + "/5.0)" +
+                "\n\nNội dung chi tiết:\n" + content;
 
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:"));
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"hinhvinhphat@gmail.com"});
-        intent.putExtra(Intent.EXTRA_SUBJECT, "UTC2 Support - " + loai);
+        intent.putExtra(Intent.EXTRA_SUBJECT, "[AppReborn Support] - " + loai);
         intent.putExtra(Intent.EXTRA_TEXT, message);
 
         try {
-            startActivity(Intent.createChooser(intent, "Chọn ứng dụng Email"));
+            startActivity(Intent.createChooser(intent, "Chọn ứng dụng Email để gửi"));
         } catch (Exception e) {
-            Toast.makeText(this, "Không tìm thấy ứng dụng Email", Toast.LENGTH_LONG).show();
+            showToast("Không tìm thấy ứng dụng Email trên thiết bị này");
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // Hủy đăng ký lắng nghe mạng khi thoát activity
-        if (networkUtils != null) {
-            networkUtils.unregister();
-        }
+    private void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

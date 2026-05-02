@@ -25,7 +25,7 @@ import com.utc2.appreborn.ui.public_services.model.LoanSupportService;
 import com.utc2.appreborn.ui.public_services.StudentConfirmationService.StudentConfirmationActivity;
 import com.utc2.appreborn.ui.public_services.model.StudentConfirmationService;
 import com.utc2.appreborn.ui.public_services.TranscriptService.TranscriptRegistrationActivity;
-import com.utc2.appreborn.ui.public_services.TranscriptService.TranscriptService;
+import com.utc2.appreborn.ui.public_services.model.TranscriptService;
 import com.utc2.appreborn.ui.public_services.adapter.PublicServiceAdapter;
 import com.utc2.appreborn.ui.public_services.model.BaseService;
 import com.utc2.appreborn.utils.NetworkUtils;
@@ -39,13 +39,12 @@ public class PublicServiceFragment extends Fragment {
     private RecyclerView rvKetQua;
     private TextView btnDichVu, btnKetQua, txtSectionTitle;
     private PublicServiceAdapter adapter;
-    private List<BaseService> historyList = new ArrayList<>();
-    private NetworkUtils networkUtils;
+    private final List<BaseService> historyList = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Inflate layout của Activity cũ
+        // Nạp layout fragment_public_service
         return inflater.inflate(R.layout.fragment_public_service, container, false);
     }
 
@@ -56,10 +55,9 @@ public class PublicServiceFragment extends Fragment {
         try {
             initViews(view);
             setupRecyclerView();
-            setupNetworkMonitoring();
             setupEvents(view);
 
-            // Mặc định hiển thị tab Dịch vụ
+            // Mặc định hiển thị tab Dịch vụ khi vừa vào
             showTabDichVu();
         } catch (Exception e) {
             Log.e("PublicServiceFragment", "Lỗi khởi tạo: " + e.getMessage());
@@ -78,39 +76,18 @@ public class PublicServiceFragment extends Fragment {
         rvKetQua.setLayoutManager(new LinearLayoutManager(requireContext()));
     }
 
-    private void setupNetworkMonitoring() {
-        networkUtils = new NetworkUtils(requireContext(), new NetworkUtils.NetworkStatusListener() {
-            @Override
-            public void onNetworkAvailable() {
-                if (rvKetQua != null && rvKetQua.getVisibility() == View.VISIBLE) {
-                    loadHistoryData();
-                }
-            }
-
-            @Override
-            public void onNetworkLost() {
-                if (getActivity() != null) {
-                    Toast.makeText(getActivity(),
-                            "Bạn đang ngoại tuyến. Một số tính năng đăng ký sẽ bị tạm dừng.",
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-        networkUtils.register();
-    }
-
     private void setupEvents(View view) {
         btnDichVu.setOnClickListener(v -> showTabDichVu());
         btnKetQua.setOnClickListener(v -> showTabKetQua());
 
-        // Nút Back quay về HomeFragment
+        // Nút Back để quay lại trang trước đó
         view.findViewById(R.id.btnBack).setOnClickListener(v -> {
             if (getParentFragmentManager().getBackStackEntryCount() > 0) {
                 getParentFragmentManager().popBackStack();
             }
         });
 
-        // Click các dịch vụ
+        // Xử lý click các dịch vụ (Có kiểm tra mạng tức thời)
         view.findViewById(R.id.btnCardReissueMenu).setOnClickListener(v -> checkNetAndNavigate(CardReissueActivity.class));
         view.findViewById(R.id.btnLoanSupportMenu).setOnClickListener(v -> checkNetAndNavigate(LoanSupportActivity.class));
         view.findViewById(R.id.btnTranscriptMenu).setOnClickListener(v -> checkNetAndNavigate(TranscriptRegistrationActivity.class));
@@ -118,10 +95,11 @@ public class PublicServiceFragment extends Fragment {
     }
 
     private void checkNetAndNavigate(Class<?> destination) {
+        // Sử dụng phương thức tĩnh để kiểm tra mạng giúp tiết kiệm RAM
         if (NetworkUtils.isNetworkAvailable(requireContext())) {
             startActivity(new Intent(requireContext(), destination));
         } else {
-            Toast.makeText(requireContext(), "Cần có mạng để thực hiện thủ tục này!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Cần kết nối mạng để thực hiện thủ tục đăng ký!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -146,6 +124,7 @@ public class PublicServiceFragment extends Fragment {
             txtSectionTitle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_scroll_text, 0, 0, 0);
         }
 
+        // Tải dữ liệu lịch sử ngay khi chuyển sang tab Kết quả
         loadHistoryData();
     }
 
@@ -153,7 +132,7 @@ public class PublicServiceFragment extends Fragment {
         historyList.clear();
         long now = System.currentTimeMillis();
 
-        // Giả lập data (giữ nguyên logic của bạn)
+        // Giả lập dữ liệu cho sinh viên Nguyễn Minh Phúc
         historyList.add(new CardReissueService(getString(R.string.reissue_card_title), "Lý do: Thẻ bị hỏng chip", now, 1, "CARD_REISSUE", getString(R.string.default_name), getString(R.string.default_mssv), getString(R.string.default_class)));
         historyList.add(new TranscriptService(getString(R.string.transcript_registration_title), "Số lượng: 03 bản", now - 3600000, 0, "TRANSCRIPT_REG", getString(R.string.default_name), getString(R.string.default_mssv), getString(R.string.default_class), "2023 - 2024", "Học kỳ 2", "03"));
         historyList.add(new StudentConfirmationService(getString(R.string.student_confirmation_title), "Lý do: Làm hồ sơ thực tập", now - 86400000, 1, "STUDENT_CONFIRM", getString(R.string.default_name), getString(R.string.default_mssv), getString(R.string.default_class)));
@@ -177,14 +156,6 @@ public class PublicServiceFragment extends Fragment {
             btnKetQua.setTextColor(colorWhite);
             btnDichVu.setBackgroundResource(R.drawable.bg_toggle_container);
             btnDichVu.setTextColor(colorBlack);
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (networkUtils != null) {
-            networkUtils.unregister();
         }
     }
 }

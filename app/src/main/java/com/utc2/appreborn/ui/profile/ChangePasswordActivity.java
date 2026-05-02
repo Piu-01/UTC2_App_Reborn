@@ -1,5 +1,7 @@
 package com.utc2.appreborn.ui.profile;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.EditText;
@@ -10,18 +12,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import com.utc2.appreborn.R;
-import com.utc2.appreborn.ui.login.FirebaseAuthService;
-import com.utc2.appreborn.ui.login.IAuthService;
-import com.utc2.appreborn.utils.NetworkUtils; // Import Utils
+import com.utc2.appreborn.utils.NetworkUtils;
 
 public class ChangePasswordActivity extends AppCompatActivity {
 
-    private EditText etNewPass, etConfirmPass;
     private AppCompatButton btnUpdate;
-    private ImageButton btnBack;
-
-    private IAuthService authService;
-    private NetworkUtils networkUtils; // Thêm biến NetworkUtils
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,97 +24,70 @@ public class ChangePasswordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_change_password);
 
         initViews();
-        setupNetworkMonitoring(); // Khởi tạo lắng nghe mạng
-
-        btnBack.setOnClickListener(v -> finish());
-        btnUpdate.setOnClickListener(v -> handlePasswordChange());
     }
 
     private void initViews() {
-        etNewPass = findViewById(R.id.etNewPassword);
-        etConfirmPass = findViewById(R.id.etConfirmPassword);
+        EditText etNewPass = findViewById(R.id.etNewPassword);
+        EditText etConfirmPass = findViewById(R.id.etConfirmPassword);
+        ImageButton btnBack = findViewById(R.id.btnBack);
         btnUpdate = findViewById(R.id.btnUpdatePassword);
-        btnBack = findViewById(R.id.btnBack);
 
-        authService = new FirebaseAuthService();
-    }
+        // Thiết lập Resource từ file strings.xml của AppReborn
+        btnUpdate.setText(R.string.btn_update_password);
+        etNewPass.setHint(R.string.hint_new_password);
+        etConfirmPass.setHint(R.string.hint_confirm_password);
 
-    // Thiết lập lắng nghe mạng liên tục
-    private void setupNetworkMonitoring() {
-        networkUtils = new NetworkUtils(this, new NetworkUtils.NetworkStatusListener() {
-            @Override
-            public void onNetworkAvailable() {
-                btnUpdate.setEnabled(true);
-                btnUpdate.setAlpha(1.0f);
+        btnBack.setOnClickListener(v -> finish());
+
+        btnUpdate.setOnClickListener(v -> {
+            // Kiểm tra mạng bằng cách gọi trực tiếp hàm static (Tối ưu RAM)
+            if (!NetworkUtils.isNetworkAvailable(this)) {
+                showToast(getString(R.string.error_connect_network));
+                return;
             }
 
-            @Override
-            public void onNetworkLost() {
-                showToast("Mất kết nối mạng!");
-                btnUpdate.setEnabled(false);
-                btnUpdate.setAlpha(0.5f);
-            }
+            String newPass = etNewPass.getText().toString().trim();
+            String confirmPass = etConfirmPass.getText().toString().trim();
+            handlePasswordChange(newPass, confirmPass);
         });
-        networkUtils.register();
     }
 
-    private void handlePasswordChange() {
-        // Sử dụng static method từ Utils để check tức thời
-        if (!NetworkUtils.isNetworkAvailable(this)) {
-            showToast("Mất mạng rồi bro :V");
-            return;
-        }
-
-        String newPass = etNewPass.getText().toString().trim();
-        String confirmPass = etConfirmPass.getText().toString().trim();
-
+    private void handlePasswordChange(String newPass, String confirmPass) {
         if (TextUtils.isEmpty(newPass)) {
-            etNewPass.setError("Vui lòng nhập mật khẩu mới");
+            showToast(getString(R.string.msg_password_requirement));
             return;
         }
 
         if (newPass.length() < 6) {
-            showToast("Mật khẩu phải từ 6 ký tự trở lên");
+            showToast(getString(R.string.msg_password_requirement));
             return;
         }
 
         if (!newPass.equals(confirmPass)) {
-            etConfirmPass.setError("Mật khẩu xác nhận không khớp");
+            // Sử dụng thông báo tiếng Việt khớp với ngữ cảnh sinh viên
+            showToast("Mật khẩu xác nhận không khớp");
             return;
         }
 
-        performChangePassword(newPass);
+        // Logic Hardcoded: Vì hệ thống đang dùng Google Sign-In hoặc Tài khoản mẫu
+        performGoogleAccountRedirect();
     }
 
-    private void performChangePassword(String newPassword) {
-        btnUpdate.setEnabled(false);
+    private void performGoogleAccountRedirect() {
+        // Thông báo yêu cầu đăng nhập lại sau khi đổi
+        showToast(getString(R.string.msg_relogin_note));
 
-        authService.changePassword(newPassword, new IAuthService.AuthCallback() {
-            @Override
-            public void onSuccess(String message) {
-                btnUpdate.setEnabled(true);
-                showToast(message);
-                finish();
-            }
-
-            @Override
-            public void onError(String error) {
-                btnUpdate.setEnabled(true);
-                showToast("Lỗi: " + error);
-            }
-        });
+        // Mở trang quản lý tài khoản Google thực tế
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://myaccount.google.com/signinoptions/password"));
+            startActivity(intent);
+            finish();
+        } catch (Exception e) {
+            showToast("Không thể mở trình duyệt");
+        }
     }
 
     private void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // Hủy đăng ký để tránh leak memory
-        if (networkUtils != null) {
-            networkUtils.unregister();
-        }
     }
 }

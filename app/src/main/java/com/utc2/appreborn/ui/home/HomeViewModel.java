@@ -40,7 +40,7 @@ public class HomeViewModel extends AndroidViewModel {
 
         // Khởi tạo với context — bắt buộc cho SharedPreferences cache
         newsRepository    = NewsRepository.getInstance(application);
-        studentRepository = StudentRepository.getInstance();
+        studentRepository = StudentRepository.getInstance(application);
 
         newsLiveData      = newsRepository.getNewsLiveData();
         isLoadingLiveData = newsRepository.getIsLoadingLiveData();

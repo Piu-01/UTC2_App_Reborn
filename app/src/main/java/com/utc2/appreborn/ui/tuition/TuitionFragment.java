@@ -24,9 +24,7 @@ public class TuitionFragment extends Fragment {
 
     private CardView cardTuitionSubject, cardDormitory, cardInvoice;
     private ImageButton btnBack;
-    private NetworkUtils networkUtils;
 
-    // Inflate layout cho Fragment
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -39,7 +37,6 @@ public class TuitionFragment extends Fragment {
 
         try {
             initViews(view);
-            setupNetworkMonitoring();
             setClickListeners();
         } catch (Exception e) {
             Log.e("TuitionFragment", "Lỗi khởi tạo: " + e.getMessage());
@@ -53,38 +50,14 @@ public class TuitionFragment extends Fragment {
         cardInvoice = view.findViewById(R.id.cardInvoice);
     }
 
-    private void setupNetworkMonitoring() {
-        // Trong Fragment dùng requireContext() thay cho "this"
-        networkUtils = new NetworkUtils(requireContext(), new NetworkUtils.NetworkStatusListener() {
-            @Override
-            public void onNetworkAvailable() {
-                Log.d("Network", "Sẵn sàng kết nối dữ liệu tài chính");
-            }
-
-            @Override
-            public void onNetworkLost() {
-                // Sử dụng getActivity() để hiển thị Toast
-                if (getActivity() != null) {
-                    Toast.makeText(getActivity(),
-                            "Bạn đang ngoại tuyến. Dữ liệu học phí có thể không chính xác.",
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-        networkUtils.register();
-    }
-
     private void setClickListeners() {
-        // Nút Back bây giờ sẽ quay lại Fragment trước đó trong BackStack (thường là Home)
         btnBack.setOnClickListener(v -> {
             if (getParentFragmentManager().getBackStackEntryCount() > 0) {
                 getParentFragmentManager().popBackStack();
-            } else {
-                // Nếu không có BackStack, thoát Activity chứa nó (MainActivity)
-                requireActivity().finish();
             }
         });
 
+        // Kiểm tra mạng tức thời khi người dùng nhấn chọn chức năng[cite: 8]
         cardTuitionSubject.setOnClickListener(v -> checkNetworkAndNavigate(SubjectTuitionActivity.class));
         cardDormitory.setOnClickListener(v -> checkNetworkAndNavigate(DormitoryTuitionActivity.class));
         cardInvoice.setOnClickListener(v -> checkNetworkAndNavigate(InvoiceActivity.class));
@@ -95,15 +68,6 @@ public class TuitionFragment extends Fragment {
             startActivity(new Intent(requireContext(), targetActivity));
         } else {
             Toast.makeText(requireContext(), "Vui lòng kết nối mạng để xem thông tin học phí!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        // Hủy đăng ký lắng nghe mạng khi View bị hủy
-        if (networkUtils != null) {
-            networkUtils.unregister();
         }
     }
 }
