@@ -17,7 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.utc2.appreborn.R;
-import com.utc2.appreborn.ui.Info.InfoFragment;
 import com.utc2.appreborn.ui.profile.TrainingProgram.TrainingProgramActivity;
 import com.utc2.appreborn.utils.NetworkUtils;
 

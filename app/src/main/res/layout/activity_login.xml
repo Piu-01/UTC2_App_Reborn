@@ -31,7 +31,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Ô nhập MSSV -->
+    <!-- Input MSSV -->
     <EditText
         android:id="@+id/editMssv"
         android:layout_width="0dp"
@@ -47,7 +47,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Ô nhập Mật khẩu -->
+    <!-- Input Password -->
     <EditText
         android:id="@+id/editPassword"
         android:layout_width="0dp"
@@ -74,7 +74,7 @@
         app:layout_constraintTop_toBottomOf="@id/editPassword"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Nút Đăng nhập MSSV -->
+    <!-- Login Button -->
     <Button
         android:id="@+id/loginBtn"
         android:layout_width="0dp"
@@ -88,7 +88,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Nút Google Sign-In -->
+    <!-- Google Login Button -->
     <Button
         android:id="@+id/googleLoginBtn"
         android:layout_width="0dp"
@@ -102,6 +102,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <!-- Skip Button -->
     <Button
         android:id="@+id/skipBtn"
         android:layout_width="0dp"
@@ -113,6 +114,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <!-- Terms and Privacy -->
     <TextView
         android:id="@+id/txtTerms"
         android:layout_width="wrap_content"

@@ -19,7 +19,7 @@
     <string name="error_connect_network">Vui lòng kết nối mạng để đăng nhập!</string>
     <string name="welcome_user">Chào mừng</string>
     <string name="error_login_failed">Lỗi đăng nhập</string>
-    <string name="default_web_client_id">YOUR_CLIENT_ID_HERE.apps.googleusercontent.com</string>
+    <string name="default_web_client_id">319562674855-3aga5buil99dcfdpjtgtt44n1opfb2br.apps.googleusercontent.com</string>
 
     <string name="email">Email</string>
     <string name="password">Password</string>

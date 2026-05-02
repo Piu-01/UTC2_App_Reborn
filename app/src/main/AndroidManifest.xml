@@ -2,9 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Quyền truy cập Internet -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!-- Queries giúp app tương tác với các ứng dụng khác (trình duyệt, app Google) -->
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />
@@ -14,6 +16,8 @@
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="http" />
         </intent>
+        <!-- Thêm query cho Google Sign-In -->
+        <package android:name="com.google.android.gms" />
     </queries>
 
     <application
@@ -26,9 +30,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UTC2AppReborn"
         android:networkSecurityConfig="@xml/network_security_config"
-        android:usesCleartextTraffic="false"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
+        <!-- MÀN HÌNH CHÀO / ĐĂNG NHẬP (LAUNCHER) -->
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="true"
@@ -38,21 +43,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".ui.login.ForgotPasswordActivity" android:exported="false" />
         <activity android:name=".ui.login.TermsActivity" android:exported="false" />
         <activity android:name=".ui.login.PrivacyPolicyActivity" android:exported="false" />
 
+        <!-- MÀN HÌNH CHÍNH -->
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name=".ui.news.NewsDetailActivity"
             android:exported="false"
             android:parentActivityName=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustResize" />
 
-        <activity android:name=".ui.Info.InfoActivity" android:exported="false" />
+        <!-- MODULE TRANG CÁ NHÂN (PROFILE) -->
         <activity android:name=".ui.profile.SupportActivity" android:exported="false" />
         <activity
             android:name=".ui.profile.ChangePasswordActivity"
@@ -67,6 +75,7 @@
             android:exported="false"
             android:label="@string/title_graduation_requirements" />
 
+        <!-- MODULE HỌC PHÍ (TUITION) -->
         <activity
             android:name=".ui.tuition.Subject.SubjectTuitionActivity"
             android:exported="false"
@@ -80,6 +89,7 @@
             android:exported="false"
             android:label="@string/title_invoice" />
 
+        <!-- MODULE DỊCH VỤ CÔNG -->
         <activity
             android:name=".ui.public_services.CardReissueService.CardReissueActivity"
             android:exported="false"
@@ -104,6 +114,10 @@
             android:name=".ui.public_services.ServiceDetailActivity"
             android:exported="false" />
 
+        <!-- MODULE KÝ TÚC XÁ -->
+        <activity android:name=".ui.dormitory.DormitoryActivity" android:exported="false" />
+
+        <!-- PROVIDER CHIA SẺ FILE -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -114,7 +128,5 @@
                 android:resource="@xml/file_provider_paths" />
         </provider>
 
-        <activity android:name=".ui.dormitory.DormitoryActivity" android:exported="false" />
     </application>
-
 </manifest>
