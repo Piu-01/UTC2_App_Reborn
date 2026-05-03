@@ -2,6 +2,7 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
@@ -32,13 +33,13 @@
                 android:src="@drawable/ic_back_arrow"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:tint="#000000"
-                android:contentDescription="Quay lại"/>
+                android:contentDescription="@string/cd_back"/>
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Bảng xếp hạng"
+                android:text="@string/label_leaderboard_title"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="#000000"
@@ -61,7 +62,7 @@
                     android:id="@+id/tv_selected_period"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Năm học"
+                    android:text="@string/period_yearly"
                     android:textSize="13sp"
                     android:textColor="#000000"
                     android:maxLines="1"
@@ -70,7 +71,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="▾"
+                    android:text="@string/dropdown_arrow"
                     android:textSize="12sp"
                     android:textColor="#757575"/>
 
@@ -106,7 +107,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="THỨ HẠNG"
+                        android:text="@string/label_rank_short"
                         android:textSize="9sp"
                         android:textColor="#B0B0B0"
                         android:textAllCaps="true"/>
@@ -115,7 +116,8 @@
                         android:id="@+id/tv_my_rank"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="# 15"
+                        tools:text="# 15"
+                        android:text=""
                         android:textSize="26sp"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"
@@ -140,7 +142,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="ĐIỂM TB"
+                        android:text="@string/label_avg_score_short"
                         android:textSize="9sp"
                         android:textColor="#B0B0B0"
                         android:textAllCaps="true"/>
@@ -149,7 +151,8 @@
                         android:id="@+id/tv_my_gpa"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="3,62"
+                        tools:text="3,62"
+                        android:text=""
                         android:textSize="26sp"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"
@@ -174,7 +177,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="ĐỨNG ĐẦU"
+                        android:text="@string/label_top_percent"
                         android:textSize="9sp"
                         android:textColor="#B0B0B0"
                         android:textAllCaps="true"/>
@@ -183,7 +186,8 @@
                         android:id="@+id/tv_top_percent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="83 %"
+                        tools:text="83 %"
+                        android:text=""
                         android:textSize="26sp"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"
@@ -198,7 +202,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="XẾP HẠNG CHI TIẾT"
+            android:text="@string/label_ranking_detail"
             android:textSize="10sp"
             android:textColor="#9E9E9E"
             android:textAllCaps="true"

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -27,7 +28,7 @@
                 android:id="@+id/tv_course_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Lập trình Java"
+                android:text=""
                 android:textSize="13sp"
                 android:textColor="#000000"
                 android:textStyle="bold"
@@ -44,14 +45,14 @@
                     android:id="@+id/tv_course_code"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="IT3040"
+                    android:text=""
                     android:textSize="11sp"
                     android:textColor="#9E9E9E"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=" · "
+                    android:text="@string/separator_dot"
                     android:textSize="11sp"
                     android:textColor="#9E9E9E"/>
 
@@ -59,7 +60,7 @@
                     android:id="@+id/tv_credits"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="3 TC"
+                    android:text=""
                     android:textSize="11sp"
                     android:textColor="#9E9E9E"/>
 
@@ -73,7 +74,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="8.5"
+            android:text=""
             android:textSize="13sp"
             android:textColor="#424242"
             android:gravity="center"/>
@@ -84,7 +85,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="7.8"
+            android:text=""
             android:textSize="13sp"
             android:textColor="#424242"
             android:gravity="center"/>
@@ -101,7 +102,7 @@
                 android:id="@+id/tv_gpa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="3.48"
+                android:text=""
                 android:textSize="13sp"
                 android:textColor="#000000"
                 android:textStyle="bold"/>
@@ -110,7 +111,7 @@
                 android:id="@+id/tv_letter_grade"
                 android:layout_width="30dp"
                 android:layout_height="20dp"
-                android:text="B+"
+                android:text=""
                 android:textSize="10sp"
                 android:textStyle="bold"
                 android:gravity="center"

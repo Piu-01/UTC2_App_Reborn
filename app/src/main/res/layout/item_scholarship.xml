@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -21,7 +22,7 @@
             android:id="@+id/tv_scholarship_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Học bổng Khuyến khích học tập"
+            android:text=""
             android:textSize="15sp"
             android:textColor="#000000"
             android:textStyle="bold"
@@ -32,7 +33,7 @@
             android:id="@+id/tv_organization"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Trường ĐH Bách Khoa HN"
+            android:text=""
             android:textSize="12sp"
             android:textColor="#9E9E9E"
             android:layout_marginTop="2dp"/>
@@ -47,7 +48,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="GIÁ TRỊ"
+            android:text="@string/label_value"
             android:textSize="10sp"
             android:textColor="#9E9E9E"
             android:textAllCaps="true"
@@ -57,7 +58,7 @@
             android:id="@+id/tv_value_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3.000.000 đ / HK"
+            android:text=""
             android:textSize="20sp"
             android:textColor="#000000"
             android:textStyle="bold"
@@ -74,7 +75,7 @@
                 android:id="@+id/tv_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Chưa nhận"
+                android:text=""
                 android:textSize="12sp"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
@@ -86,7 +87,7 @@
                 android:id="@+id/tv_min_gpa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GPA tối thiểu: 3.20"
+                android:text=""
                 android:textSize="12sp"
                 android:textColor="#757575"
                 android:layout_marginStart="12dp"/>

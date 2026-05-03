@@ -2,6 +2,7 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
@@ -31,14 +32,14 @@
                 android:layout_height="40dp"
                 android:src="@drawable/ic_back_arrow"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:tint="#000000"
-                android:contentDescription="Quay lại"/>
+                android:contentDescription="@string/cd_back"
+                app:tint="#000000" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Xem điểm"
+                android:text="@string/tab_grades"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="#000000"
@@ -61,7 +62,7 @@
                     android:id="@+id/tv_selected_semester"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tất cả"
+                    android:text="@string/filter_all"
                     android:textSize="13sp"
                     android:textColor="#000000"
                     android:maxLines="1"
@@ -70,7 +71,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="▾"
+                    android:text="@string/dropdown_arrow"
                     android:textSize="12sp"
                     android:textColor="#757575"/>
 
@@ -108,7 +109,8 @@
                         android:id="@+id/tv_current_gpa"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="3.20"
+                        tools:text="3.20"
+                        android:text=""
                         android:textSize="26sp"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"/>
@@ -116,7 +118,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="GPA kỳ này"
+                        android:text="@string/label_gpa_semester"
                         android:textSize="10sp"
                         android:textColor="#B0B0B0"
                         android:layout_marginTop="2dp"
@@ -141,7 +143,8 @@
                         android:id="@+id/tv_total_credits"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="17"
+                        tools:text="17"
+                        android:text=""
                         android:textSize="26sp"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"/>
@@ -149,7 +152,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tín chỉ"
+                        android:text="@string/label_credits_short"
                         android:textSize="10sp"
                         android:textColor="#B0B0B0"
                         android:layout_marginTop="2dp"
@@ -174,7 +177,8 @@
                         android:id="@+id/tv_passed_subjects"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="4/6"
+                        tools:text="4/6"
+                        android:text=""
                         android:textSize="26sp"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"/>
@@ -182,7 +186,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Môn qua"
+                        android:text="@string/label_passed_subjects"
                         android:textSize="10sp"
                         android:textColor="#B0B0B0"
                         android:layout_marginTop="2dp"
@@ -207,7 +211,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:text="MÔN HỌC"
+                android:text="@string/header_subject"
                 android:textSize="11sp"
                 android:textColor="#757575"
                 android:textStyle="bold"/>
@@ -216,7 +220,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="GK"
+                android:text="@string/header_midterm"
                 android:textSize="11sp"
                 android:textColor="#757575"
                 android:textStyle="bold"
@@ -226,7 +230,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="CK"
+                android:text="@string/header_final"
                 android:textSize="11sp"
                 android:textColor="#757575"
                 android:textStyle="bold"
@@ -236,7 +240,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="ĐIỂM"
+                android:text="@string/header_score"
                 android:textSize="11sp"
                 android:textColor="#757575"
                 android:textStyle="bold"

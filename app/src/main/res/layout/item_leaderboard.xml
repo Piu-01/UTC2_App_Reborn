@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -27,7 +28,7 @@
             android:id="@+id/tv_rank"
             android:layout_width="44dp"
             android:layout_height="wrap_content"
-            android:text="# 4"
+            android:text=""
             android:textSize="13sp"
             android:textColor="#757575"
             android:gravity="center"/>
@@ -37,7 +38,7 @@
             android:id="@+id/tv_avatar_initials"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:text="VK"
+            android:text=""
             android:textSize="12sp"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
@@ -56,7 +57,7 @@
                 android:id="@+id/tv_student_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Hoàng Văn Khánh"
+                android:text=""
                 android:textSize="14sp"
                 android:textColor="#000000"
                 android:maxLines="1"
@@ -66,7 +67,7 @@
                 android:id="@+id/tv_credits"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="132 tín chỉ"
+                android:text=""
                 android:textSize="11sp"
                 android:textColor="#9E9E9E"
                 android:layout_marginTop="2dp"/>
@@ -78,7 +79,7 @@
             android:id="@+id/tv_gpa"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3.85"
+            android:text=""
             android:textSize="15sp"
             android:textColor="#000000"
             android:textStyle="bold"/>

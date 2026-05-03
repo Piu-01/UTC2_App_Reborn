@@ -1,60 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- ── App ── -->
     <string name="app_name">UTC2 App Reborn</string>
 
     <!-- ── Login ── -->
     <string name="email">Email</string>
     <string name="password">Password</string>
-    <string name="login">Login</string>
+    <string name="login">Đăng nhập</string>
+    <string name="skip_login">Bỏ qua đăng nhập</string>
 
-    <!-- ── Bottom nav ── -->
+    <!-- ── Navigation ── -->
     <string name="nav_home">Trang chủ</string>
     <string name="nav_register">Đăng kí học phần</string>
     <string name="nav_schedule">Lịch</string>
     <string name="nav_result">Kết quả học tập</string>
     <string name="nav_profile">Cá nhân</string>
 
-    <!-- ── Academic Results module ── -->
+    <!-- ── Common UI ── -->
+    <string name="cd_back">Quay lại</string>
+    <string name="chevron">›</string>
+    <string name="dropdown_arrow">▾</string>
+    <string name="separator_dot"> · </string>
+    <string name="filter_all">Tất cả</string>
+
+    <!-- ── Academic Results — Dashboard ── -->
     <string name="module_academic_results">Kết quả học tập</string>
+    <string name="label_category">DANH MỤC</string>
+    <string name="label_gpa">GPA</string>
+    <string name="subtitle_grades">Điểm số các môn học</string>
+    <string name="label_leaderboard_title">Bảng xếp hạng</string>
+    <string name="subtitle_leaderboard">Thứ hạng sinh viên</string>
+    <string name="label_scholarship_title">Học bổng</string>
+    <string name="subtitle_scholarship">Cơ hội và hỗ trợ</string>
+    <string name="label_warnings_title">Cảnh báo học vụ</string>
+    <string name="subtitle_warnings">Thông báo quan trọng</string>
 
-    <!-- Tab titles -->
+    <!-- ── Grades screen ── -->
     <string name="tab_grades">Xem điểm</string>
-    <string name="tab_leaderboard">Xếp hạng</string>
-    <string name="tab_scholarships">Học bổng</string>
-    <string name="tab_warnings">Cảnh báo</string>
-
-    <!-- Grades tab -->
     <string name="label_semester">Học kỳ:</string>
     <string name="label_gpa_semester">GPA kỳ này</string>
+    <string name="label_credits_short">Tín chỉ</string>
     <string name="label_credits_semester">Tín chỉ kỳ này</string>
     <string name="label_passed_subjects">Môn qua</string>
-    <string name="header_subject">Môn học</string>
+    <string name="header_subject">MÔN HỌC</string>
     <string name="header_midterm">GK</string>
     <string name="header_final">CK</string>
-    <string name="header_score">Điểm</string>
+    <string name="header_score">ĐIỂM</string>
 
-    <!-- Leaderboard tab -->
-    <string name="toggle_year">Năm</string>
-    <string name="toggle_semester">Học kì</string>
+    <!-- ── Leaderboard screen ── -->
+    <string name="tab_leaderboard">Xếp hạng</string>
+    <string name="period_yearly">Năm học</string>
+    <string name="label_rank_short">THỨ HẠNG</string>
+    <string name="label_avg_score_short">ĐIỂM TB</string>
     <string name="label_my_rank">THỨ HẠNG CỦA BẠN</string>
     <string name="label_avg_score">ĐIỂM TRUNG BÌNH</string>
     <string name="label_top_percent">ĐỨNG ĐẦU</string>
     <string name="label_ranking_detail">XẾP HẠNG CHI TIẾT</string>
     <string name="suffix_current_user"> (Bạn)</string>
 
-    <!-- Scholarships tab -->
-    <string name="filter_all">Tất cả</string>
+    <!-- ── Scholarships screen ── -->
+    <string name="tab_scholarships">Học bổng</string>
     <string name="filter_not_received">Chưa nhận</string>
     <string name="filter_received">Đã nhận</string>
     <string name="label_scholarship_list">DANH SÁCH</string>
     <string name="label_value">GIÁ TRỊ</string>
-    <string name="label_min_gpa">GPA tối thiểu: </string>
+    <string name="label_min_gpa_prefix">GPA tối thiểu: </string>
 
-    <!-- Warnings tab -->
+    <!-- ── Warnings screen ── -->
+    <string name="tab_warnings">Cảnh báo</string>
+    <string name="label_serious_upper">NGHIÊM TRỌNG</string>
+    <string name="label_total_upper">TỔNG CỘNG</string>
     <string name="label_serious">Nghiêm trọng</string>
-    <string name="label_normal_warning">Cảnh báo</string>
-    <string name="label_total">Tổng cộng</string>
-    <string name="filter_serious">Nghiêm trọng</string>
-    <string name="badge_serious">NGHIÊM TRỌNG</string>
+
 </resources>

@@ -9,9 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.utc2.appreborn.R;
 import com.utc2.appreborn.model.AcademicWarning;
 
@@ -19,8 +19,11 @@ import java.util.List;
 
 /**
  * WarningAdapter
- * - NGHIÊM TRỌNG: nền đỏ nhạt + ImageView ic_warning_triangle góc trên phải
- * - Thường: nền trắng + viền nhạt, không có badge
+ *
+ * - NGHIÊM TRỌNG : nền đỏ nhạt + stroke đỏ nhạt + badge ⚠ góc trên phải
+ * - Thường        : nền trắng  + stroke xám nhạt, không badge
+ *
+ * Dùng MaterialCardView (item_warning.xml) để setStrokeColor() hoạt động đúng.
  */
 public class WarningAdapter extends RecyclerView.Adapter<WarningAdapter.WarningViewHolder> {
 
@@ -54,13 +57,14 @@ public class WarningAdapter extends RecyclerView.Adapter<WarningAdapter.WarningV
         return warningList.size();
     }
 
+    // ─────────────────────────────────────────
     static class WarningViewHolder extends RecyclerView.ViewHolder {
 
-        private final CardView   cardRoot;
+        private final MaterialCardView cardRoot;
         private final TextView   tvTitle;
         private final TextView   tvSubTitle;
         private final TextView   tvDate;
-        private final ImageView  ivSeriousBadge;  // ImageView thay vì TextView
+        private final ImageView  ivSeriousBadge;
 
         WarningViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -68,7 +72,7 @@ public class WarningAdapter extends RecyclerView.Adapter<WarningAdapter.WarningV
             tvTitle        = itemView.findViewById(R.id.tv_warning_title);
             tvSubTitle     = itemView.findViewById(R.id.tv_warning_subtitle);
             tvDate         = itemView.findViewById(R.id.tv_warning_date);
-            ivSeriousBadge = itemView.findViewById(R.id.iv_serious_badge);  // id mới
+            ivSeriousBadge = itemView.findViewById(R.id.iv_serious_badge);
         }
 
         void bind(AcademicWarning warning) {
@@ -83,14 +87,25 @@ public class WarningAdapter extends RecyclerView.Adapter<WarningAdapter.WarningV
             }
 
             if (warning.isSerious()) {
-                // Nền đỏ nhạt + icon badge
+                // Nền đỏ nhạt + stroke đỏ nhạt + badge hiện
                 cardRoot.setCardBackgroundColor(Color.parseColor("#FFEBEE"));
+                cardRoot.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#FFCDD2")));
+                cardRoot.setStrokeWidth(dpToPx(1.5f));
                 ivSeriousBadge.setVisibility(View.VISIBLE);
             } else {
-                // Nền trắng + không có badge
+                // Nền trắng + stroke xám + không badge
                 cardRoot.setCardBackgroundColor(Color.WHITE);
+                cardRoot.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#E0E0E0")));
+                cardRoot.setStrokeWidth(dpToPx(1f));
                 ivSeriousBadge.setVisibility(View.GONE);
             }
+        }
+
+        /** Chuyển dp sang px dựa trên displayMetrics của view context */
+        private int dpToPx(float dp) {
+            float density = itemView.getContext()
+                    .getResources().getDisplayMetrics().density;
+            return Math.round(dp * density);
         }
     }
 }
